@@ -4,7 +4,7 @@ A petite Java http server, with the major goals of being enjoyable to read and w
 
 ## Installation
 
-Duckling comes with a `duckling.jar`, which is runnable through Java:
+Duckling is released with a `duckling.jar`, which is runnable through Java:
 
 ```bash
 java ./duckling.jar
