@@ -1,16 +1,21 @@
 import static org.junit.Assert.assertEquals;
-//
-//import org.junit.Before;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import duckling.Server;
 
 public class ServerTest {
-    @Test
-    public void setPort() throws Exception {
-        int port = 5000;
-        Server server = new Server(port);
+    private int port = 5123, timeout = 100000;
+    private Server server;
 
+    @Before
+    public void setup() throws Exception {
+        server = new Server(port);
+    }
+
+    @Test
+    public void definePort() throws Exception {
         assertEquals(port, server.port);
     }
 }

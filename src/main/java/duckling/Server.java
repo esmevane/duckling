@@ -7,4 +7,5 @@ public class Server {
         this.port = port;
     }
 
+    public void listen() {}
 }
