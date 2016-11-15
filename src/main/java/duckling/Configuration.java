@@ -1,5 +1,7 @@
 package duckling;
 
+import duckling.errors.BadArgumentsError;
+
 import java.util.Arrays;
 
 public class Configuration {

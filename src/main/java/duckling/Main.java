@@ -1,31 +1,32 @@
 package duckling;
 
+import duckling.errors.BadArgumentsError;
+
+import java.io.IOException;
+import java.util.stream.Stream;
+
 public class Main {
+
     private Configuration config;
     private Server server;
 
-    public Main(Configuration config) {
+    public Main(Configuration config) throws IOException {
         this.config = config;
-        this.server = new Server(config.port);
+        this.server = new Server(config.port, config.root);
     }
 
-    public void start() {
-        beforeListen();
+    public void start() throws IOException {
+        Stream<String> output = Stream.of(
+            String.format("Port: %s", this.config.port),
+            String.format("Root: %s", this.config.root)
+        );
+
+        output.forEach(System.out::println);
+
         this.server.listen();
     }
 
-    private void beforeListen() {
-        String[] output = {
-                String.format("Port: %s", this.config.port),
-                String.format("Root: %s", this.config.root)
-        };
-
-        for (String line: output) {
-            System.out.println(line);
-        }
-    }
-
-    public static void main(String[] arguments) {
+    public static void main(String[] arguments) throws IOException {
         try {
             Configuration config = new Configuration(arguments);
             Main main = new Main(config);

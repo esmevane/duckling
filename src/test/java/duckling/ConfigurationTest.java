@@ -1,7 +1,9 @@
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+package duckling;
 
-import duckling.Configuration;
+import static org.junit.Assert.assertEquals;
+
+import duckling.errors.BadArgumentsError;
+import org.junit.Test;
 
 public class ConfigurationTest {
     @Test
@@ -21,7 +23,7 @@ public class ConfigurationTest {
         assertEquals(config.root, "/var/www/duckling/public");
     }
 
-    @Test(expected = duckling.BadArgumentsError.class)
+    @Test(expected = BadArgumentsError.class)
     public void withNoRoot() throws Exception {
         String[] arguments = {"-d"};
         Configuration config = new Configuration(arguments);
@@ -43,13 +45,13 @@ public class ConfigurationTest {
         assertEquals(config.port, 80);
     }
 
-    @Test(expected = duckling.BadArgumentsError.class)
+    @Test(expected = BadArgumentsError.class)
     public void withNoPort() throws Exception {
         String[] arguments = {"-p"};
         Configuration config = new Configuration(arguments);
     }
 
-    @Test(expected = duckling.BadArgumentsError.class)
+    @Test(expected = BadArgumentsError.class)
     public void withMalformedPort() throws Exception {
         String[] arguments = {"-p", "unparseable"};
         Configuration config = new Configuration(arguments);
