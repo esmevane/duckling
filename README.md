@@ -4,7 +4,17 @@ A petite Java http server, with the major goals of being enjoyable to read and w
 
 ## Installation
 
-Duckling is released with a `duckling.jar`, which is runnable through Java:
+Duckling is run with `duckling.jar` releases, found on our [releases page](https://github.com/esmevane/duckling/releases) - you can get the latest `duckling.jar` there.  Or, if you like, you can get the latest `duckling.jar` [by clicking right here](https://github.com/esmevane/duckling/releases/download/v0.0.1/duckling.jar).
+
+If you like your command line, here's a good one-liner (you might need to grab `wget` first):
+
+```bash
+wget https://github.com/esmevane/duckling/releases/download/v0.0.1/duckling.jar
+```
+
+## Usage
+
+Once you have your `duckling.jar`, you can run it with Java:
 
 ```bash
 java ./duckling.jar
@@ -21,6 +31,3 @@ java duckling.jar -p $(YOUR_FAVORITE_PORT) -d $(YOUR_FAVORITE_DIR)
 
 Right now Duckling doesn't support routing at all.  It will display some HTML as expected, provide a small navigable directory listing, and respond with a 404 to missing content.
 
-## Known bugs
-
-* Deep traversal of directories is currently not supported.  This is getting punted on as of release 0.0.1 in the interests of getting a more thoroughly tested `FolderContents` and usable responder in play, vs. upgrading the current one further (which is moot, because it's serving its purpose as-is).
