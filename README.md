@@ -12,6 +12,20 @@ If you like your command line, here's a good one-liner (you might need to grab `
 wget https://github.com/esmevane/duckling/releases/download/v0.0.1/duckling.jar
 ```
 
+## Building
+
+If building the current master (or a given release) directly is more your speed, you'll need to have `gradle` installed.  Once you do, here's a snippet to get you going:
+
+```bash
+git clone git@github.com:esmevane/duckling.git
+cd duckling
+gradle jar
+```
+
+That snippet will grab this repository, install it in your `${pwd}/duckling`, hop into that directory, and then use the `gradle` build scripts to get a jar together.  It will deposit the jar in the root of the duckling directory, under `duckling.jar`.
+
+Enjoy!
+
 ## Usage
 
 Once you have your `duckling.jar`, you can run it with Java:
