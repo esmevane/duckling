@@ -28,18 +28,29 @@ Enjoy!
 
 ## Usage
 
-Once you have your `duckling.jar`, you can run it with Java:
+Once you've either downloaded or created your `duckling.jar`, you can run it with Java:
 
 ```bash
-java ./duckling.jar
+java -jar duckling.jar
 ```
 
 You can also configure the port (with `-p`) and root directory (with
 `-d`):
 
 ```bash
-java duckling.jar -p $(YOUR_FAVORITE_PORT) -d $(YOUR_FAVORITE_DIR)
+java -jar duckling.jar -p $(YOUR_FAVORITE_PORT) -d $(YOUR_FAVORITE_DIR)
 ```
+
+For example, if you wanted to kick it off in its current directory, on port 8000:
+
+```bash
+java -jar duckling.jar -p 8000 -d .
+```
+
+Each of these options has a default:
+
+* `-p` (Port) defaults to `80`
+* `-d` (Root directory) defaults to `.`
 
 ## A small overview
 
