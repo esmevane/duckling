@@ -14,15 +14,15 @@ wget https://github.com/esmevane/duckling/releases/download/v0.0.1/duckling.jar
 
 ## Building
 
-If building the current master (or a given release) directly is more your speed, you'll need to have `gradle` installed.  Once you do, here's a snippet to get you going:
+If building the current master (or a given release) directly is more your speed, you'll need to have Gradle installed.  Once you do, here's a snippet to get you going:
 
 ```bash
 git clone git@github.com:esmevane/duckling.git
 cd duckling
-gradle jar
+./gradlew test && ./gradlew jar
 ```
 
-That snippet will grab this repository, install it in your `${pwd}/duckling`, hop into that directory, and then use the `gradle` build scripts to get a jar together.  It will deposit the jar in the root of the duckling directory, under `duckling.jar`.
+That snippet will grab this repository, install it in your `${pwd}/duckling`, hop into that directory, and then use the `./gradlew` build scripts to get a jar together.  It will deposit the jar in the root of the duckling directory, under `duckling.jar`.
 
 Enjoy!
 
@@ -44,4 +44,3 @@ java duckling.jar -p $(YOUR_FAVORITE_PORT) -d $(YOUR_FAVORITE_DIR)
 ## A small overview
 
 Right now Duckling doesn't support routing at all.  It will display some HTML as expected, provide a small navigable directory listing, and respond with a 404 to missing content.
-
