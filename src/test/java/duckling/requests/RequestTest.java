@@ -107,7 +107,7 @@ public class RequestTest {
         request.add("Body line two");
         Assert.assertEquals(
             request.getBody(),
-            "Body line one" + Server.CLRF + "Body line two"
+            "Body line one" + Server.CRLF + "Body line two"
         );
     }
 }

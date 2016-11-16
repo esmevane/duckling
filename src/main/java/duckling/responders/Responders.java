@@ -15,7 +15,7 @@ public class Responders {
 
     public Responders(Request request, OutputStream outputStream) {
         this(
-                request,
+            request,
             outputStream,
             new FileContents(request, outputStream),
             new FolderContents(request, outputStream),

@@ -33,7 +33,7 @@ public class NotFound extends Responder {
     private String rawResponse() {
        return "<html><head><title>Not found</title></head>" +
            "<body>404 not found</body></head>" +
-           Server.CLRF;
+           Server.CRLF;
     }
 
 }

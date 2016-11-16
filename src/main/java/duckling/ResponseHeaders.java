@@ -6,9 +6,9 @@ public class ResponseHeaders {
 
     public String[] toArray() {
         return new String[] {
-            "HTTP/1.0 " + status + Server.CLRF,
-            "Content-Type: " + contentType + Server.CLRF,
-            Server.CLRF
+            "HTTP/1.0 " + status + Server.CRLF,
+            "Content-Type: " + contentType + Server.CRLF,
+            Server.CRLF
         };
     }
 

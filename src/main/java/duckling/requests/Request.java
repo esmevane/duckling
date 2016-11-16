@@ -24,7 +24,7 @@ public class Request {
     }
 
     public String getBody() {
-        return body.stream().collect(Collectors.joining(Server.CLRF));
+        return body.stream().collect(Collectors.joining(Server.CRLF));
     }
 
     public String getHeader(String key) {

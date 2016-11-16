@@ -1,7 +1,6 @@
 package duckling.requests;
 
 import duckling.Server;
-import duckling.requests.Request;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +23,7 @@ public class RequestBuilder {
             requestBody.append((char) input);
         }
 
-        rawRequest = requestBody.toString().split(Server.CLRF);
+        rawRequest = requestBody.toString().split(Server.CRLF);
     }
 
     public void printRawRequest() {

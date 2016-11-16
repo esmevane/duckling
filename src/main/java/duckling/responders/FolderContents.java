@@ -39,7 +39,7 @@ public class FolderContents extends Responder {
             + this.directory.getName()
             + "</title></head><body>"
             + contents()
-            + "</body></head>" + Server.CLRF;
+            + "</body></head>" + Server.CRLF;
     }
 
     private String contents() {

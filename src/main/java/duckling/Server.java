@@ -9,7 +9,7 @@ import java.net.*;
 import java.util.concurrent.*;
 
 public class Server {
-    public static final String CLRF = "\r\n";
+    public static final String CRLF = "\r\n";
 
     public int port;
     public String root;
@@ -82,7 +82,7 @@ public class Server {
             this.connection.close();
             this.shuttingDown = true;
 
-            System.out.println(CLRF + "Shutting down.");
+            System.out.println(CRLF + "Shutting down.");
         } catch (IOException exception) {
             exception.printStackTrace();
         }
