@@ -5,10 +5,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-public class MockServerSocket extends ServerSocket {
+public class SpyServerSocket extends ServerSocket {
     private boolean isBound = false;
 
-    public MockServerSocket() throws IOException {
+    public SpyServerSocket() throws IOException {
     }
 
     @Override

@@ -1,9 +1,9 @@
 package duckling.requests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import duckling.Server;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,21 +40,36 @@ public class RequestTest {
     }
 
     @Test
-    public void similarTokensAreEquivalent() throws Exception {
-        Request otherTokens = new Request();
+    public void similarRequestsHaveSameHashCode() throws Exception {
+        Request otherRequest = new Request();
         request.add("GET / HTTP/1.1");
-        otherTokens.add("GET / HTTP/1.1");
-        assertEquals(true, request.equals(otherTokens));
+        otherRequest.add("GET / HTTP/1.1");
+        assertEquals(request.hashCode(), otherRequest.hashCode());
     }
 
     @Test
-    public void dissimilarTokensAreNotEquivalent() throws Exception {
-        Request otherTokens = new Request();
+    public void dissimilarRequestsHaveDifferentHashCodes() throws Exception {
+        Request otherRequest = new Request();
         request.add("GET / HTTP/1.1");
-        otherTokens.add("GET / HTTP/1.0");
-        assertEquals(false, request.equals(otherTokens));
+        otherRequest.add("GET / HTTP/1.0");
+        assertNotEquals(request.hashCode(), otherRequest.hashCode());
     }
 
+    @Test
+    public void similarRequestsAreEquivalent() throws Exception {
+        Request otherRequest = new Request();
+        request.add("GET / HTTP/1.1");
+        otherRequest.add("GET / HTTP/1.1");
+        assertEquals(true, request.equals(otherRequest));
+    }
+
+    @Test
+    public void dissimilarRequestsAreNotEquivalent() throws Exception {
+        Request otherRequest = new Request();
+        request.add("GET / HTTP/1.1");
+        otherRequest.add("GET / HTTP/1.0");
+        assertEquals(false, request.equals(otherRequest));
+    }
 
     @Test
     public void firstLineIsInitialRequest() throws Exception {
@@ -63,13 +78,13 @@ public class RequestTest {
     }
 
     @Test
-    public void tokenizesInitialRequestMethod() throws Exception {
+    public void RequestizesInitialRequestMethod() throws Exception {
         request.add("GET / HTTP/1.1");
         assertEquals(request.getMethod(), "GET");
     }
 
     @Test
-    public void tokenizesInitialRequestPath() throws Exception {
+    public void RequestizesInitialRequestPath() throws Exception {
         request.add("GET / HTTP/1.1");
         assertEquals(request.getPath(), "/");
     }
@@ -77,11 +92,11 @@ public class RequestTest {
     @Test
     public void providesPathFileReference() throws Exception {
         request.add("GET / HTTP/1.1");
-        assertEquals(request.getFile(), new File("./"));
+        assertEquals(request.getFile(), new File("."));
     }
 
     @Test
-    public void tokenizesInitialRequestProtocol() throws Exception {
+    public void RequestizesInitialRequestProtocol() throws Exception {
         request.add("GET / HTTP/1.1");
         assertEquals(request.getProtocol(), "HTTP/1.1");
     }
@@ -105,9 +120,10 @@ public class RequestTest {
         request.add("");
         request.add("Body line one");
         request.add("Body line two");
-        Assert.assertEquals(
-            request.getBody(),
-            "Body line one" + Server.CRLF + "Body line two"
+
+        assertEquals(
+                request.getBody(),
+                "Body line one" + Server.CRLF + "Body line two"
         );
     }
 }

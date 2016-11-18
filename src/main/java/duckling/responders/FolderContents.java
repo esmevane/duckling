@@ -2,19 +2,33 @@ package duckling.responders;
 
 import duckling.requests.Request;
 import duckling.ResponseHeaders;
-import duckling.Server;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FolderContents extends Responder {
     private File directory;
 
-    public FolderContents(Request request, OutputStream outputStream) {
-        super(request, outputStream);
+    public FolderContents(Request request) {
+        super(request);
 
         this.directory = request.getFile();
+    }
+
+    public FolderContents(Request request, File directory) {
+        super(request);
+
+        this.directory = directory;
+    }
+
+    public FolderContents(File directory) {
+        this(new Request(), directory);
     }
 
     @Override
@@ -23,40 +37,41 @@ public class FolderContents extends Responder {
     }
 
     @Override
-    public void respond() throws IOException {
-        ResponseHeaders responseHeaders = new ResponseHeaders().
-                withContentType("text/html");
+    public ArrayList<String> headers() throws IOException {
+        return new ResponseHeaders().withContentType("text/html").toList();
+    }
 
-        for (String line: responseHeaders.toArray()) {
-            this.outputStream.write(line.getBytes());
-        }
-
-        this.outputStream.write(rawFolderResponse().getBytes());
+    @Override
+    public InputStream body() throws IOException {
+        return new ByteArrayInputStream(rawFolderResponse().getBytes());
     }
 
     private String rawFolderResponse() {
-        return "<html><head><title>/"
-            + this.directory.getName()
-            + "</title></head><body>"
-            + contents()
-            + "</body></head>" + Server.CRLF;
+        String title = String.format("<title>%s</title>", this.directory.getName());
+        String template = "<html><head>%s</head><body>%s</body></html>";
+
+        return String.format(template, title, contents());
     }
 
     private String contents() {
-        String links = "";
         String[] list = this.directory.list();
 
-        for (String item: list) {
-            File file = new File(item);
-
-            if (file.isDirectory()) {
-                links = links + "<a href=\"/" + item + "/\">" + item + "/</a><br>";
-            } else {
-                links = links + "<a href=\"/" + item + "\">" + item + "</a><br>";
-            }
+        if (list == null) {
+            return "";
         }
 
-        return links;
+        Stream<String> links = Stream.of(list).map(this::toLink);
+
+        return links.collect(Collectors.joining());
+    }
+
+    private String toLink(String item) {
+        File file = new File(this.directory, item);
+        String name = file.getName() + (file.isDirectory() ? "/" : "");
+        String path = Paths.get(request.getPath(), name).toString();
+        String template = "<a href=\"%s\">%s</a><br />";
+
+        return String.format(template, path, name);
     }
 
 }

@@ -1,17 +1,20 @@
 package duckling.responders;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import duckling.Server;
+import duckling.requests.RequestStream;
 import duckling.requests.Request;
-import duckling.requests.RequestBuilder;
-import duckling.responders.Responder;
-import duckling.responders.Responders;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class RespondersTest {
     private OutputStream outputStream;
@@ -19,57 +22,58 @@ public class RespondersTest {
 
     @Before
     public void setup() throws Exception {
-        InputStream inputStream = new InputStream() {
-            @Override
-            public int read() throws IOException {
-                return 0;
-            }
-        };
+        String requestContent = "GET / HTTP/1.1" + Server.CRLF + Server.CRLF;
+        byte[] getRequest = requestContent.getBytes();
+        InputStream inputStream = new ByteArrayInputStream(getRequest);
 
         this.outputStream = new OutputStream() {
             @Override
-            public void write(int b) throws IOException { }
+            public void write(int b) throws IOException {
+            }
         };
 
-        this.request = new RequestBuilder(inputStream).build();
+        RequestStream requestStream = new RequestStream(inputStream);
+        Request request = new Request();
+
+        requestStream.toList().forEach(request::add);
+
+        this.request = request;
     }
 
     @Test
     public void getResponderReturnsFirstMatch() throws IOException {
         Responders responders = new Responders(
-            this.request,
-            this.outputStream,
-            new NoMatchResponder(this.request, this.outputStream),
-            new MatchResponder(this.request, this.outputStream)
+                this.request,
+                new NoMatchResponder(this.request),
+                new MatchResponder(this.request)
         );
 
-        assertEquals(
-            MatchResponder.class,
-            responders.getResponder().getClass()
-        );
+        assertThat(responders.getResponder(), instanceOf(MatchResponder.class));
     }
 
     private class MatchResponder extends Responder {
-        MatchResponder(Request request, OutputStream outputStream) {
-            super(request, outputStream);
-        }
+        MatchResponder(Request request) { super(request); }
 
         @Override
         public boolean matches() { return true; }
 
         @Override
-        public void respond() throws IOException { }
+        public ArrayList<String> headers() throws IOException { return null; }
+
+        @Override
+        public InputStream body() throws IOException { return null; }
     }
 
     private class NoMatchResponder extends Responder {
-        NoMatchResponder(Request request, OutputStream outputStream) {
-            super(request, outputStream);
-        }
+        NoMatchResponder(Request request) { super(request); }
 
         @Override
         public boolean matches() { return false; }
 
         @Override
-        public void respond() throws IOException { }
+        public ArrayList<String> headers() throws IOException { return null; }
+
+        @Override
+        public InputStream body() throws IOException { return null; }
     }
 }

@@ -2,7 +2,6 @@ package duckling.responders;
 
 import duckling.requests.Request;
 
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
@@ -10,25 +9,25 @@ import java.util.stream.Stream;
 
 public class Responders {
     private Request request;
-    private OutputStream outputStream;
     private ArrayList<Responder> responders;
 
-    public Responders(Request request, OutputStream outputStream) {
+    public Responders(Request request) {
         this(
-            request,
-            outputStream,
-            new FileContents(request, outputStream),
-            new FolderContents(request, outputStream),
-            new NotFound(request, outputStream)
+                request,
+                new FileContents(request),
+                new FolderContents(request),
+                new NotFound(request)
         );
     }
 
-    public Responders(Request request, OutputStream outputStream, Responder... responders) {
+    public Responders(
+            Request request,
+            Responder... responders
+    ) {
         ArrayList<Responder> list = new ArrayList<>();
         Collections.addAll(list, responders);
 
         this.request = request;
-        this.outputStream = outputStream;
         this.responders = list;
     }
 
@@ -39,7 +38,7 @@ public class Responders {
         if (candidate.isPresent()) {
             return candidate.get();
         } else {
-            return new NotFound(request, outputStream);
+            return new NotFound(request);
         }
     }
 }

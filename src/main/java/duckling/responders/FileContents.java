@@ -4,6 +4,7 @@ import duckling.requests.Request;
 import duckling.ResponseHeaders;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import static java.net.URLConnection.guessContentTypeFromName;
 import static java.net.URLConnection.guessContentTypeFromStream;
@@ -11,10 +12,20 @@ import static java.net.URLConnection.guessContentTypeFromStream;
 public class FileContents extends Responder {
     private File file;
 
-    public FileContents(Request request, OutputStream outputStream) {
-        super(request, outputStream);
+    public FileContents(Request request) {
+        super(request);
 
         this.file = request.getFile();
+    }
+
+    public FileContents(Request request, File file) {
+        super(request);
+
+        this.file = file;
+    }
+
+    public FileContents(File file) {
+        this(new Request(), file);
     }
 
     @Override
@@ -23,34 +34,32 @@ public class FileContents extends Responder {
     }
 
     @Override
-    public void respond() throws IOException {
-        int bytes;
+    public ArrayList<String> headers() throws IOException {
+        return new ResponseHeaders().withContentType(getContentType()).toList();
+    }
 
-        byte[] buffer = new byte[1024];
-        FileInputStream fileInputStream = new FileInputStream(file.getAbsoluteFile());
-        ResponseHeaders responseHeaders = new ResponseHeaders().
-                withContentType(getContentType());
-
-        for (String line: responseHeaders.toArray()) {
-            this.outputStream.write(line.getBytes());
-        }
-
-        while ((bytes = fileInputStream.read(buffer)) != -1) {
-            this.outputStream.write(buffer, 0, bytes);
-        }
+    @Override
+    public InputStream body() throws IOException {
+        return getFileStream();
     }
 
     private String getContentType() throws IOException {
-        String fromName = guessContentTypeFromName(file.getName());
+        String fromName = guessContentTypeFromName(this.file.getName());
 
         if (fromName == null) {
-            InputStream buffer = new BufferedInputStream(
-                    new FileInputStream(file)
-            );
-
-            return guessContentTypeFromStream(buffer);
+            return guessContentTypeFromStream(getFileStream());
         } else {
             return fromName;
+        }
+    }
+
+    private InputStream getFileStream() {
+        try {
+            return new BufferedInputStream(
+                    new FileInputStream(this.file.getAbsoluteFile())
+            );
+        } catch (FileNotFoundException exception) {
+            return new ByteArrayInputStream("".getBytes());
         }
     }
 }

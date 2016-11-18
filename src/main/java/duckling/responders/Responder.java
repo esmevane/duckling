@@ -3,17 +3,19 @@ package duckling.responders;
 import duckling.requests.Request;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 public abstract class Responder {
     protected Request request;
-    protected OutputStream outputStream;
 
-    public Responder(Request request, OutputStream outputStream) {
+    public Responder(Request request) {
         this.request = request;
-        this.outputStream = outputStream;
     }
 
     abstract public boolean matches();
-    abstract public void respond() throws IOException;
+
+    abstract public ArrayList<String> headers() throws IOException;
+    abstract public InputStream body() throws IOException;
+
 }

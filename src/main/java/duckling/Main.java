@@ -3,27 +3,30 @@ package duckling;
 import duckling.errors.BadArgumentsError;
 
 import java.io.IOException;
-import java.util.stream.Stream;
 
 public class Main {
 
     private Configuration config;
     private Server server;
+    private Logger logger;
 
     public Main(Configuration config) throws IOException {
         this.config = config;
         this.server = new Server(config.port, config.root);
+        this.logger = new Logger();
     }
 
     public void start() throws IOException {
-        Stream<String> output = Stream.of(
-            String.format("Port: %s", this.config.port),
-            String.format("Root: %s", this.config.root)
+        logger.info(
+                String.format("Port: %s", this.config.port),
+                String.format("Root: %s", this.config.root)
         );
 
-        output.forEach(System.out::println);
-
-        this.server.listen();
+        try {
+            this.server.listen();
+        } finally {
+            System.exit(1);
+        }
     }
 
     public static void main(String[] arguments) throws IOException {

@@ -1,9 +1,12 @@
 package duckling;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertEquals;
 
-import duckling.support.MockServerSocket;
-import duckling.support.MockThreadPool;
+import duckling.support.SpyLogger;
+import duckling.support.SpyServerSocket;
+import duckling.support.SpyThreadPool;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,14 +14,16 @@ public class ServerTest {
     private int port = 5123;
     private String root = "./";
     private Server server;
-    private MockServerSocket connection;
-    private MockThreadPool pool;
+    private SpyServerSocket connection;
+    private SpyThreadPool pool;
+    private SpyLogger logger;
 
     @Before
     public void setup() throws Exception {
-        connection = new MockServerSocket();
-        pool = new MockThreadPool();
-        server = new Server(port, root, connection, pool);
+        connection = new SpyServerSocket();
+        pool = new SpyThreadPool();
+        logger = new SpyLogger();
+        server = new Server(port, root, connection, pool, logger);
     }
 
     @Test
@@ -48,6 +53,12 @@ public class ServerTest {
     public void onShutdownClosesPool() throws Exception {
         server.onShutdown();
         assertEquals(true, server.isPoolClosed());
+    }
+
+    @Test
+    public void onShutdownLogsOutput() throws Exception {
+        server.onShutdown();
+        assertThat(logger.messages, hasItem(Server.CRLF + "Shutting down."));
     }
 
     @Test

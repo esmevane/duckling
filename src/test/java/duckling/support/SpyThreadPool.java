@@ -7,14 +7,14 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class MockThreadPool extends ThreadPoolExecutor {
+public class SpyThreadPool extends ThreadPoolExecutor {
     private List<Runnable> threads = new ArrayList<>();
 
-    public MockThreadPool() {
+    public SpyThreadPool() {
         this(1, 1, 1, TimeUnit.SECONDS, new SynchronousQueue<>());
     }
 
-    public MockThreadPool(
+    public SpyThreadPool(
             int corePoolSize,
             int maximumPoolSize,
             long keepAliveTime,
