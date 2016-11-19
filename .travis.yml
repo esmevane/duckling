@@ -1,0 +1,12 @@
+language: java
+jdk:
+  - oraclejdk8
+deploy:
+  provider: releases
+  api_key:
+    secure: Hz7VL3c10SbEkPY6LiFmOTDAKCDno7JQrLn6RAO+6RPDWFVSV0A1cLCQEiY5vrH04H2g1s4iOcJwn6foJ/nZfQ9YUwk7kriy3PRyPOinhoKK5ebYEMGFW3wM063C5Wmuv3oHPBaDIUWWMV3GfPcLJH16vuInv5j/2B8gk4InNFPSeeUOKyn/O1Ml3rH99DnaUl3cf62tuclIp+flXCQ+8j02J8QiX09jClQ7okZt9qvythZtieIpATVUlNY1UPqTOXeM5xt1mbNdj2zWBiN2uyAEDWrAlBeSWnLrCVkrurefj+SluaSw2GmeUVDKFPcGu5DEXLcSSmRw0vx+Z7dcH0ZIw30YKRj055SDu32T7wrpfpIeGVCUOL6T8+h+ILMUfv5XyC6BbiRQZh88Tebf8WSMV8P0kVGpbtzJeFmZxxEHFo6IXJ2SKngi5R2/TtEgO7xs1xpF8wvniP17k+d1LSn/eRhs6aq89V7txBjVZOYDuG1j1wbmxyBmj5yzqARQ1aBfFOchM9dkW1RKbNT8JpuJ5nUZ6thokXEuPm3JdMrloOC7tFC7aRq1sKIdWWQFcnGWtOwhj0YLR2ditI51cdyABmNvVYtJWf2hz3hJYloBcOdRY+wT5X4VynAHS1pxbzEvTakXWg+c8N9+Al4EX9Hu7R1MVN4N/dH4i7ZX9zs=
+  file: duckling.jar
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: true
