@@ -15,11 +15,18 @@ public class SpyResponder extends Responder {
     private ArrayList<String> list = new ArrayList<>();
     private InputStream inputStream = new InputStream() {
         @Override
-        public int read() throws IOException { return -1; }
+        public int read() throws IOException {
+            return -1;
+        }
     };
 
-    public SpyResponder() { this(new Request()); }
-    public SpyResponder(Request request) { super(request); }
+    public SpyResponder() {
+        this(new Request());
+    }
+
+    public SpyResponder(Request request) {
+        super(request);
+    }
 
     public SpyResponder(InputStream stream) {
         super(new Request());
@@ -40,7 +47,9 @@ public class SpyResponder extends Responder {
     }
 
     @Override
-    public boolean matches() { return false; }
+    public boolean matches() {
+        return false;
+    }
 
     @Override
     public ArrayList<String> headers() throws IOException {

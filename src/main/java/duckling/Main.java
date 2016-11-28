@@ -12,14 +12,14 @@ public class Main {
 
     public Main(Configuration config) throws IOException {
         this.config = config;
-        this.server = new Server(config.port, config.root);
+        this.server = new Server(config);
         this.logger = new Logger();
     }
 
     public void start() throws IOException {
         logger.info(
-                String.format("Port: %s", this.config.port),
-                String.format("Root: %s", this.config.root)
+            String.format("Port: %s", this.config.port),
+            String.format("Root: %s", this.config.root)
         );
 
         try {
@@ -37,6 +37,7 @@ public class Main {
             main.start();
         } catch (BadArgumentsError exception) {
             System.out.println("Usage: -p <port> -d <root directory>");
+        } finally {
             System.exit(1);
         }
     }

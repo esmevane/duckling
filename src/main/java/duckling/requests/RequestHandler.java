@@ -1,5 +1,6 @@
 package duckling.requests;
 
+import duckling.Configuration;
 import duckling.writers.BodyWriter;
 import duckling.writers.HeadersWriter;
 import duckling.Logger;
@@ -12,13 +13,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class RequestHandler implements Runnable {
+    private final Configuration config;
     private final Socket client;
-    private final String root;
     private ArrayList<String> loggables = new ArrayList<>();
 
-    public RequestHandler(Socket client, String root) {
+    public RequestHandler(Socket client, Configuration config) {
         this.client = client;
-        this.root = root;
+        this.config = config;
     }
 
     @Override
@@ -27,14 +28,12 @@ public class RequestHandler implements Runnable {
             OutputStream output = this.client.getOutputStream();
             Request request = marshalRequest();
             Responder responder = getResponder(request);
+            Logger logger = getLogger();
 
             new HeadersWriter(responder, output).write();
             new BodyWriter(responder, output).write();
 
-            Logger logger = getLogger();
-            for (String loggable : loggables) {
-                logger.info(loggable);
-            }
+            loggables.forEach(logger::info);
 
             this.client.close();
         } catch (IOException exception) {
@@ -58,7 +57,7 @@ public class RequestHandler implements Runnable {
     }
 
     public Request prepareRequest() {
-        return new Request(this.root);
+        return new Request(this.config.root);
     }
 
     public RequestStream buildRequestStream() throws IOException {
@@ -66,7 +65,7 @@ public class RequestHandler implements Runnable {
     }
 
     public Responder getResponder(Request request) throws IOException {
-        Responders responders = new Responders(request);
+        Responders responders = new Responders(request, config);
 
         return responders.getResponder();
     }

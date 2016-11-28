@@ -1,7 +1,6 @@
 package duckling.responders;
 
-import duckling.ResponseHeaders;
-import duckling.Server;
+import duckling.responses.ResponseHeaders;
 import duckling.requests.Request;
 import duckling.support.SpyOutputStream;
 import org.junit.Test;
@@ -70,18 +69,24 @@ public class FolderContentsTest {
     public void providesHeadersWithHtmlContentType() throws Exception {
         FolderContents responder = new FolderContents(new Request());
         ArrayList<String> headers =
-                new ResponseHeaders().withContentType("text/html").toList();
+            new ResponseHeaders().withContentType("text/html").toList();
 
         assertThat(responder.headers(), is(headers));
     }
 
     @Test
     public void providesStreamOfEmptyPageAsBody() throws Exception {
-        FolderContents responder = new FolderContents(new Request());
+        FolderContents responder = new FolderContents(new Request()) {
+            @Override
+            public String contents() {
+                return "";
+            }
+        };
+
         SpyOutputStream outputStream = new SpyOutputStream();
         InputStream inputStream = responder.body();
         String expectation =
-                "<html><head><title>.null</title></head><body></body></html>";
+            "<html><head><title>.</title></head><body></body></html>";
 
         int input;
 

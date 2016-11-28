@@ -1,7 +1,7 @@
 package duckling.responders;
 
 import duckling.requests.Request;
-import duckling.ResponseHeaders;
+import duckling.responses.ResponseHeaders;
 import duckling.Server;
 
 import java.io.ByteArrayInputStream;
@@ -31,8 +31,8 @@ public class NotFound extends Responder {
 
     private String rawResponse() {
         return "<html><head><title>Not found</title></head>" +
-                "<body>404 not found</body></head>" +
-                Server.CRLF;
+            "<body>404 not found</body></head>" +
+            Server.CRLF;
     }
 
 }

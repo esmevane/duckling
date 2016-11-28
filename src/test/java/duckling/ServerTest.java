@@ -13,6 +13,8 @@ import org.junit.Test;
 public class ServerTest {
     private int port = 5123;
     private String root = "./";
+    private Configuration config;
+
     private Server server;
     private SpyServerSocket connection;
     private SpyThreadPool pool;
@@ -20,20 +22,21 @@ public class ServerTest {
 
     @Before
     public void setup() throws Exception {
+        config = new Configuration(port, root);
         connection = new SpyServerSocket();
         pool = new SpyThreadPool();
         logger = new SpyLogger();
-        server = new Server(port, root, connection, pool, logger);
+        server = new Server(config, connection, pool, logger);
     }
 
     @Test
     public void definePort() throws Exception {
-        assertEquals(port, server.port);
+        assertEquals(port, server.getPort());
     }
 
     @Test
     public void defineRoot() throws Exception {
-        assertEquals(root, server.root);
+        assertEquals(root, server.getRoot());
     }
 
     @Test

@@ -9,36 +9,31 @@ import java.util.concurrent.*;
 public class Server {
     public static final String CRLF = "\r\n";
 
-    int port;
-    String root;
-
+    private Configuration config;
     private volatile boolean shuttingDown = false;
     private InetSocketAddress address;
     private ServerSocket connection;
     private ExecutorService pool;
     private Logger logger;
 
-    public Server(int port, String root) throws IOException {
+    public Server(Configuration config) throws IOException {
         this(
-                port,
-                root,
-                new ServerSocket(),
-                Executors.newCachedThreadPool(),
-                new Logger()
+            config,
+            new ServerSocket(),
+            Executors.newCachedThreadPool(),
+            new Logger()
         );
     }
 
     public Server(
-            int port,
-            String root,
-            ServerSocket connection,
-            ExecutorService pool,
-            Logger logger
+        Configuration config,
+        ServerSocket connection,
+        ExecutorService pool,
+        Logger logger
     ) throws IOException {
-        this.port = port;
-        this.root = root;
+        this.config = config;
 
-        this.address = new InetSocketAddress(this.port);
+        this.address = new InetSocketAddress(this.config.port);
         this.connection = connection;
         this.pool = pool;
         this.logger = logger;
@@ -53,7 +48,11 @@ public class Server {
     }
 
     public void onRequest() throws IOException {
-        RequestHandler handler = new RequestHandler(this.connection.accept(), root);
+        RequestHandler handler = new RequestHandler(
+            this.connection.accept(),
+            this.config
+        );
+
         this.pool.execute(handler);
     }
 
@@ -79,5 +78,13 @@ public class Server {
 
     private boolean notShuttingDown() {
         return !this.shuttingDown;
+    }
+
+    public int getPort() {
+        return this.config.port;
+    }
+
+    public String getRoot() {
+        return this.config.root;
     }
 }

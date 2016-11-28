@@ -1,22 +1,22 @@
-package duckling;
+package duckling.responses;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
+import duckling.Server;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ResponseHeaderTest {
+public class ResponseHeadersTest {
     @Test
     public void hasDefaultResponse() throws Exception {
         ResponseHeaders responseHeaders = new ResponseHeaders();
         ArrayList<String> list = new ArrayList<>(Arrays.asList(
-                "HTTP/1.0 200 OK" + Server.CRLF,
-                "Content-Type: null" + Server.CRLF,
-                Server.CRLF
+            "HTTP/1.0 200 OK" + Server.CRLF,
+            "Content-Type: null" + Server.CRLF,
+            Server.CRLF
         ));
 
         assertThat(responseHeaders.toList(), is(list));
@@ -25,12 +25,12 @@ public class ResponseHeaderTest {
     @Test
     public void allowsCustomContentType() throws Exception {
         ResponseHeaders responseHeaders = new ResponseHeaders().
-                withContentType("text/html");
+            withContentType("text/html");
 
         ArrayList<String> list = new ArrayList<>(Arrays.asList(
-                "HTTP/1.0 200 OK" + Server.CRLF,
-                "Content-Type: text/html" + Server.CRLF,
-                Server.CRLF
+            "HTTP/1.0 200 OK" + Server.CRLF,
+            "Content-Type: text/html" + Server.CRLF,
+            Server.CRLF
         ));
 
         assertThat(responseHeaders.toList(), is(list));
@@ -41,9 +41,9 @@ public class ResponseHeaderTest {
         ResponseHeaders responseHeaders = new ResponseHeaders().notFound();
 
         ArrayList<String> list = new ArrayList<>(Arrays.asList(
-                "HTTP/1.0 404 NOT FOUND" + Server.CRLF,
-                "Content-Type: null" + Server.CRLF,
-                Server.CRLF
+            "HTTP/1.0 404 NOT FOUND" + Server.CRLF,
+            "Content-Type: null" + Server.CRLF,
+            Server.CRLF
         ));
 
         assertThat(responseHeaders.toList(), is(list));
@@ -52,12 +52,12 @@ public class ResponseHeaderTest {
     @Test
     public void supportsMethodChaining() throws Exception {
         ResponseHeaders responseHeaders = new ResponseHeaders().
-                notFound().withContentType("text/html");
+            notFound().withContentType("text/html");
 
         ArrayList<String> list = new ArrayList<>(Arrays.asList(
-                "HTTP/1.0 404 NOT FOUND" + Server.CRLF,
-                "Content-Type: text/html" + Server.CRLF,
-                Server.CRLF
+            "HTTP/1.0 404 NOT FOUND" + Server.CRLF,
+            "Content-Type: text/html" + Server.CRLF,
+            Server.CRLF
         ));
 
         assertThat(responseHeaders.toList(), is(list));
@@ -66,12 +66,12 @@ public class ResponseHeaderTest {
     @Test
     public void asListCreatesList() throws Exception {
         ResponseHeaders responseHeaders = new ResponseHeaders().
-                notFound().withContentType("text/html");
+            notFound().withContentType("text/html");
 
         ArrayList<String> list = new ArrayList<>(Arrays.asList(
-                "HTTP/1.0 404 NOT FOUND" + Server.CRLF,
-                "Content-Type: text/html" + Server.CRLF,
-                Server.CRLF
+            "HTTP/1.0 404 NOT FOUND" + Server.CRLF,
+            "Content-Type: text/html" + Server.CRLF,
+            Server.CRLF
         ));
 
         assertThat(responseHeaders.toList(), is(list));

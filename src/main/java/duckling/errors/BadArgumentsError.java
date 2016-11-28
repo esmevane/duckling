@@ -1,5 +1,6 @@
 package duckling.errors;
 
 public class BadArgumentsError extends Exception {
-    public BadArgumentsError() {}
+    public BadArgumentsError() {
+    }
 }

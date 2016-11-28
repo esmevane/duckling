@@ -17,7 +17,8 @@ public class BodyWriterTest {
     public void writeGetsResponderBody() throws Exception {
         OutputStream output = new OutputStream() {
             @Override
-            public void write(int input) throws IOException { }
+            public void write(int input) throws IOException {
+            }
         };
 
         SpyResponder spyResponder = new SpyResponder();

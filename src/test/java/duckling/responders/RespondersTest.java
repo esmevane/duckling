@@ -1,9 +1,9 @@
 package duckling.responders;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import duckling.Configuration;
 import duckling.Server;
 import duckling.requests.RequestStream;
 import duckling.requests.Request;
@@ -43,37 +43,54 @@ public class RespondersTest {
     @Test
     public void getResponderReturnsFirstMatch() throws IOException {
         Responders responders = new Responders(
-                this.request,
-                new NoMatchResponder(this.request),
-                new MatchResponder(this.request)
+            this.request,
+            new Configuration(),
+            new NoMatchResponder(this.request),
+            new MatchResponder(this.request)
         );
 
         assertThat(responders.getResponder(), instanceOf(MatchResponder.class));
     }
 
     private class MatchResponder extends Responder {
-        MatchResponder(Request request) { super(request); }
+        MatchResponder(Request request) {
+            super(request);
+        }
 
         @Override
-        public boolean matches() { return true; }
+        public boolean matches() {
+            return true;
+        }
 
         @Override
-        public ArrayList<String> headers() throws IOException { return null; }
+        public ArrayList<String> headers() throws IOException {
+            return null;
+        }
 
         @Override
-        public InputStream body() throws IOException { return null; }
+        public InputStream body() throws IOException {
+            return null;
+        }
     }
 
     private class NoMatchResponder extends Responder {
-        NoMatchResponder(Request request) { super(request); }
+        NoMatchResponder(Request request) {
+            super(request);
+        }
 
         @Override
-        public boolean matches() { return false; }
+        public boolean matches() {
+            return false;
+        }
 
         @Override
-        public ArrayList<String> headers() throws IOException { return null; }
+        public ArrayList<String> headers() throws IOException {
+            return null;
+        }
 
         @Override
-        public InputStream body() throws IOException { return null; }
+        public InputStream body() throws IOException {
+            return null;
+        }
     }
 }

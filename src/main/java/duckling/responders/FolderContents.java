@@ -1,7 +1,7 @@
 package duckling.responders;
 
 import duckling.requests.Request;
-import duckling.ResponseHeaders;
+import duckling.responses.ResponseHeaders;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -53,7 +53,7 @@ public class FolderContents extends Responder {
         return String.format(template, title, contents());
     }
 
-    private String contents() {
+    public String contents() {
         String[] list = this.directory.list();
 
         if (list == null) {

@@ -17,7 +17,8 @@ public class HeaderWriterTest {
     public void writeGetsResponderHeaders() throws Exception {
         OutputStream output = new OutputStream() {
             @Override
-            public void write(int input) throws IOException { }
+            public void write(int input) throws IOException {
+            }
         };
 
         SpyResponder spyResponder = new SpyResponder();
@@ -43,8 +44,8 @@ public class HeaderWriterTest {
         writer.write();
 
         assertThat(
-                output.getWrittenOutput(),
-                is("Line one" + Server.CRLF + "Line two" + Server.CRLF + Server.CRLF)
+            output.getWrittenOutput(),
+            is("Line one" + Server.CRLF + "Line two" + Server.CRLF + Server.CRLF)
         );
     }
 }

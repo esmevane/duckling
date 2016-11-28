@@ -1,11 +1,20 @@
 package duckling;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import duckling.errors.BadArgumentsError;
+import duckling.routing.RouteDefinitions;
+import duckling.routing.Routes;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 public class ConfigurationTest {
+
     @Test
     public void configuresRoot() throws Exception {
         String root = "/home/duckling";
@@ -26,7 +35,7 @@ public class ConfigurationTest {
     @Test(expected = BadArgumentsError.class)
     public void withNoRoot() throws Exception {
         String[] arguments = {"-d"};
-        Configuration config = new Configuration(arguments);
+        new Configuration(arguments);
     }
 
     @Test
@@ -42,18 +51,26 @@ public class ConfigurationTest {
         String[] arguments = {};
         Configuration config = new Configuration(arguments);
 
-        assertEquals(config.port, 80);
+        assertEquals(config.port, 5000);
     }
 
     @Test(expected = BadArgumentsError.class)
     public void withNoPort() throws Exception {
         String[] arguments = {"-p"};
-        Configuration config = new Configuration(arguments);
+        new Configuration(arguments);
     }
 
     @Test(expected = BadArgumentsError.class)
     public void withMalformedPort() throws Exception {
         String[] arguments = {"-p", "unparseable"};
+        new Configuration(arguments);
+    }
+
+    @Test
+    public void hasDefaultRoutes() throws Exception {
+        String[] arguments = {};
         Configuration config = new Configuration(arguments);
+
+        assertThat(config.routes, is(Configuration.DEFAULT_ROUTES));
     }
 }

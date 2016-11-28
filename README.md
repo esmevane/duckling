@@ -24,7 +24,7 @@ cd duckling
 ./gradlew test && ./gradlew jar
 ```
 
-That snippet will grab this repository, install it in your `${pwd}/duckling`, hop into that directory, and then use the `./gradlew` build scripts to get a jar together.  It will deposit the jar in the root of the duckling directory, under `duckling.jar`.
+That snippet will grab this repository, install it in your `$(pwd)/duckling`, hop into that directory, and then use the `./gradlew` build scripts to get a jar together.  It will deposit the jar in the root of the duckling directory, under `duckling.jar`.
 
 Enjoy!
 
@@ -36,8 +36,16 @@ Once you've either downloaded or created your `duckling.jar`, you can run it wit
 java -jar duckling.jar
 ```
 
-You can also configure the port (with `-p`) and root directory (with
-`-d`):
+### Configuring the Duckling Jar
+
+Duckling accepts configuration of its port, root directory.
+
+| **Option** | **What it does** | **Default** |
+| --- | --- | --- |
+| `-p` | Assign a custom port | `5000` |
+| `-d` | Assign a public directory | `.` (Current directory) |
+
+For example
 
 ```bash
 java -jar duckling.jar -p $(YOUR_FAVORITE_PORT) -d $(YOUR_FAVORITE_DIR)
@@ -49,11 +57,14 @@ For example, if you wanted to kick it off in its current directory, on port 8000
 java -jar duckling.jar -p 8000 -d .
 ```
 
-Each of these options has a default:
+## Installation Mode
 
-* `-p` (Port) defaults to `80`
-* `-d` (Root directory) defaults to `.`
+Duckling has been built with a preconfigured set of routes, which are there purely for testing purposes.  In the future there may be a configuration layer of some sort, but for now Duckling is considered to be in default mode at all times.
 
-## A small overview
+### The Default Mode Routes
 
-Right now Duckling doesn't support routing at all.  It will display some HTML as expected, provide a small navigable directory listing, and respond with a 404 to missing content.
+| **Method** | **Path** | **Response Code** | **What is it?** |
+| --- | --- | --- | --- |
+| GET | / | 200 OK | The public directory |
+| GET | /coffee | 418 TEAPOT | A quirky teapot code |
+| GET | /tea | 200 OK | You probably meant to go here, not to /coffee |

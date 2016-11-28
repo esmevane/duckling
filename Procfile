@@ -1,1 +1,1 @@
-web: java -jar duckling.jar -p 80 -d .
+web: java -jar duckling.jar -p 5000 -d .

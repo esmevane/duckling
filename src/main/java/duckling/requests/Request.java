@@ -40,8 +40,8 @@ public class Request {
 
     public boolean equals(Request other) {
         return request.equals(other.request)
-                && body.equals(other.body)
-                && headers.equals(other.headers);
+            && body.equals(other.body)
+            && headers.equals(other.headers);
     }
 
     public String fullFilePath() {
@@ -61,15 +61,21 @@ public class Request {
     }
 
     public String getMethod() {
-        return request.get("Method");
+        String method = request.get("Method");
+
+        return method == null ? "GET" : method;
     }
 
     public String getPath() {
-        return request.get("Path");
+        String path = request.get("Path");
+
+        return path == null ? "" : path;
     }
 
     public String getProtocol() {
-        return request.get("Protocol");
+        String protocol = request.get("Protocol");
+
+        return protocol == null ? "HTTP/1.0" : protocol;
     }
 
     public String getRoot() {

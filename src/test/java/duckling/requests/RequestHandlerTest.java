@@ -1,8 +1,10 @@
 package duckling.requests;
 
+import duckling.Configuration;
 import duckling.Logger;
 import duckling.support.SpyLogger;
 import duckling.support.SpySocket;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,9 +15,18 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RequestHandlerTest {
-    private SpySocket client = new SpySocket();
-    private String root = "/path/to/root";
-    private RequestHandler handler = new RequestHandler(client, root);
+    private SpySocket client;
+    private String root;
+    private Configuration config;
+    private RequestHandler handler;
+
+    @Before
+    public void setup() throws Exception {
+        client = new SpySocket();
+        root = "/path/to/root";
+        config = new Configuration(5151, root);
+        handler = new RequestHandler(client, config);
+    }
 
     @Test
     public void buildRequestUsesGivenRoot() throws Exception {
@@ -33,7 +44,7 @@ public class RequestHandlerTest {
         SpyLogger spyLogger = new SpyLogger();
         String message = "GET / HTTP/1.1";
 
-        RequestHandler handler = new RequestHandler(client, root) {
+        RequestHandler handler = new RequestHandler(client, config) {
             @Override
             public Logger getLogger() {
                 return spyLogger;
@@ -72,7 +83,8 @@ public class RequestHandlerTest {
             }
         };
 
-        RequestHandler handler = new RequestHandler(client, root) {
+        System.out.println("" + request.getPath());
+        RequestHandler handler = new RequestHandler(client, config) {
             @Override
             public Request prepareRequest() {
                 return request;

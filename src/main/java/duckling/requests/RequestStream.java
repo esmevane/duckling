@@ -16,7 +16,7 @@ public class RequestStream {
 
     public RequestStream(InputStream inputStream) throws IOException {
         this.buffer = new BufferedReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8)
+            new InputStreamReader(inputStream, StandardCharsets.UTF_8)
         );
     }
 

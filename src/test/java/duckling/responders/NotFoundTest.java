@@ -1,16 +1,13 @@
 package duckling.responders;
 
-import duckling.ResponseHeaders;
+import duckling.responses.ResponseHeaders;
 import duckling.Server;
 import duckling.requests.Request;
 import duckling.support.SpyOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -32,7 +29,7 @@ public class NotFoundTest {
     @Test
     public void providesHeadersWithHtmlContentType() throws Exception {
         ArrayList<String> headers =
-                new ResponseHeaders().notFound().withContentType("text/html").toList();
+            new ResponseHeaders().notFound().withContentType("text/html").toList();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -42,7 +39,7 @@ public class NotFoundTest {
         SpyOutputStream outputStream = new SpyOutputStream();
         InputStream inputStream = responder.body();
         String expectation =
-                "<html><head><title>Not found</title></head>" +
+            "<html><head><title>Not found</title></head>" +
                 "<body>404 not found</body></head>" +
                 Server.CRLF;
 

@@ -84,7 +84,7 @@ public class RequestTest {
     }
 
     @Test
-    public void RequestizesInitialRequestPath() throws Exception {
+    public void marshalsInitialRequestPath() throws Exception {
         request.add("GET / HTTP/1.1");
         assertEquals(request.getPath(), "/");
     }
@@ -96,7 +96,7 @@ public class RequestTest {
     }
 
     @Test
-    public void RequestizesInitialRequestProtocol() throws Exception {
+    public void marshalsInitialRequestProtocol() throws Exception {
         request.add("GET / HTTP/1.1");
         assertEquals(request.getProtocol(), "HTTP/1.1");
     }
@@ -122,8 +122,8 @@ public class RequestTest {
         request.add("Body line two");
 
         assertEquals(
-                request.getBody(),
-                "Body line one" + Server.CRLF + "Body line two"
+            request.getBody(),
+            "Body line one" + Server.CRLF + "Body line two"
         );
     }
 }

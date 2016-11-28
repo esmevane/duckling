@@ -9,6 +9,6 @@ public class SpyLogger extends Logger {
 
     @Override
     public void info(String... givenMessages) {
-        for (String message: givenMessages) messages.add(message);
+        for (String message : givenMessages) messages.add(message);
     }
 }

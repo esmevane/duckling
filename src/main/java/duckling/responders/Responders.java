@@ -1,5 +1,6 @@
 package duckling.responders;
 
+import duckling.Configuration;
 import duckling.requests.Request;
 
 import java.util.ArrayList;
@@ -12,17 +13,24 @@ public class Responders {
     private ArrayList<Responder> responders;
 
     public Responders(Request request) {
+        this(request, new Configuration());
+    }
+
+    public Responders(Request request, Configuration config) {
         this(
-                request,
-                new FileContents(request),
-                new FolderContents(request),
-                new NotFound(request)
+            request,
+            config,
+            new DefinedContents(request, config),
+            new FileContents(request),
+            new FolderContents(request),
+            new NotFound(request)
         );
     }
 
     public Responders(
-            Request request,
-            Responder... responders
+        Request request,
+        Configuration config,
+        Responder... responders
     ) {
         ArrayList<Responder> list = new ArrayList<>();
         Collections.addAll(list, responders);

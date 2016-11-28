@@ -1,6 +1,6 @@
 package duckling.responders;
 
-import duckling.ResponseHeaders;
+import duckling.responses.ResponseHeaders;
 import duckling.requests.Request;
 import duckling.support.SpyOutputStream;
 import org.junit.Test;
@@ -70,7 +70,7 @@ public class FileContentsTest {
         File file = new File("file.txt");
         FileContents responder = new FileContents(file);
         ArrayList<String> headers =
-                new ResponseHeaders().withContentType("text/plain").toList();
+            new ResponseHeaders().withContentType("text/plain").toList();
 
         assertThat(responder.headers(), is(headers));
     }

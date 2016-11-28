@@ -1,7 +1,7 @@
 package duckling.responders;
 
 import duckling.requests.Request;
-import duckling.ResponseHeaders;
+import duckling.responses.ResponseHeaders;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class FileContents extends Responder {
     private InputStream getFileStream() {
         try {
             return new BufferedInputStream(
-                    new FileInputStream(this.file.getAbsoluteFile())
+                new FileInputStream(this.file.getAbsoluteFile())
             );
         } catch (FileNotFoundException exception) {
             return new ByteArrayInputStream("".getBytes());
