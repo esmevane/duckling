@@ -67,11 +67,44 @@ public class FolderContentsTest {
 
     @Test
     public void providesHeadersWithHtmlContentType() throws Exception {
-        FolderContents responder = new FolderContents(new Request());
+        Request request = new Request();
+        FolderContents responder = new FolderContents(request);
         ArrayList<String> headers =
             new ResponseHeaders().withContentType("text/html").toList();
 
         assertThat(responder.headers(), is(headers));
+    }
+
+    @Test
+    public void disallowsNonGetRequests() throws Exception {
+        Request request = new Request();
+        request.add("PUT / HTTP/1.1");
+
+        FolderContents responder = new FolderContents(request);
+        ArrayList<String> headers =
+            new ResponseHeaders().notAllowed().toList();
+
+        assertThat(responder.headers(), is(headers));
+    }
+
+    @Test
+    public void respondsWithEmptyBodyOnMethodNotAllowed() throws Exception {
+        Request request = new Request();
+        request.add("PUT / HTTP/1.1");
+
+        FolderContents responder = new FolderContents(request);
+
+        SpyOutputStream outputStream = new SpyOutputStream();
+        InputStream inputStream = responder.body();
+        String expectation = "";
+
+        int input;
+
+        while ((input = inputStream.read()) != -1) {
+            outputStream.write(input);
+        }
+
+        assertThat(outputStream.getWrittenOutput(), is(expectation));
     }
 
     @Test

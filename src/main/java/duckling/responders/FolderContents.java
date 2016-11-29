@@ -38,12 +38,18 @@ public class FolderContents extends Responder {
 
     @Override
     public ArrayList<String> headers() throws IOException {
-        return new ResponseHeaders().withContentType("text/html").toList();
+        ResponseHeaders headers = new ResponseHeaders();
+
+        if (methodNotAllowed()) return headers.notAllowed().toList();
+
+        return headers.withContentType("text/html").toList();
     }
 
     @Override
     public InputStream body() throws IOException {
-        return new ByteArrayInputStream(rawFolderResponse().getBytes());
+        String responseContent = methodNotAllowed() ? "" : rawFolderResponse();
+
+        return new ByteArrayInputStream(responseContent.getBytes());
     }
 
     private String rawFolderResponse() {
@@ -63,6 +69,10 @@ public class FolderContents extends Responder {
         Stream<String> links = Stream.of(list).map(this::toLink);
 
         return links.collect(Collectors.joining());
+    }
+
+    private boolean methodNotAllowed() {
+        return !request.getMethod().equals("GET");
     }
 
     private String toLink(String item) {

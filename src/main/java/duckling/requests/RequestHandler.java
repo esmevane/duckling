@@ -31,13 +31,7 @@ public class RequestHandler implements Runnable {
     @Override
     public void run() {
         try {
-            OutputStream output = this.client.getOutputStream();
-            Request request = marshalRequest();
-            Responder responder = getResponder(request);
-
-            new HeadersWriter(responder, output).write();
-            new BodyWriter(responder, output).write();
-
+            handleRequest();
             loggables.forEach(logger::info);
 
             this.client.close();
@@ -45,6 +39,15 @@ public class RequestHandler implements Runnable {
             exception.printStackTrace();
         }
 
+    }
+
+    private void handleRequest() throws IOException {
+        OutputStream output = this.client.getOutputStream();
+        Request request = marshalRequest();
+        Responder responder = getResponder(request);
+
+        new HeadersWriter(responder, output).write();
+        new BodyWriter(responder, output).write();
     }
 
     private Request marshalRequest() throws IOException {

@@ -35,7 +35,11 @@ public class FileContents extends Responder {
 
     @Override
     public ArrayList<String> headers() throws IOException {
-        return new ResponseHeaders().withContentType(getContentType()).toList();
+        ResponseHeaders headers = new ResponseHeaders();
+
+        if (methodNotAllowed()) return headers.notAllowed().toList();
+
+        return headers.withContentType(getContentType()).toList();
     }
 
     @Override
@@ -62,4 +66,9 @@ public class FileContents extends Responder {
             return new ByteArrayInputStream("".getBytes());
         }
     }
+
+    private boolean methodNotAllowed() {
+        return !request.getMethod().equals("GET");
+    }
+
 }

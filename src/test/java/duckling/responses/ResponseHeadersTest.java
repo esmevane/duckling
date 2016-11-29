@@ -37,11 +37,24 @@ public class ResponseHeadersTest {
     }
 
     @Test
-    public void supports400NotFound() throws Exception {
+    public void supports404NotFound() throws Exception {
         ResponseHeaders responseHeaders = new ResponseHeaders().notFound();
 
         ArrayList<String> list = new ArrayList<>(Arrays.asList(
             "HTTP/1.0 404 NOT FOUND" + Server.CRLF,
+            "Content-Type: null" + Server.CRLF,
+            Server.CRLF
+        ));
+
+        assertThat(responseHeaders.toList(), is(list));
+    }
+
+    @Test
+    public void supports405MethodNotAllowed() throws Exception {
+        ResponseHeaders responseHeaders = new ResponseHeaders().notAllowed();
+
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(
+            "HTTP/1.0 405 METHOD NOT ALLOWED" + Server.CRLF,
             "Content-Type: null" + Server.CRLF,
             Server.CRLF
         ));

@@ -4,6 +4,7 @@ import duckling.Server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ResponseHeaders {
     protected ResponseCode responseCode;
@@ -40,5 +41,13 @@ public class ResponseHeaders {
             "Content-Type: " + contentType + Server.CRLF,
             Server.CRLF
         ));
+    }
+
+    public ResponseHeaders notAllowed() {
+        return withStatus(ResponseCode.notAllowed());
+    }
+
+    public String toString() {
+        return toList().stream().collect(Collectors.joining());
     }
 }
