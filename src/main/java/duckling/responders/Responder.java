@@ -20,8 +20,6 @@ public abstract class Responder {
         this.request = request;
     }
 
-    ;
-
     abstract public boolean matches();
 
     abstract public ArrayList<String> headers() throws IOException;
