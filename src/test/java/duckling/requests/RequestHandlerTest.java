@@ -68,6 +68,7 @@ public class RequestHandlerTest {
 
     @Test
     public void runClosesClient() throws Exception {
+        // TODO: null characters printed during test run
         handler.run();
         assertThat(client.wasClosed(), is(true));
     }

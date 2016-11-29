@@ -24,7 +24,7 @@ public class DefinedContents extends Responder {
 
     @Override
     public boolean matches() {
-        if (routes == null) return false;
+        if (routes == null) return false; // TODO: test for this line (or remove it)
 
         return routes.hasRoute(request);
     }
@@ -34,17 +34,8 @@ public class DefinedContents extends Responder {
         Optional<Route> maybeRoute = routes.getMatch(request);
         ResponseHeaders headers = new ResponseHeaders();
 
-        if (maybeRoute.isPresent()) {
-            Route route = maybeRoute.get();
-            return headers.
-                withStatus(route.getResponseCode()).
-                withContentType("text/html").
-                toList();
-        }
-
-        return headers.
-            withStatus(ResponseCode.notFound()).
-            toList();
+        return maybeRoute.map(route -> headers.withStatus(route.getResponseCode()).withContentType("text/html").toList()).
+                orElseGet(() -> headers.withStatus(ResponseCode.notFound()).toList());
     }
 
     @Override
@@ -54,18 +45,9 @@ public class DefinedContents extends Responder {
             "<html><head><title>%s</title></head>" +
                 "<body>%s</body></html>";
 
-        if (maybeRoute.isPresent()) {
-            Route route = maybeRoute.get();
-            String fileContent = String.format(
-                template,
-                request.getPath(),
-                route.getContent()
-            );
+        String fileContent = maybeRoute.map(route -> String.format(template, request.getPath(), route.getContent())).
+                orElseGet(() -> String.format(template, "", ""));
 
-            return new ByteArrayInputStream(fileContent.getBytes());
-        }
-
-        String fileContent = String.format(template, "", "");
         return new ByteArrayInputStream(fileContent.getBytes());
     }
 }
