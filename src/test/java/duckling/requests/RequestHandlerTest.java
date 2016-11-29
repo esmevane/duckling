@@ -19,13 +19,15 @@ public class RequestHandlerTest {
     private String root;
     private Configuration config;
     private RequestHandler handler;
+    private SpyLogger logger;
 
     @Before
     public void setup() throws Exception {
         client = new SpySocket();
         root = "/path/to/root";
         config = new Configuration(5151, root);
-        handler = new RequestHandler(client, config);
+        logger = new SpyLogger();
+        handler = new RequestHandler(client, config, logger);
     }
 
     @Test
@@ -41,15 +43,9 @@ public class RequestHandlerTest {
 
     @Test
     public void runOutputsLogDetail() throws Exception {
-        SpyLogger spyLogger = new SpyLogger();
         String message = "GET / HTTP/1.1";
 
-        RequestHandler handler = new RequestHandler(client, config) {
-            @Override
-            public Logger getLogger() {
-                return spyLogger;
-            }
-
+        RequestHandler handler = new RequestHandler(client, config, logger) {
             @Override
             public RequestStream buildRequestStream() throws IOException {
                 return new RequestStream(client.getInputStream()) {
@@ -63,7 +59,7 @@ public class RequestHandlerTest {
 
         handler.run();
 
-        assertThat(spyLogger.messages, hasItem(message));
+        assertThat(logger.messages, hasItem(message));
     }
 
     @Test
@@ -84,15 +80,11 @@ public class RequestHandlerTest {
         };
 
         System.out.println("" + request.getPath());
-        RequestHandler handler = new RequestHandler(client, config) {
+
+        RequestHandler handler = new RequestHandler(client, config, logger) {
             @Override
             public Request prepareRequest() {
                 return request;
-            }
-
-            @Override
-            public Logger getLogger() {
-                return new SpyLogger();
             }
 
             @Override

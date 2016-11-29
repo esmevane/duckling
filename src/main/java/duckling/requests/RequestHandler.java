@@ -15,11 +15,17 @@ import java.util.ArrayList;
 public class RequestHandler implements Runnable {
     private final Configuration config;
     private final Socket client;
+    private final Logger logger;
     private ArrayList<String> loggables = new ArrayList<>();
 
     public RequestHandler(Socket client, Configuration config) {
+        this(client, config, new Logger());
+    }
+
+    public RequestHandler(Socket client, Configuration config, Logger logger) {
         this.client = client;
         this.config = config;
+        this.logger = logger;
     }
 
     @Override
@@ -28,7 +34,6 @@ public class RequestHandler implements Runnable {
             OutputStream output = this.client.getOutputStream();
             Request request = marshalRequest();
             Responder responder = getResponder(request);
-            Logger logger = getLogger();
 
             new HeadersWriter(responder, output).write();
             new BodyWriter(responder, output).write();
@@ -68,10 +73,6 @@ public class RequestHandler implements Runnable {
         Responders responders = new Responders(request, config);
 
         return responders.getResponder();
-    }
-
-    public Logger getLogger() {
-        return new Logger();
     }
 
 }
