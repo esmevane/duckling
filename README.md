@@ -6,12 +6,12 @@ A petite Java http server, with the major goals of being enjoyable to read and w
 
 ## Installation
 
-Duckling is run with `duckling.jar` releases, found on our [releases page](https://github.com/esmevane/duckling/releases) - you can get the latest `duckling.jar` there.  Or, if you like, you can get the latest `duckling.jar` [by clicking right here](https://github.com/esmevane/duckling/releases/download/v0.0.1/duckling.jar).
+Duckling is run with `duckling.jar` releases, found on our [releases page](https://github.com/esmevane/duckling/releases) - you can get the latest `duckling.jar` there.  Or, if you like, you can get the latest `duckling.jar` [by clicking right here](https://github.com/esmevane/duckling/releases/download/v0.0.2/duckling.jar).
 
 If you like your command line, here's a good one-liner (you might need to grab `wget` first):
 
 ```bash
-wget https://github.com/esmevane/duckling/releases/download/v0.0.1/duckling.jar
+wget https://github.com/esmevane/duckling/releases/download/v0.0.2/duckling.jar
 ```
 
 ## Building
