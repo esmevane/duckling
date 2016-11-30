@@ -10,6 +10,13 @@ import java.util.ArrayList;
 public abstract class Responder {
     protected Request request;
     protected Configuration config;
+    protected ArrayList<String> allowedMethods = new ArrayList<>();
+
+    {
+        this.allowedMethods.add("GET");
+        this.allowedMethods.add("HEAD");
+        this.allowedMethods.add("OPTIONS");
+    }
 
     public Responder(Request request) {
         this(request, new Configuration());
@@ -25,5 +32,7 @@ public abstract class Responder {
     abstract public ArrayList<String> headers() throws IOException;
 
     abstract public InputStream body() throws IOException;
+
+    abstract public boolean isAllowed();
 
 }

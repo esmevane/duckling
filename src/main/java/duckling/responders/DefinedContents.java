@@ -49,6 +49,11 @@ public class DefinedContents extends Responder {
         return new ByteArrayInputStream(fileContent.getBytes());
     }
 
+    @Override
+    public boolean isAllowed() {
+        return this.allowedMethods.contains(request.getMethod());
+    }
+
     private String buildContent() {
         return buildContent("", "");
     }

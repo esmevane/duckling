@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class RequestHandler implements Runnable {
     private final Configuration config;
@@ -32,8 +33,6 @@ public class RequestHandler implements Runnable {
     public void run() {
         try {
             handleRequest();
-            loggables.forEach(logger::info);
-
             this.client.close();
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -43,25 +42,27 @@ public class RequestHandler implements Runnable {
 
     private void handleRequest() throws IOException {
         OutputStream output = this.client.getOutputStream();
-        Request request = marshalRequest();
-        Responder responder = getResponder(request);
-
-        new HeadersWriter(responder, output).write();
-        new BodyWriter(responder, output).write();
-    }
-
-    private Request marshalRequest() throws IOException {
         RequestStream requestStream = buildRequestStream();
         Request request = prepareRequest();
 
-        requestStream.toList().forEach(requestLine -> {
-            request.add(requestLine);
-            loggables.add(requestLine);
-        });
+        Consumer<String> recordLine = line -> {
+            request.add(line);
+            loggables.add(line);
+        };
+
+        requestStream.toList().forEach(recordLine);
+
+        Responder responder = getResponder(request);
+        HeadersWriter headers = new HeadersWriter(responder, output);
+        BodyWriter body = new BodyWriter(responder, output);
 
         loggables.add("");
+        loggables.add("Responding with " + responder.getClass().toString());
+        loggables.add("");
+        loggables.forEach(logger::info);
 
-        return request;
+        headers.write();
+        if (!request.getMethod().equals("HEAD")) body.write();
     }
 
     public Request prepareRequest() {
@@ -69,11 +70,11 @@ public class RequestHandler implements Runnable {
     }
 
     public RequestStream buildRequestStream() throws IOException {
-        return new RequestStream(client.getInputStream());
+        return new RequestStream(this.client.getInputStream());
     }
 
     public Responder getResponder(Request request) throws IOException {
-        Responders responders = new Responders(request, config);
+        Responders responders = new Responders(request, this.config);
 
         return responders.getResponder();
     }

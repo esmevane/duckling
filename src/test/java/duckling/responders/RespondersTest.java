@@ -71,6 +71,11 @@ public class RespondersTest {
         public InputStream body() throws IOException {
             return null;
         }
+
+        @Override
+        public boolean isAllowed() {
+            return true;
+        }
     }
 
     private class NoMatchResponder extends Responder {
@@ -91,6 +96,11 @@ public class RespondersTest {
         @Override
         public InputStream body() throws IOException {
             return null;
+        }
+
+        @Override
+        public boolean isAllowed() {
+            return true;
         }
     }
 }

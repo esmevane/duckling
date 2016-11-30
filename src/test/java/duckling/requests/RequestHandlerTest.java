@@ -1,14 +1,20 @@
 package duckling.requests;
 
 import duckling.Configuration;
-import duckling.Logger;
+import duckling.Server;
+import duckling.responses.ResponseHeaders;
 import duckling.support.SpyLogger;
+import duckling.support.SpyOutputStream;
 import duckling.support.SpySocket;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -79,8 +85,6 @@ public class RequestHandlerTest {
             }
         };
 
-        System.out.println("" + request.getPath());
-
         RequestHandler handler = new RequestHandler(client, config, logger) {
             @Override
             public Request prepareRequest() {
@@ -101,5 +105,42 @@ public class RequestHandlerTest {
         handler.run();
 
         assertThat(details, hasItem(message));
+    }
+
+    @Test
+    public void respondsToHeadersRequestsWithEmptyBody() throws Exception {
+        ArrayList<String> list = new ArrayList<>();
+        SpyOutputStream output = new SpyOutputStream();
+
+        list.add("HEAD / HTTP/1.1");
+
+        client = new SpySocket() {
+            @Override
+            public OutputStream getOutputStream() throws IOException {
+                super.getOutputStream();
+                return output;
+            }
+        };
+
+        RequestHandler handler = new RequestHandler(client, config, logger) {
+            @Override
+            public RequestStream buildRequestStream() throws IOException {
+                return new RequestStream(client.getInputStream()) {
+                    @Override
+                    public ArrayList<String> toList() {
+                        return list;
+                    }
+                };
+            }
+        };
+
+        ResponseHeaders headers =
+            new ResponseHeaders().
+                notFound().
+                withContentType("text/html");
+
+        handler.run();
+
+        assertThat(output.getWrittenOutput(), is(headers.toString()));
     }
 }

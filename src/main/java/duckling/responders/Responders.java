@@ -5,8 +5,6 @@ import duckling.requests.Request;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class Responders {
     private Request request;
@@ -40,13 +38,11 @@ public class Responders {
     }
 
     public Responder getResponder() {
-        Stream<Responder> candidates = responders.stream().filter(Responder::matches);
-        Optional<Responder> candidate = candidates.findFirst();
-
-        if (candidate.isPresent()) {
-            return candidate.get();
-        } else {
-            return new NotFound(request);
-        }
+        return responders.
+            stream().
+            filter(Responder::matches).
+            findFirst().
+            map((Responder candidate) -> candidate).
+            orElseGet(() -> new NotFound(request));
     }
 }

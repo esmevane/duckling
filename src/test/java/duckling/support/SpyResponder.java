@@ -6,7 +6,6 @@ import duckling.responders.Responder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SpyResponder extends Responder {
     private boolean wereHeadersCalled = false;
@@ -61,5 +60,10 @@ public class SpyResponder extends Responder {
     public InputStream body() throws IOException {
         this.wasBodyCalled = true;
         return this.inputStream;
+    }
+
+    @Override
+    public boolean isAllowed() {
+        return true;
     }
 }

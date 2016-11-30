@@ -5,6 +5,7 @@ import duckling.errors.BadArgumentsError;
 import java.io.IOException;
 
 public class Main {
+    public static Logger LOGGER = new Logger();
 
     private Configuration config;
     private Server server;
@@ -13,7 +14,7 @@ public class Main {
     public Main(Configuration config) throws IOException {
         this.config = config;
         this.server = new Server(config);
-        this.logger = new Logger();
+        this.logger = LOGGER;
     }
 
     public void start() throws IOException {
@@ -36,7 +37,7 @@ public class Main {
 
             main.start();
         } catch (BadArgumentsError exception) {
-            System.out.println("Usage: -p <port> -d <root directory>");
+            LOGGER.info("Usage: -p <port> -d <root directory>");
         } finally {
             System.exit(1);
         }

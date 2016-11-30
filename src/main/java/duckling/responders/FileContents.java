@@ -37,7 +37,7 @@ public class FileContents extends Responder {
     public ArrayList<String> headers() throws IOException {
         ResponseHeaders headers = new ResponseHeaders();
 
-        if (methodNotAllowed()) return headers.notAllowed().toList();
+        if (!isAllowed()) return headers.notAllowed().toList();
 
         return headers.withContentType(getContentType()).toList();
     }
@@ -45,6 +45,11 @@ public class FileContents extends Responder {
     @Override
     public InputStream body() throws IOException {
         return getFileStream();
+    }
+
+    @Override
+    public boolean isAllowed() {
+        return this.allowedMethods.contains(request.getMethod());
     }
 
     private String getContentType() throws IOException {
@@ -65,10 +70,6 @@ public class FileContents extends Responder {
         } catch (FileNotFoundException exception) {
             return new ByteArrayInputStream("".getBytes());
         }
-    }
-
-    private boolean methodNotAllowed() {
-        return !request.getMethod().equals("GET");
     }
 
 }

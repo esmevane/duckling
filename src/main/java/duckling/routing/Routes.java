@@ -44,9 +44,6 @@ public class Routes {
     }
 
     public static Route fromRequest(Request request) {
-        if (request.getPath() == null) {
-            System.out.println(request.toString());
-        }
         return new Route(request.getMethod(), request.getPath());
     }
 

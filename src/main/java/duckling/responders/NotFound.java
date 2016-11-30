@@ -29,6 +29,11 @@ public class NotFound extends Responder {
         return new ByteArrayInputStream(rawResponse().getBytes());
     }
 
+    @Override
+    public boolean isAllowed() {
+        return true;
+    }
+
     private String rawResponse() {
         return "<html><head><title>Not found</title></head>" +
             "<body>404 not found</body></head>" +
