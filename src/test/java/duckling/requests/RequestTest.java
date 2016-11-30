@@ -1,5 +1,7 @@
 package duckling.requests;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -125,5 +127,19 @@ public class RequestTest {
             request.getBody(),
             "Body line one" + Server.CRLF + "Body line two"
         );
+    }
+
+    @Test
+    public void isOptionsReturnsFalseIfMethodIsNotOptions() throws Exception {
+        request.add("GET / HTTP/1.1");
+
+        assertThat(request.isOptions(), is(false));
+    }
+
+    @Test
+    public void isOptionsReturnsTrueIfMethodIsOptions() throws Exception {
+        request.add("OPTIONS / HTTP/1.1");
+
+        assertThat(request.isOptions(), is(true));
     }
 }

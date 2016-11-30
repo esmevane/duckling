@@ -116,4 +116,7 @@ public class Request {
         }
     }
 
+    public boolean isOptions() {
+        return getMethod().equals("OPTIONS");
+    }
 }

@@ -40,7 +40,13 @@ public class FolderContents extends Responder {
     public ArrayList<String> headers() throws IOException {
         ResponseHeaders headers = new ResponseHeaders();
 
-        if (!isAllowed()) return headers.notAllowed().toList();
+        if (request.isOptions()) {
+            return headers.allowedMethods(this.allowedMethods).toList();
+        }
+
+        if (!isAllowed()) {
+            return headers.notAllowed().toList();
+        }
 
         return headers.withContentType("text/html").toList();
     }

@@ -21,6 +21,10 @@ public class NotFound extends Responder {
 
     @Override
     public ArrayList<String> headers() throws IOException {
+        if (request.isOptions()) {
+            return new ResponseHeaders().allowedMethods(this.allowedMethods).toList();
+        }
+
         return new ResponseHeaders().notFound().withContentType("text/html").toList();
     }
 

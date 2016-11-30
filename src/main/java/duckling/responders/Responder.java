@@ -6,17 +6,14 @@ import duckling.requests.Request;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class Responder {
     protected Request request;
     protected Configuration config;
-    protected ArrayList<String> allowedMethods = new ArrayList<>();
-
-    {
-        this.allowedMethods.add("GET");
-        this.allowedMethods.add("HEAD");
-        this.allowedMethods.add("OPTIONS");
-    }
+    protected ArrayList<String> allowedMethods = new ArrayList<>(
+        Arrays.asList("GET", "HEAD", "OPTIONS")
+    );
 
     public Responder(Request request) {
         this(request, new Configuration());

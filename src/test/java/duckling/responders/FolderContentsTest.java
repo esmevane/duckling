@@ -76,6 +76,21 @@ public class FolderContentsTest {
     }
 
     @Test
+    public void presentsGetHeadOptionsAsOptions() throws Exception {
+        Request request = new Request();
+        request.add("OPTIONS /coffee HTTP/1.1");
+
+        FolderContents responder = new FolderContents(request);
+
+        ArrayList<String> headers =
+            new ResponseHeaders().
+                allowedMethods(responder.allowedMethods).
+                toList();
+
+        assertThat(responder.headers(), is(headers));
+    }
+
+    @Test
     public void disallowsNonGetRequests() throws Exception {
         Request request = new Request();
         request.add("PUT / HTTP/1.1");

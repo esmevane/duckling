@@ -32,11 +32,16 @@ public class DefinedContents extends Responder {
 
     @Override
     public ArrayList<String> headers() throws IOException {
+        if (request.isOptions()) return optionsHeaders();
         Optional<Route> maybeRoute = routes.getMatch(request);
 
         return maybeRoute.
             map(this::headersFromRoute).
             orElseGet(this::buildHeaders);
+    }
+
+    private ArrayList<String> optionsHeaders() {
+        return new ResponseHeaders().allowedMethods(this.allowedMethods).toList();
     }
 
     @Override
@@ -63,18 +68,14 @@ public class DefinedContents extends Responder {
     }
 
     private ArrayList<String> headersFromRoute(Route route) {
-        ResponseHeaders headers = new ResponseHeaders();
-
-        return headers.
+        return new ResponseHeaders().
             withStatus(route.getResponseCode()).
             withContentType("text/html").
             toList();
     }
 
     private ArrayList<String> buildHeaders() {
-        ResponseHeaders headers = new ResponseHeaders();
-
-        return headers.withStatus(ResponseCode.notFound()).toList();
+        return new ResponseHeaders().withStatus(ResponseCode.notFound()).toList();
     }
 
 }

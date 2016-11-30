@@ -72,6 +72,21 @@ public class DefinedContentsTest {
     }
 
     @Test
+    public void presentsGetHeadOptionsAsOptions() throws Exception {
+        request = new Request();
+        request.add("OPTIONS /coffee HTTP/1.1");
+
+        responder = new DefinedContents(request, config);
+
+        ArrayList<String> headers =
+            new ResponseHeaders().
+                allowedMethods(responder.allowedMethods).
+                toList();
+
+        assertThat(responder.headers(), is(headers));
+    }
+
+    @Test
     public void suppliesTheRouteDefinedBody() throws Exception {
         SpyOutputStream outputStream = new SpyOutputStream();
         InputStream inputStream = responder.body();

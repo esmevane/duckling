@@ -27,6 +27,21 @@ public class NotFoundTest {
     }
 
     @Test
+    public void presentsGetHeadOptionsAsOptions() throws Exception {
+        Request request = new Request();
+        request.add("OPTIONS /coffee HTTP/1.1");
+
+        responder = new NotFound(request);
+
+        ArrayList<String> headers =
+            new ResponseHeaders().
+                allowedMethods(responder.allowedMethods).
+                toList();
+
+        assertThat(responder.headers(), is(headers));
+    }
+
+    @Test
     public void providesHeadersWithHtmlContentType() throws Exception {
         ArrayList<String> headers =
             new ResponseHeaders().notFound().withContentType("text/html").toList();

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class ResponseHeaders {
     protected ResponseCode responseCode;
     protected String contentType;
+    protected ArrayList<String> permittedMethods;
 
     public ResponseHeaders() {
         this(ResponseCode.ok(), "null");
@@ -19,8 +20,29 @@ public class ResponseHeaders {
     }
 
     public ResponseHeaders(ResponseCode responseCode, String contentType) {
+        this(
+            responseCode,
+            contentType,
+            new ArrayList<>()
+        );
+    }
+
+    public ResponseHeaders(
+        ResponseCode responseCode,
+        String contentType,
+        ArrayList<String> permittedMethods
+    ) {
         this.contentType = contentType;
         this.responseCode = responseCode;
+        this.permittedMethods = permittedMethods;
+    }
+
+    public ResponseHeaders allowedMethods(ArrayList<String> permittedMethods) {
+        return new ResponseHeaders(
+            this.responseCode,
+            this.contentType,
+            permittedMethods
+        );
     }
 
     public ResponseHeaders notFound() {
@@ -36,9 +58,15 @@ public class ResponseHeaders {
     }
 
     public ArrayList<String> toList() {
+        return this.permittedMethods.size() > 0 ? optionsResponse() : completeResponse();
+    }
+
+    private ArrayList<String> optionsResponse() {
+        String allowed = this.permittedMethods.stream().collect(Collectors.joining(","));
+
         return new ArrayList<>(Arrays.asList(
             "HTTP/1.0 " + responseCode + Server.CRLF,
-            "Content-Type: " + contentType + Server.CRLF,
+            "Allow: " + allowed + Server.CRLF,
             Server.CRLF
         ));
     }
@@ -50,4 +78,13 @@ public class ResponseHeaders {
     public String toString() {
         return toList().stream().collect(Collectors.joining());
     }
+
+    private ArrayList<String> completeResponse() {
+        return new ArrayList<>(Arrays.asList(
+            "HTTP/1.0 " + responseCode + Server.CRLF,
+            "Content-Type: " + contentType + Server.CRLF,
+            Server.CRLF
+        ));
+    }
+
 }
