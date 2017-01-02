@@ -1,10 +1,12 @@
 package duckling.writers;
 
+import duckling.requests.Request;
 import duckling.responders.Responder;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class HeadersWriter extends Writer {
 
@@ -12,18 +14,23 @@ public class HeadersWriter extends Writer {
         super(responder, output);
     }
 
-    public void write() throws IOException {
-        List<String> headers = responder.headers();
+    public void write() {
+        List<String> headers = null;
+        headers = responder.headers();
+        Consumer<String> writeLine = line -> {
+            try {
+                this.output.write(line.getBytes());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        };
 
-        headers.forEach(this::writeLine);
+        headers.forEach(writeLine);
     }
 
-    private void writeLine(String line) {
-        try {
-            output.write(line.getBytes());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+    @Override
+    public boolean respondsTo(Request request) {
+        return true;
     }
 
 }

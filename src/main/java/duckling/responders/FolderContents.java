@@ -37,7 +37,7 @@ public class FolderContents extends Responder {
     }
 
     @Override
-    public ArrayList<String> headers() throws IOException {
+    public ArrayList<String> headers() {
         ResponseHeaders headers = new ResponseHeaders();
 
         if (request.isOptions()) {
@@ -52,15 +52,10 @@ public class FolderContents extends Responder {
     }
 
     @Override
-    public InputStream body() throws IOException {
+    public InputStream body() {
         String responseContent = !isAllowed() ? "" : rawFolderResponse();
 
         return new ByteArrayInputStream(responseContent.getBytes());
-    }
-
-    @Override
-    public boolean isAllowed() {
-        return this.allowedMethods.contains(request.getMethod());
     }
 
     private String rawFolderResponse() {

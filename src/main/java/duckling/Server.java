@@ -70,21 +70,9 @@ public class Server {
     public void listen() throws IOException {
         onBegin();
 
-        Runnable shutdown = this::onShutdown;
-        Runtime.getRuntime().addShutdownHook(new Thread(shutdown));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
 
-        while (notShuttingDown()) onRequest();
+        while (!this.shuttingDown) onRequest();
     }
 
-    private boolean notShuttingDown() {
-        return !this.shuttingDown;
-    }
-
-    public int getPort() {
-        return this.config.port;
-    }
-
-    public String getRoot() {
-        return this.config.root;
-    }
 }

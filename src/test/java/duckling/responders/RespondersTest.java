@@ -63,12 +63,12 @@ public class RespondersTest {
         }
 
         @Override
-        public ArrayList<String> headers() throws IOException {
+        public ArrayList<String> headers() {
             return null;
         }
 
         @Override
-        public InputStream body() throws IOException {
+        public InputStream body() {
             return null;
         }
 
@@ -89,12 +89,12 @@ public class RespondersTest {
         }
 
         @Override
-        public ArrayList<String> headers() throws IOException {
+        public ArrayList<String> headers() {
             return null;
         }
 
         @Override
-        public InputStream body() throws IOException {
+        public InputStream body() {
             return null;
         }
 

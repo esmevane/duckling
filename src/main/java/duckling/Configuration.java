@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class Configuration {
     public static final int DEFAULT_PORT = 5000;
-    public static final String DEFAULT_ROOT = "/var/www/duckling/public";
+    public static final String DEFAULT_ROOT = ".";
     public static final RouteDefinitions DEFAULT_ROUTES = new RouteDefinitions(
         Routes.get("/coffee").with("I'm a teapot").andRejectWith(418),
         Routes.get("/tea").with("Tea indeed")
@@ -23,6 +23,10 @@ public class Configuration {
 
     public Configuration() {
         this(DEFAULT_PORT, DEFAULT_ROOT);
+    }
+
+    public Configuration(String root) {
+        this(DEFAULT_PORT, root, DEFAULT_ROUTES);
     }
 
     public Configuration(RouteDefinitions routes) {

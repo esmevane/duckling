@@ -7,7 +7,7 @@ public class SpyResponders extends Responders {
     private boolean wasRespondCalled = false;
 
     public SpyResponders() {
-        this(new Request("."));
+        this(new Request());
     }
 
     public SpyResponders(Request request) {

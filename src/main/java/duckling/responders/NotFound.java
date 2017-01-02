@@ -20,7 +20,7 @@ public class NotFound extends Responder {
     }
 
     @Override
-    public ArrayList<String> headers() throws IOException {
+    public ArrayList<String> headers() {
         if (request.isOptions()) {
             return new ResponseHeaders().allowedMethods(this.allowedMethods).toList();
         }
@@ -29,7 +29,7 @@ public class NotFound extends Responder {
     }
 
     @Override
-    public InputStream body() throws IOException {
+    public InputStream body() {
         return new ByteArrayInputStream(rawResponse().getBytes());
     }
 

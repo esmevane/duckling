@@ -29,7 +29,7 @@ public class ConfigurationTest {
         String[] arguments = {};
         Configuration config = new Configuration(arguments);
 
-        assertEquals(config.root, "/var/www/duckling/public");
+        assertEquals(config.root, ".");
     }
 
     @Test(expected = BadArgumentsError.class)

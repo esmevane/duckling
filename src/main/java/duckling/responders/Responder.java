@@ -26,10 +26,12 @@ public abstract class Responder {
 
     abstract public boolean matches();
 
-    abstract public ArrayList<String> headers() throws IOException;
+    abstract public ArrayList<String> headers();
 
-    abstract public InputStream body() throws IOException;
+    abstract public InputStream body();
 
-    abstract public boolean isAllowed();
+    public boolean isAllowed() {
+        return this.allowedMethods.contains(this.request.getMethod());
+    }
 
 }

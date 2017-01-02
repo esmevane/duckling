@@ -9,12 +9,9 @@ import duckling.support.SpySocket;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -34,11 +31,6 @@ public class RequestHandlerTest {
         config = new Configuration(5151, root);
         logger = new SpyLogger();
         handler = new RequestHandler(client, config, logger);
-    }
-
-    @Test
-    public void buildRequestUsesGivenRoot() throws Exception {
-        assertThat(handler.prepareRequest().getRoot(), is(root));
     }
 
     @Test
@@ -85,12 +77,7 @@ public class RequestHandlerTest {
             }
         };
 
-        RequestHandler handler = new RequestHandler(client, config, logger) {
-            @Override
-            public Request prepareRequest() {
-                return request;
-            }
-
+        RequestHandler handler = new RequestHandler(client, config, logger, request) {
             @Override
             public RequestStream buildRequestStream() throws IOException {
                 return new RequestStream(client.getInputStream()) {

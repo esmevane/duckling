@@ -75,8 +75,9 @@ public class FileContentsTest {
 
     @Test
     public void providesHeadersWithContentType() throws Exception {
+        request.add("GET /file.txt HTTP/1.1");
         File file = new File("file.txt");
-        FileContents responder = new FileContents(file);
+        FileContents responder = new FileContents(request, file);
         ArrayList<String> headers =
             new ResponseHeaders().withContentType("text/plain").toList();
 

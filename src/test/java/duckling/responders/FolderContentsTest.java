@@ -68,6 +68,7 @@ public class FolderContentsTest {
     @Test
     public void providesHeadersWithHtmlContentType() throws Exception {
         Request request = new Request();
+        request.add("GET / HTTP/1.1");
         FolderContents responder = new FolderContents(request);
         ArrayList<String> headers =
             new ResponseHeaders().withContentType("text/html").toList();
@@ -124,7 +125,9 @@ public class FolderContentsTest {
 
     @Test
     public void providesStreamOfEmptyPageAsBody() throws Exception {
-        FolderContents responder = new FolderContents(new Request()) {
+        Request request = new Request();
+        request.add("GET / HTTP/1.1");
+        FolderContents responder = new FolderContents(request) {
             @Override
             public String contents() {
                 return "";

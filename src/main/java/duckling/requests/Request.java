@@ -1,122 +1,93 @@
 package duckling.requests;
 
+import duckling.Configuration;
 import duckling.Server;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
 
 public class Request {
     protected boolean acceptingBody = false;
-    protected Hashtable<String, String> request = new Hashtable<>();
-    protected Hashtable<String, String> headers = new Hashtable<>();
-    protected ArrayList<String> body = new ArrayList<>();
-    private String root;
 
-    public Request(String root) {
-        this.root = root;
-    }
+    protected Headers headers = new Headers();
+    protected BaseRequest baseRequest = new BaseRequest();
+    protected ArrayList<String> body = new ArrayList<>();
+
+    private Configuration config;
 
     public Request() {
-        this(".");
+        this(new Configuration());
+    }
+
+    public Request(String root) {
+        this(new Configuration(root));
+    }
+
+    public Request(Configuration config) {
+        this.config = config;
+    }
+
+    public void add(String... lines) {
+        add(Arrays.asList(lines));
+    }
+
+    public void add(List<String> lines) {
+        lines.forEach(this::add);
     }
 
     public void add(String line) {
-        if (line.length() == 0) setAcceptingBody();
-        if (this.request.isEmpty() && !acceptingBody) setRequestPairs(line);
-
-        if (acceptingBody && line.length() != 0) {
+        if (line.length() == 0) this.acceptingBody = true;
+        if (this.baseRequest.isEmpty() && !this.acceptingBody) {
+            this.baseRequest = baseRequest.set(line);
+        } else if (acceptingBody && line.length() != 0) {
             body.add(line);
         } else {
-            setHeaderPair(line);
+            this.headers.add(line);
         }
-    }
-
-    public int hashCode() {
-        return request.hashCode() + body.hashCode() + headers.hashCode();
-    }
-
-    public boolean equals(Request other) {
-        return request.equals(other.request)
-            && body.equals(other.body)
-            && headers.equals(other.headers);
-    }
-
-    public String fullFilePath() {
-        return root + getPath();
-    }
-
-    public String getBody() {
-        return body.stream().collect(Collectors.joining(Server.CRLF));
-    }
-
-    public String getHeader(String key) {
-        return headers.get(key);
     }
 
     public File getFile() {
-        return new File(root + getPath());
+        return new File(this.config.root + this.baseRequest.getPath());
     }
 
     public String getMethod() {
-        String method = request.get("Method");
-
-        return method == null ? "GET" : method;
+        return this.baseRequest.getMethod();
     }
 
     public String getPath() {
-        String path = request.get("Path");
-
-        return path == null ? "" : path;
-    }
-
-    public String getProtocol() {
-        String protocol = request.get("Protocol");
-
-        return protocol == null ? "HTTP/1.0" : protocol;
-    }
-
-    public String getRoot() {
-        return root;
-    }
-
-    public String initialRequestString() {
-        Stream<String> lines = Stream.of(getMethod(), getPath(), getProtocol());
-
-        return lines.collect(Collectors.joining(" "));
-    }
-
-    public boolean isAcceptingBody() {
-        return acceptingBody;
-    }
-
-    public void setAcceptingBody() {
-        this.acceptingBody = true;
-    }
-
-    private void setHeaderPair(String line) {
-        String[] headerPair = line.split(": ");
-
-        try {
-            headers.put(headerPair[0], headerPair[1]);
-        } catch (ArrayIndexOutOfBoundsException exception) {
-        }
-    }
-
-    private void setRequestPairs(String initialRequest) {
-        String[] tokens = initialRequest.split(" ");
-
-        try {
-            request.put("Method", tokens[0]);
-            request.put("Path", tokens[1]);
-            request.put("Protocol", tokens[2]);
-        } catch (ArrayIndexOutOfBoundsException exception) {
-        }
+        return this.baseRequest.getPath();
     }
 
     public boolean isOptions() {
-        return getMethod().equals("OPTIONS");
+        return this.baseRequest.isOptions();
     }
+
+    public boolean isHead() {
+        return this.baseRequest.isHead();
+    }
+
+    public int hashCode() {
+        return this.baseRequest.hashCode() +
+            this.body.hashCode() +
+            this.headers.hashCode();
+    }
+
+    public boolean equals(Object other) {
+        return equals((Request) other);
+    }
+
+    public boolean equals(Request other) {
+        return this.baseRequest.equals(other.baseRequest)
+            && this.body.equals(other.body)
+            && this.headers.equals(other.headers);
+    }
+
+    public String toString() {
+        return baseRequest.toString() + Server.CRLF +
+            headers.toString() + Server.CRLF +
+            body.toString();
+    }
+
 }

@@ -1,5 +1,6 @@
 package duckling.writers;
 
+import duckling.requests.Request;
 import duckling.responders.Responder;
 
 import java.io.IOException;
@@ -14,6 +15,8 @@ public abstract class Writer {
         this.output = output;
     }
 
-    abstract public void write() throws IOException;
+    abstract public void write();
+
+    public abstract boolean respondsTo(Request request);
 }
 

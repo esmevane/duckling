@@ -51,13 +51,13 @@ public class SpyResponder extends Responder {
     }
 
     @Override
-    public ArrayList<String> headers() throws IOException {
+    public ArrayList<String> headers() {
         this.wereHeadersCalled = true;
         return this.list;
     }
 
     @Override
-    public InputStream body() throws IOException {
+    public InputStream body() {
         this.wasBodyCalled = true;
         return this.inputStream;
     }

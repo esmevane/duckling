@@ -1,5 +1,6 @@
 package duckling.writers;
 
+import duckling.requests.Request;
 import duckling.responders.Responder;
 
 import java.io.IOException;
@@ -11,10 +12,21 @@ public class BodyWriter extends Writer {
         super(responder, output);
     }
 
-    public void write() throws IOException {
+    public void write() {
         int input;
-        InputStream body = responder.body();
+        InputStream body = null;
 
-        while ((input = body.read()) != -1) output.write(input);
+        try {
+            body = responder.body();
+            while ((input = body.read()) != -1) output.write(input);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public boolean respondsTo(Request request) {
+        return !request.isHead();
     }
 }

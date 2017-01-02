@@ -30,16 +30,6 @@ public class ServerTest {
     }
 
     @Test
-    public void definePort() throws Exception {
-        assertEquals(port, server.getPort());
-    }
-
-    @Test
-    public void defineRoot() throws Exception {
-        assertEquals(root, server.getRoot());
-    }
-
-    @Test
     public void beforeListenBindsConnection() throws Exception {
         server.onBegin();
         assertEquals(true, connection.isBound());

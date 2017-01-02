@@ -8,7 +8,6 @@ import duckling.routing.Route;
 import duckling.routing.RouteDefinitions;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class DefinedContents extends Responder {
     }
 
     @Override
-    public ArrayList<String> headers() throws IOException {
+    public ArrayList<String> headers() {
         if (request.isOptions()) return optionsHeaders();
         Optional<Route> maybeRoute = routes.getMatch(request);
 
@@ -45,18 +44,13 @@ public class DefinedContents extends Responder {
     }
 
     @Override
-    public InputStream body() throws IOException {
+    public InputStream body() {
         Optional<Route> maybeRoute = routes.getMatch(request);
         String fileContent = maybeRoute.
             map(route -> buildContent(request.getPath(), route.getContent())).
             orElseGet(this::buildContent);
 
         return new ByteArrayInputStream(fileContent.getBytes());
-    }
-
-    @Override
-    public boolean isAllowed() {
-        return this.allowedMethods.contains(request.getMethod());
     }
 
     private String buildContent() {
