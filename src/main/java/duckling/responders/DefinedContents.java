@@ -25,8 +25,13 @@ public class DefinedContents extends Responder {
     }
 
     @Override
-    public boolean matches() {
-        return routes.hasRoute(request);
+    public InputStream body() {
+        Optional<Route> maybeRoute = routes.getMatch(request);
+        String fileContent = maybeRoute.
+            map(route -> buildContent(request.getPath(), route.getContent())).
+            orElseGet(this::buildContent);
+
+        return new ByteArrayInputStream(fileContent.getBytes());
     }
 
     @Override
@@ -39,18 +44,9 @@ public class DefinedContents extends Responder {
             orElseGet(this::buildHeaders);
     }
 
-    private ArrayList<String> optionsHeaders() {
-        return new ResponseHeaders().allowedMethods(this.allowedMethods).toList();
-    }
-
     @Override
-    public InputStream body() {
-        Optional<Route> maybeRoute = routes.getMatch(request);
-        String fileContent = maybeRoute.
-            map(route -> buildContent(request.getPath(), route.getContent())).
-            orElseGet(this::buildContent);
-
-        return new ByteArrayInputStream(fileContent.getBytes());
+    public boolean matches() {
+        return routes.hasRoute(request);
     }
 
     private String buildContent() {
@@ -61,6 +57,10 @@ public class DefinedContents extends Responder {
         return String.format(this.template, path, content);
     }
 
+    private ArrayList<String> buildHeaders() {
+        return new ResponseHeaders().withStatus(ResponseCode.notFound()).toList();
+    }
+
     private ArrayList<String> headersFromRoute(Route route) {
         return new ResponseHeaders().
             withStatus(route.getResponseCode()).
@@ -68,8 +68,8 @@ public class DefinedContents extends Responder {
             toList();
     }
 
-    private ArrayList<String> buildHeaders() {
-        return new ResponseHeaders().withStatus(ResponseCode.notFound()).toList();
+    private ArrayList<String> optionsHeaders() {
+        return new ResponseHeaders().allowedMethods(this.allowedMethods).toList();
     }
 
 }

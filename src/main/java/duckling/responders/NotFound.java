@@ -15,8 +15,8 @@ public class NotFound extends Responder {
     }
 
     @Override
-    public boolean matches() {
-        return true;
+    public InputStream body() {
+        return new ByteArrayInputStream(rawResponse().getBytes());
     }
 
     @Override
@@ -29,12 +29,12 @@ public class NotFound extends Responder {
     }
 
     @Override
-    public InputStream body() {
-        return new ByteArrayInputStream(rawResponse().getBytes());
+    public boolean isAllowed() {
+        return true;
     }
 
     @Override
-    public boolean isAllowed() {
+    public boolean matches() {
         return true;
     }
 

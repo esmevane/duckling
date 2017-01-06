@@ -45,6 +45,14 @@ public class ResponseHeaders {
         );
     }
 
+    public ArrayList<String> toList() {
+        return this.permittedMethods.size() > 0 ? optionsResponse() : completeResponse();
+    }
+
+    public ResponseHeaders notAllowed() {
+        return withStatus(ResponseCode.notAllowed());
+    }
+
     public ResponseHeaders notFound() {
         return withStatus(ResponseCode.notFound());
     }
@@ -57,24 +65,7 @@ public class ResponseHeaders {
         return new ResponseHeaders(responseCode, contentType);
     }
 
-    public ArrayList<String> toList() {
-        return this.permittedMethods.size() > 0 ? optionsResponse() : completeResponse();
-    }
-
-    private ArrayList<String> optionsResponse() {
-        String allowed = this.permittedMethods.stream().collect(Collectors.joining(","));
-
-        return new ArrayList<>(Arrays.asList(
-            "HTTP/1.0 " + responseCode + Server.CRLF,
-            "Allow: " + allowed + Server.CRLF,
-            Server.CRLF
-        ));
-    }
-
-    public ResponseHeaders notAllowed() {
-        return withStatus(ResponseCode.notAllowed());
-    }
-
+    @Override
     public String toString() {
         return toList().stream().collect(Collectors.joining());
     }
@@ -83,6 +74,16 @@ public class ResponseHeaders {
         return new ArrayList<>(Arrays.asList(
             "HTTP/1.0 " + responseCode + Server.CRLF,
             "Content-Type: " + contentType + Server.CRLF,
+            Server.CRLF
+        ));
+    }
+
+    private ArrayList<String> optionsResponse() {
+        String allowed = this.permittedMethods.stream().collect(Collectors.joining(","));
+
+        return new ArrayList<>(Arrays.asList(
+            "HTTP/1.0 " + responseCode + Server.CRLF,
+            "Allow: " + allowed + Server.CRLF,
             Server.CRLF
         ));
     }

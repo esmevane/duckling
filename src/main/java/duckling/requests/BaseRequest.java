@@ -56,26 +56,6 @@ public class BaseRequest {
         return this.contents.getOrDefault(PROTOCOL, DEFAULT_PROTOCOL);
     }
 
-
-    public String toString() {
-        return Stream.of(getMethod(), getPath(), getProtocol()).
-            collect(Collectors.joining(" "));
-    }
-
-    @Override
-    public int hashCode() {
-        return this.rawRequest.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return equals((BaseRequest) other);
-    }
-
-    public boolean equals(BaseRequest other) {
-        return this.rawRequest.equals(other.rawRequest);
-    }
-
     public boolean isEmpty() {
         return this.rawRequest.isEmpty();
     }
@@ -86,6 +66,28 @@ public class BaseRequest {
 
     public boolean isHead() {
         return getMethod().equals(HEAD);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.rawRequest.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof BaseRequest) {
+            BaseRequest other = (BaseRequest) object;
+
+            return this.rawRequest.equals(other.rawRequest);
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return Stream.of(getMethod(), getPath(), getProtocol()).
+            collect(Collectors.joining(" "));
     }
 
 }

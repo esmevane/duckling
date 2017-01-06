@@ -68,22 +68,27 @@ public class Request {
         return this.baseRequest.isHead();
     }
 
+    @Override
     public int hashCode() {
         return this.baseRequest.hashCode() +
             this.body.hashCode() +
             this.headers.hashCode();
     }
 
-    public boolean equals(Object other) {
-        return equals((Request) other);
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Request) {
+            Request other = (Request) object;
+
+            return this.baseRequest.equals(other.baseRequest)
+                && this.body.equals(other.body)
+                && this.headers.equals(other.headers);
+        }
+
+        return false;
     }
 
-    public boolean equals(Request other) {
-        return this.baseRequest.equals(other.baseRequest)
-            && this.body.equals(other.body)
-            && this.headers.equals(other.headers);
-    }
-
+    @Override
     public String toString() {
         return baseRequest.toString() + Server.CRLF +
             headers.toString() + Server.CRLF +

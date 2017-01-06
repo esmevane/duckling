@@ -32,8 +32,22 @@ public class FolderContents extends Responder {
     }
 
     @Override
-    public boolean matches() {
-        return this.directory.exists() && this.directory.isDirectory();
+    public InputStream body() {
+        String responseContent = !isAllowed() ? "" : rawFolderResponse();
+
+        return new ByteArrayInputStream(responseContent.getBytes());
+    }
+
+    public String contents() {
+        String[] list = this.directory.list();
+
+        if (list == null) {
+            return "";
+        }
+
+        Stream<String> links = Stream.of(list).map(this::toLink);
+
+        return links.collect(Collectors.joining());
     }
 
     @Override
@@ -52,10 +66,8 @@ public class FolderContents extends Responder {
     }
 
     @Override
-    public InputStream body() {
-        String responseContent = !isAllowed() ? "" : rawFolderResponse();
-
-        return new ByteArrayInputStream(responseContent.getBytes());
+    public boolean matches() {
+        return this.directory.exists() && this.directory.isDirectory();
     }
 
     private String rawFolderResponse() {
@@ -63,18 +75,6 @@ public class FolderContents extends Responder {
         String template = "<html><head>%s</head><body>%s</body></html>";
 
         return String.format(template, title, contents());
-    }
-
-    public String contents() {
-        String[] list = this.directory.list();
-
-        if (list == null) {
-            return "";
-        }
-
-        Stream<String> links = Stream.of(list).map(this::toLink);
-
-        return links.collect(Collectors.joining());
     }
 
     private String toLink(String item) {

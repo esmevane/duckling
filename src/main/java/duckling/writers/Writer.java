@@ -3,7 +3,6 @@ package duckling.writers;
 import duckling.requests.Request;
 import duckling.responders.Responder;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 public abstract class Writer {

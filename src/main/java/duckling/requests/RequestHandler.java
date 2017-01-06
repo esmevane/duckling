@@ -30,9 +30,7 @@ public class RequestHandler implements Runnable {
         this.config = config;
         this.logger = logger;
         this.request = request;
-
     }
-
 
     @Override
     public void run() {

@@ -21,12 +21,12 @@ public class HeaderPair {
         }
     }
 
-    public boolean matches(String key) {
-        return this.key.equals(key);
-    }
-
     public String getValue() {
         return this.value;
+    }
+
+    public boolean matches(String key) {
+        return this.key.equals(key);
     }
 
     @Override
@@ -35,14 +35,18 @@ public class HeaderPair {
     }
 
     @Override
-    public boolean equals(Object other) {
-        return equals((HeaderPair) other);
+    public boolean equals(Object object) {
+        if (object instanceof HeaderPair) {
+            HeaderPair other = (HeaderPair) object;
+
+            return this.key.equals(other.key) &&
+                this.value.equals(other.value);
+        }
+
+        return false;
     }
 
-    public boolean equals(HeaderPair other) {
-        return this.key.equals(other.key) && this.value.equals(other.value);
-    }
-
+    @Override
     public String toString() {
         return this.key + ": " + this.value;
     }

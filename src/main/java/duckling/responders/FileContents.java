@@ -29,8 +29,8 @@ public class FileContents extends Responder {
     }
 
     @Override
-    public boolean matches() {
-        return this.file.exists() && !this.file.isDirectory();
+    public InputStream body() {
+        return getFileStream();
     }
 
     @Override
@@ -49,8 +49,8 @@ public class FileContents extends Responder {
     }
 
     @Override
-    public InputStream body() {
-        return getFileStream();
+    public boolean matches() {
+        return this.file.exists() && !this.file.isDirectory();
     }
 
     private String getContentType() {

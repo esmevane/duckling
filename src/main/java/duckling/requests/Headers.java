@@ -38,14 +38,16 @@ public class Headers {
     }
 
     @Override
-    public boolean equals(Object other) {
-        return equals((Headers) other);
+    public boolean equals(Object object) {
+        if (object instanceof Headers) {
+            Headers other = (Headers) object;
+
+            return this.contents.equals(other.contents);
+        }
+        return false;
     }
 
-    public boolean equals(Headers other) {
-        return this.contents.equals(other.contents);
-    }
-
+    @Override
     public String toString() {
         return this.
             contents.

@@ -48,18 +48,23 @@ public class ResponseCode {
         return codes.get(code);
     }
 
+    @Override
     public int hashCode() {
         return message().hashCode();
     }
 
-    public boolean equals(Object other) {
-        return equals((ResponseCode) other);
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof ResponseCode) {
+            ResponseCode other = (ResponseCode) object;
+
+            return this.code == other.code;
+        }
+
+        return false;
     }
 
-    public boolean equals(ResponseCode other) {
-        return code == other.code;
-    }
-
+    @Override
     public String toString() {
         return code + " " + message();
     }

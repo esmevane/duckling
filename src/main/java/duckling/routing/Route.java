@@ -38,8 +38,12 @@ public class Route {
         this.responseCode = responseCode;
     }
 
-    public Route with(String responderKey) {
-        return new Route(method, routeName, responderKey);
+    public Route andRejectWith(int code) {
+        return new Route(method, routeName, responderKey, new ResponseCode(code));
+    }
+
+    public String getContent() {
+        return responderKey;
     }
 
     public boolean hasMethod(String method) {
@@ -54,36 +58,38 @@ public class Route {
         return this.routeName.equals(route);
     }
 
-    public int hashCode() {
-        return routeName.hashCode() + method.hashCode();
-    }
-
-    public boolean equals(Object other) {
-        return equals((Route) other);
-    }
-
-    public boolean equals(Route other) {
-        return routeName.equals(other.routeName) && method.equals(other.method);
+    public ResponseCode getResponseCode() {
+        return responseCode;
     }
 
     public boolean matches(Request request) {
         return equals(Routes.fromRequest(request));
     }
 
-    public Route andRejectWith(int code) {
-        return new Route(method, routeName, responderKey, new ResponseCode(code));
+    public Route with(String responderKey) {
+        return new Route(method, routeName, responderKey);
     }
 
-    public ResponseCode getResponseCode() {
-        return responseCode;
+    @Override
+    public int hashCode() {
+        return this.routeName.hashCode() + this.method.hashCode();
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Route) {
+            Route other = (Route) object;
+
+            return this.routeName.equals(other.routeName) &&
+                this.method.equals(other.method);
+        }
+
+        return false;
+    }
+
+    @Override
     public String toString() {
         return method + " " + routeName + " - " + responderKey + " " + responseCode;
-    }
-
-    public String getContent() {
-        return responderKey;
     }
 
 }
