@@ -16,6 +16,7 @@ public class Request {
     protected ArrayList<String> body = new ArrayList<>();
 
     private Configuration config;
+    private String query;
 
     public Request() {
         this(new Configuration());
@@ -58,6 +59,10 @@ public class Request {
 
     public String getPath() {
         return this.baseRequest.getPath();
+    }
+
+    public String getQuery() {
+        return this.baseRequest.getQuery();
     }
 
     public boolean isOptions() {

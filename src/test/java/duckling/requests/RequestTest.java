@@ -66,6 +66,12 @@ public class RequestTest {
     }
 
     @Test
+    public void marshalsInitialRequestQuery() throws Exception {
+        request.add("GET /?stuff=things HTTP/1.1");
+        assertEquals(request.getQuery(), "stuff=things");
+    }
+
+    @Test
     public void providesPathFileReference() throws Exception {
         request.add("GET / HTTP/1.1");
         assertEquals(request.getFile(), new File("."));
