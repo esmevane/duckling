@@ -97,6 +97,21 @@ public class ResponseHeadersTest {
     }
 
     @Test
+    public void canBeARedirect() throws Exception {
+        ResponseHeaders responseHeaders =
+            new ResponseHeaders().found("/url");
+
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(
+            "HTTP/1.0 302 FOUND" + Server.CRLF,
+            "Content-Type: null" + Server.CRLF,
+            "Location: /url" + Server.CRLF,
+            Server.CRLF
+        ));
+
+        assertThat(responseHeaders.toList(), is(list));
+    }
+
+    @Test
     public void asListCreatesList() throws Exception {
         ResponseHeaders responseHeaders = new ResponseHeaders().
             notFound().withContentType("text/html");

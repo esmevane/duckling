@@ -30,6 +30,18 @@ public class RouteTest {
     }
 
     @Test
+    public void isRedirectReturnsTrueWhenIsRedirect() throws Exception {
+        Route route = new Route().andRedirectTo("/anywhere");
+        assertThat(route.isRedirect(), is(true));
+    }
+
+    @Test
+    public void isRedirectReturnsFalseWhenIsNotRedirect() throws Exception {
+        Route route = new Route();
+        assertThat(route.isRedirect(), is(false));
+    }
+
+    @Test
     public void acceptsRouteWithPrefix() throws Exception {
         String routeName = "/routes";
         Route route = new Route("GET", routeName);

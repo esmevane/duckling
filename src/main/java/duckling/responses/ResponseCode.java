@@ -7,6 +7,7 @@ public class ResponseCode {
     public static final int NOT_FOUND = 404;
     public static final int TEAPOT = 418;
     public static final int METHOD_NOT_ALLOWED = 405;
+    public static final int FOUND = 302;
 
     private Hashtable<Integer, String> codes;
     private int code;
@@ -18,6 +19,7 @@ public class ResponseCode {
         codes.put(NOT_FOUND, "NOT FOUND");
         codes.put(TEAPOT, "TEAPOT");
         codes.put(METHOD_NOT_ALLOWED, "METHOD NOT ALLOWED");
+        codes.put(FOUND, "FOUND");
     }
 
     public ResponseCode() {
@@ -38,6 +40,10 @@ public class ResponseCode {
 
     public static ResponseCode notFound() {
         return new ResponseCode(NOT_FOUND);
+    }
+
+    public static ResponseCode found() {
+        return new ResponseCode(FOUND);
     }
 
     public static ResponseCode notAllowed() {

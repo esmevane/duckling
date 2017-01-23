@@ -37,6 +37,7 @@ public class DefinedContents extends Responder {
     @Override
     public ArrayList<String> headers() {
         if (request.isOptions()) return optionsHeaders();
+
         Optional<Route> maybeRoute = routes.getMatch(request);
 
         return maybeRoute.
@@ -62,10 +63,16 @@ public class DefinedContents extends Responder {
     }
 
     private ArrayList<String> headersFromRoute(Route route) {
-        return new ResponseHeaders().
-            withStatus(route.getResponseCode()).
-            withContentType("text/html").
-            toList();
+        ResponseHeaders headers =
+            new ResponseHeaders().
+                withStatus(route.getResponseCode()).
+                withContentType("text/html");
+
+        if (route.isRedirect()) {
+            return headers.withLocation(route.getContent()).toList();
+        }
+
+        return headers.toList();
     }
 
     private ArrayList<String> optionsHeaders() {

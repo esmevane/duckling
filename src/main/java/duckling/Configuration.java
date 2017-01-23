@@ -16,6 +16,7 @@ public class Configuration {
     public static final int DEFAULT_PORT = 5000;
     public static final String DEFAULT_ROOT = ".";
     public static final RouteDefinitions DEFAULT_ROUTES = new RouteDefinitions(
+        Routes.get("/redirect").andRedirectTo("http://localhost:5000/"),
         Routes.get("/parameters").with((Request request) -> {
             try {
                 ArrayList<String> lines = new ArrayList<>();

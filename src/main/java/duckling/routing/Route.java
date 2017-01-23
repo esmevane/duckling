@@ -59,6 +59,11 @@ public class Route {
         return new Route(method, routeName, routeContents, new ResponseCode(code));
     }
 
+    public Route andRedirectTo(String uri) {
+        RouteContents contents = new RouteContents(uri);
+        return new Route(method, routeName, contents, ResponseCode.found());
+    }
+
     public String getContent(Request request) {
         return this.routeContents.get(request);
     }
@@ -117,4 +122,7 @@ public class Route {
         return method + " " + routeName + " - " + routeContents + " " + responseCode;
     }
 
+    public boolean isRedirect() {
+        return responseCode.equals(ResponseCode.found());
+    }
 }

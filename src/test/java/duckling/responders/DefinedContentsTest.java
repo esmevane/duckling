@@ -49,6 +49,25 @@ public class DefinedContentsTest {
     }
 
     @Test
+    public void includesLocationDetailForRedirects() throws Exception {
+        Route routes = Routes.get("/redirect").andRedirectTo("/howdy");
+        Request request = new Request();
+        Configuration config = new Configuration(new RouteDefinitions(routes));
+
+        request.add("GET /redirect HTTP/1.1");
+
+        Responder responder = new DefinedContents(request, config);
+
+        ArrayList<String> headers =
+            new ResponseHeaders().
+                found("/howdy").
+                withContentType("text/html").
+                toList();
+
+        assertThat(responder.headers(), is(headers));
+    }
+
+    @Test
     public void suppliesCustomDefinedHeaders() throws Exception {
         request = new Request();
         request.add("GET /coffee HTTP/1.1");

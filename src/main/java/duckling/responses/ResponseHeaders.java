@@ -4,25 +4,31 @@ import duckling.Server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class ResponseHeaders {
     protected ResponseCode responseCode;
     protected String contentType;
+    protected String location;
     protected ArrayList<String> permittedMethods;
 
     public ResponseHeaders() {
-        this(ResponseCode.ok(), "null");
+        this(ResponseCode.ok(), "null", null);
     }
 
     public ResponseHeaders(ResponseCode responseCode) {
-        this(responseCode, "null");
+        this(responseCode, "null", null);
     }
 
-    public ResponseHeaders(ResponseCode responseCode, String contentType) {
+    public ResponseHeaders(
+        ResponseCode responseCode,
+        String contentType
+    ) {
         this(
             responseCode,
             contentType,
+            null,
             new ArrayList<>()
         );
     }
@@ -30,10 +36,25 @@ public class ResponseHeaders {
     public ResponseHeaders(
         ResponseCode responseCode,
         String contentType,
+        String location
+    ) {
+        this(
+            responseCode,
+            contentType,
+            location,
+            new ArrayList<>()
+        );
+    }
+
+    public ResponseHeaders(
+        ResponseCode responseCode,
+        String contentType,
+        String location,
         ArrayList<String> permittedMethods
     ) {
         this.contentType = contentType;
         this.responseCode = responseCode;
+        this.location = location;
         this.permittedMethods = permittedMethods;
     }
 
@@ -41,6 +62,7 @@ public class ResponseHeaders {
         return new ResponseHeaders(
             this.responseCode,
             this.contentType,
+            this.location,
             permittedMethods
         );
     }
@@ -57,12 +79,21 @@ public class ResponseHeaders {
         return withStatus(ResponseCode.notFound());
     }
 
+    public ResponseHeaders found(String uri) {
+        return withStatus(ResponseCode.found()).withLocation(uri);
+    }
+
+    public ResponseHeaders withLocation(String uri) {
+        return new ResponseHeaders(responseCode, contentType, uri);
+    }
+
+
     public ResponseHeaders withContentType(String newContentType) {
-        return new ResponseHeaders(responseCode, newContentType);
+        return new ResponseHeaders(responseCode, newContentType, location);
     }
 
     public ResponseHeaders withStatus(ResponseCode responseCode) {
-        return new ResponseHeaders(responseCode, contentType);
+        return new ResponseHeaders(responseCode, contentType, location);
     }
 
     @Override
@@ -71,11 +102,21 @@ public class ResponseHeaders {
     }
 
     private ArrayList<String> completeResponse() {
-        return new ArrayList<>(Arrays.asList(
+        ArrayList<String> response = new ArrayList<>();
+
+        Collections.addAll(
+            response,
             "HTTP/1.0 " + responseCode + Server.CRLF,
-            "Content-Type: " + contentType + Server.CRLF,
-            Server.CRLF
-        ));
+            "Content-Type: " + contentType + Server.CRLF
+        );
+
+        if (this.location != null) {
+            response.add("Location: " + this.location + Server.CRLF);
+        }
+
+        response.add(Server.CRLF);
+
+        return response;
     }
 
     private ArrayList<String> optionsResponse() {
