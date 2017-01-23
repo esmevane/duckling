@@ -3,10 +3,13 @@ package duckling.routing;
 import duckling.requests.Request;
 import duckling.responses.ResponseCode;
 
+import java.util.function.Function;
+
 public class Route {
     protected String routeName;
     protected String method;
-    private String responderKey;
+
+    private RouteContents routeContents;
     private ResponseCode responseCode;
 
     public Route() {
@@ -17,11 +20,11 @@ public class Route {
         this(method, routeName, "not-found");
     }
 
-    public Route(String method, String routeName, String responderKey) {
+    public Route(String method, String routeName, String routeContents) {
         this(
             method,
             routeName,
-            responderKey,
+            new RouteContents(routeContents),
             ResponseCode.ok()
         );
     }
@@ -29,29 +32,47 @@ public class Route {
     public Route(
         String method,
         String routeName,
-        String responderKey,
+        Function<Request, String> routeContents
+    ) {
+        this(
+            method,
+            routeName,
+            new RouteContents(routeContents),
+            ResponseCode.ok()
+        );
+    }
+
+
+    public Route(
+        String method,
+        String routeName,
+        RouteContents routeContents,
         ResponseCode responseCode
     ) {
         this.method = method;
         this.routeName = routeName.startsWith("/") ? routeName : "/" + routeName;
-        this.responderKey = responderKey;
+        this.routeContents = routeContents;
         this.responseCode = responseCode;
     }
 
     public Route andRejectWith(int code) {
-        return new Route(method, routeName, responderKey, new ResponseCode(code));
+        return new Route(method, routeName, routeContents, new ResponseCode(code));
+    }
+
+    public String getContent(Request request) {
+        return this.routeContents.get(request);
     }
 
     public String getContent() {
-        return responderKey;
+        return this.routeContents.get();
     }
 
     public boolean hasMethod(String method) {
         return this.method.equals(method);
     }
 
-    public boolean hasResponder(String responderKey) {
-        return this.responderKey.equals(responderKey);
+    public boolean hasResponder(String routeContents) {
+        return this.routeContents.equals(routeContents);
     }
 
     public boolean hasRoute(String route) {
@@ -66,8 +87,12 @@ public class Route {
         return equals(Routes.fromRequest(request));
     }
 
-    public Route with(String responderKey) {
-        return new Route(method, routeName, responderKey);
+    public Route with(String routeContents) {
+        return with((request) -> routeContents);
+    }
+
+    public Route with(Function<Request, String> routeContents) {
+        return new Route(method, routeName, routeContents);
     }
 
     @Override
@@ -89,7 +114,7 @@ public class Route {
 
     @Override
     public String toString() {
-        return method + " " + routeName + " - " + responderKey + " " + responseCode;
+        return method + " " + routeName + " - " + routeContents + " " + responseCode;
     }
 
 }

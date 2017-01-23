@@ -28,7 +28,7 @@ public class DefinedContents extends Responder {
     public InputStream body() {
         Optional<Route> maybeRoute = routes.getMatch(request);
         String fileContent = maybeRoute.
-            map(route -> buildContent(request.getPath(), route.getContent())).
+            map(route -> buildContent(request.getPath(), route.getContent(request))).
             orElseGet(this::buildContent);
 
         return new ByteArrayInputStream(fileContent.getBytes());
