@@ -3,6 +3,7 @@ package duckling.requests;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -10,6 +11,7 @@ public class BaseRequest {
     public static final String METHOD = "Method";
     public static final String PATH = "Path";
     public static final String PROTOCOL = "Protocol";
+    public static final String QUERY = "Query";
     public static final String EMPTY_PATH = "";
     public static final String OPTIONS = "OPTIONS";
     public static final String HEAD = "HEAD";
@@ -32,10 +34,27 @@ public class BaseRequest {
 
         List<String> tokens = Arrays.asList(baseRequest.split(" "));
 
+        Function<String,String> parsePath = (path) -> {
+            try {
+                return path.split("\\?")[0];
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                return "";
+            }
+        };
+
+        Function<String,String> parseQuery = (path) -> {
+            try {
+                return path.split("\\?")[1];
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                return "";
+            }
+        };
+
         try {
             contents.put(METHOD, tokens.get(METHOD_INDEX));
-            contents.put(PATH, tokens.get(PATH_INDEX));
+            contents.put(PATH, parsePath.apply(tokens.get(PATH_INDEX)));
             contents.put(PROTOCOL, tokens.get(PROTOCOL_INDEX));
+            contents.put(QUERY, parseQuery.apply(tokens.get(PATH_INDEX)));
         } catch (ArrayIndexOutOfBoundsException exception) {
         }
     }
@@ -51,6 +70,11 @@ public class BaseRequest {
     public String getPath() {
         return this.contents.getOrDefault(PATH, EMPTY_PATH);
     }
+
+    public String getQuery() {
+        return this.contents.getOrDefault(QUERY, EMPTY_PATH);
+    }
+
 
     private String getProtocol() {
         return this.contents.getOrDefault(PROTOCOL, DEFAULT_PROTOCOL);

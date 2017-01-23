@@ -15,6 +15,12 @@ public class BaseRequestTest {
     }
 
     @Test
+    public void storesGivenQueryParams() throws Exception {
+        BaseRequest baseRequest = new BaseRequest("GET /?stuff=things HTTP/1.1");
+        assertThat(baseRequest.getQuery(), is("stuff=things"));
+    }
+
+    @Test
     public void storesGivenPath() throws Exception {
         BaseRequest baseRequest = new BaseRequest("GET / HTTP/1.1");
         assertThat(baseRequest.getPath(), is("/"));
