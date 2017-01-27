@@ -68,3 +68,7 @@ Duckling has been built with a preconfigured set of routes, which are there pure
 | GET | / | 200 OK | The public directory |
 | GET | /coffee | 418 TEAPOT | A quirky teapot code |
 | GET | /tea | 200 OK | You probably meant to go here, not to /coffee |
+| POST | /form | 200 OK | Just a happy little route, look at this route |
+| PUT | /form | 200 OK | This happy little route accepts PUT requests, too |
+| GET | /redirect | 302 FOUND | Sends you to the root path |
+| GET | /parameters | 200 OK | Echoes any query parameters you give it |
