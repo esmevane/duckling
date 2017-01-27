@@ -1,9 +1,8 @@
 package duckling.routing;
 
+import duckling.behaviors.Behavior;
 import duckling.requests.Request;
 import duckling.responses.ResponseCode;
-
-import java.util.function.Function;
 
 public class Route {
     protected String routeName;
@@ -32,7 +31,7 @@ public class Route {
     public Route(
         String method,
         String routeName,
-        Function<Request, String> routeContents
+        Behavior routeContents
     ) {
         this(
             method,
@@ -64,6 +63,10 @@ public class Route {
         return new Route(method, routeName, contents, ResponseCode.found());
     }
 
+    public Route with(Behavior behavior) {
+        return new Route(method, routeName, behavior);
+    }
+
     public String getContent(Request request) {
         return this.routeContents.get(request);
     }
@@ -92,10 +95,6 @@ public class Route {
         return equals(Routes.fromRequest(request));
     }
 
-    public Route with(Function<Request, String> routeContents) {
-        return new Route(method, routeName, routeContents);
-    }
-
     @Override
     public int hashCode() {
         return this.routeName.hashCode() + this.method.hashCode();
@@ -121,4 +120,5 @@ public class Route {
     public boolean isRedirect() {
         return responseCode.equals(ResponseCode.found());
     }
+
 }

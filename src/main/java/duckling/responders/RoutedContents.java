@@ -12,13 +12,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class DefinedContents extends Responder {
+public class RoutedContents extends Responder {
     private RouteDefinitions routes = new RouteDefinitions();
     private String template =
         "<html><head><title>%s</title></head>" +
             "<body>%s</body></html>";
 
-    public DefinedContents(Request request, Configuration config) {
+    public RoutedContents(Request request, Configuration config) {
         super(request);
 
         this.routes = config.routes;

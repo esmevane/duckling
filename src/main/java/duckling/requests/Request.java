@@ -6,6 +6,7 @@ import duckling.Server;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Request {
@@ -95,4 +96,11 @@ public class Request {
             body.toString();
     }
 
+    public HashMap<String, String> getParams() {
+        return new QueryParams().apply(this);
+    }
+
+    public ArrayList<String> getBody() {
+        return this.body;
+    }
 }

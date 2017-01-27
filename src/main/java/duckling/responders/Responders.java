@@ -25,7 +25,7 @@ public class Responders {
     public Responders(Request request, Configuration config) {
         this(
             request,
-            new DefinedContents(request, config),
+            new RoutedContents(request, config),
             new FileContents(request),
             new FolderContents(request),
             new NotFound(request)

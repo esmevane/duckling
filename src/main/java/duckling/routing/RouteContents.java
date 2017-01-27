@@ -1,18 +1,19 @@
 package duckling.routing;
 
+import duckling.behaviors.Behavior;
 import duckling.requests.Request;
 
 import java.util.function.Function;
 
 public class RouteContents {
     private Request nullRequest = new Request();
-    private Function<Request, String> contents;
+    private Behavior contents;
 
     public RouteContents(String contents) {
         this((request) -> contents);
     }
 
-    public RouteContents(Function<Request, String> getContents) {
+    public RouteContents(Behavior getContents) {
         this.contents = getContents;
     }
 

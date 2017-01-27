@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DefinedContentsTest {
+public class RoutedContentsTest {
     private Configuration config;
     private Request request;
-    private DefinedContents responder;
+    private RoutedContents responder;
 
     @Before
     public void setup() throws Exception {
@@ -30,7 +30,7 @@ public class DefinedContentsTest {
         request.add("GET /tea HTTP/1.1");
 
         config = new Configuration(new RouteDefinitions(routes));
-        responder = new DefinedContents(request, config);
+        responder = new RoutedContents(request, config);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class DefinedContentsTest {
 
         request.add("GET /redirect HTTP/1.1");
 
-        Responder responder = new DefinedContents(request, config);
+        Responder responder = new RoutedContents(request, config);
 
         ArrayList<String> headers =
             new ResponseHeaders().
@@ -80,7 +80,7 @@ public class DefinedContentsTest {
             )
         );
 
-        responder = new DefinedContents(request, config);
+        responder = new RoutedContents(request, config);
 
         ArrayList<String> headers =
             new ResponseHeaders(ResponseCode.teapot()).
@@ -95,7 +95,7 @@ public class DefinedContentsTest {
         request = new Request();
         request.add("OPTIONS /coffee HTTP/1.1");
 
-        responder = new DefinedContents(request, config);
+        responder = new RoutedContents(request, config);
 
         ArrayList<String> headers =
             new ResponseHeaders().

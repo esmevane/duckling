@@ -1,8 +1,7 @@
 package duckling;
 
+import duckling.behaviors.*;
 import duckling.errors.BadArgumentsError;
-import duckling.requests.ParamConverter;
-import duckling.requests.ParamExtractor;
 import duckling.routing.RouteDefinitions;
 import duckling.routing.Routes;
 
@@ -12,12 +11,14 @@ public class Configuration {
     public static final int DEFAULT_PORT = 5000;
     public static final String DEFAULT_ROOT = ".";
     public static final RouteDefinitions DEFAULT_ROUTES = new RouteDefinitions(
-        Routes.put("/form"),
-        Routes.post("/form"),
+        Routes.put("/form").with(new StoreMemory()),
+        Routes.post("/form").with(new StoreMemory()),
+        Routes.get("/form").with(new RetrieveMemory()),
+        Routes.delete("/form").with(new EraseMemory()),
         Routes.get("/redirect").andRedirectTo("/"),
-        Routes.get("/parameters").with(new ParamConverter()),
-        Routes.get("/coffee").with((request) -> "I'm a teapot").andRejectWith(418),
-        Routes.get("/tea").with((request) -> "Tea indeed")
+        Routes.get("/parameters").with(new ParamEcho()),
+        Routes.get("/coffee").with(new StaticBody("I'm a teapot")).andRejectWith(418),
+        Routes.get("/tea").with(new StaticBody("Tea indeed"))
     );
 
     public int port;

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class ParamExtractor implements Function<Request, HashMap<String, String>> {
+public class QueryParams implements Function<Request, HashMap<String, String>> {
     @Override
     public HashMap<String, String> apply(Request request) {
         String query = request.getQuery();

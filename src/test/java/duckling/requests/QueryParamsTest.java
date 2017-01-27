@@ -1,12 +1,13 @@
 package duckling.requests;
 
-import duckling.Server;
 import org.junit.Test;
+
+import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ParamConverterTest {
+public class QueryParamsTest {
     @Test
     public void applyReturnsStringOfDecodedParameters() throws Exception {
         String encoded = "/parameters?variable_1=Operators%20%3C%2C%20%" +
@@ -15,14 +16,20 @@ public class ParamConverterTest {
             "%20all%22%3F&variable_2=stuff";
 
         Request request = new Request();
-        ParamConverter converter = new ParamConverter();
+        QueryParams extractor = new QueryParams();
 
         request.add("GET /" + encoded + " HTTP/1.1");
 
-        String expectation = "variable_1 = Operators <, >, =, !=; +, -, *," +
-            " &, @, #, $, [, ]: \"is that all\"?" + Server.CRLF +
-            "variable_2 = stuff" + Server.CRLF;
+        HashMap<String, String> expectation = new HashMap<>();
 
-        assertThat(converter.apply(request), is(expectation));
+        expectation.put(
+            "variable_1",
+            "Operators <, >, =, !=; +, -, *, &, @, #, $, [, ]: \"is that all\"?"
+        );
+
+        expectation.put("variable_2", "stuff");
+
+        assertThat(extractor.apply(request), is(expectation));
     }
+
 }
