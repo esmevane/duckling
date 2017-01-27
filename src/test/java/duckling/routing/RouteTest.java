@@ -25,7 +25,7 @@ public class RouteTest {
 
     @Test
     public void assignsResponderUsingWith() throws Exception {
-        Route route = new Route().with("supercool");
+        Route route = new Route().with((request) -> "supercool");
         assertThat(route.hasResponder("supercool"), is(true));
     }
 

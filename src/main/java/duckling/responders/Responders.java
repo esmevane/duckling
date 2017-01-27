@@ -15,7 +15,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class Responders {
-    private Configuration config;
     private Request request;
     private ArrayList<Responder> responders;
 
@@ -26,7 +25,6 @@ public class Responders {
     public Responders(Request request, Configuration config) {
         this(
             request,
-            config,
             new DefinedContents(request, config),
             new FileContents(request),
             new FolderContents(request),
@@ -36,14 +34,12 @@ public class Responders {
 
     public Responders(
         Request request,
-        Configuration config,
         Responder... responders
     ) {
         ArrayList<Responder> list = new ArrayList<>();
         Collections.addAll(list, responders);
 
         this.request = request;
-        this.config = config;
         this.responders = list;
     }
 

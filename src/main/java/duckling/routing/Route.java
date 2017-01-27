@@ -92,10 +92,6 @@ public class Route {
         return equals(Routes.fromRequest(request));
     }
 
-    public Route with(String routeContents) {
-        return with((request) -> routeContents);
-    }
-
     public Route with(Function<Request, String> routeContents) {
         return new Route(method, routeName, routeContents);
     }

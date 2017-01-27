@@ -37,8 +37,8 @@ public class Configuration {
                 return "Unable to parse request URL query params.";
             }
         }),
-        Routes.get("/coffee").with("I'm a teapot").andRejectWith(418),
-        Routes.get("/tea").with("Tea indeed")
+        Routes.get("/coffee").with((request) -> "I'm a teapot").andRejectWith(418),
+        Routes.get("/tea").with((request) -> "Tea indeed")
     );
 
     public int port;
@@ -47,10 +47,6 @@ public class Configuration {
 
     public Configuration() {
         this(DEFAULT_PORT, DEFAULT_ROOT);
-    }
-
-    public Configuration(String root) {
-        this(DEFAULT_PORT, root, DEFAULT_ROUTES);
     }
 
     public Configuration(RouteDefinitions routes) {

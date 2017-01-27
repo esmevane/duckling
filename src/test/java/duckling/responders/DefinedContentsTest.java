@@ -24,7 +24,7 @@ public class DefinedContentsTest {
 
     @Before
     public void setup() throws Exception {
-        Route routes = Routes.get("/tea").with("Tea indeed");
+        Route routes = Routes.get("/tea").with((request) -> "Tea indeed");
 
         request = new Request();
         request.add("GET /tea HTTP/1.1");
@@ -75,7 +75,7 @@ public class DefinedContentsTest {
         config = new Configuration(
             new RouteDefinitions(
                 Routes.get("/coffee").
-                    with("I'm a teapot").
+                    with((request) -> "I'm a teapot").
                     andRejectWith(ResponseCode.TEAPOT)
             )
         );

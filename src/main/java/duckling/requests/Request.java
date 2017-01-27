@@ -16,14 +16,9 @@ public class Request {
     protected ArrayList<String> body = new ArrayList<>();
 
     private Configuration config;
-    private String query;
 
     public Request() {
         this(new Configuration());
-    }
-
-    public Request(String root) {
-        this(new Configuration(root));
     }
 
     public Request(Configuration config) {

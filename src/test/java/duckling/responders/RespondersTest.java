@@ -3,7 +3,6 @@ package duckling.responders;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import duckling.Configuration;
 import duckling.Server;
 import duckling.requests.RequestStream;
 import duckling.requests.Request;
@@ -44,7 +43,6 @@ public class RespondersTest {
     public void getResponderReturnsFirstMatch() throws IOException {
         Responders responders = new Responders(
             this.request,
-            new Configuration(),
             new NoMatchResponder(this.request),
             new MatchResponder(this.request)
         );

@@ -19,7 +19,7 @@ public class DefinedContents extends Responder {
             "<body>%s</body></html>";
 
     public DefinedContents(Request request, Configuration config) {
-        super(request, config);
+        super(request);
 
         this.routes = config.routes;
     }
