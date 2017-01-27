@@ -1,16 +1,12 @@
 package duckling;
 
 import duckling.errors.BadArgumentsError;
-import duckling.requests.Request;
+import duckling.requests.ParamConverter;
+import duckling.requests.ParamExtractor;
 import duckling.routing.RouteDefinitions;
 import duckling.routing.Routes;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 public class Configuration {
     public static final int DEFAULT_PORT = 5000;
@@ -19,24 +15,7 @@ public class Configuration {
         Routes.put("/form"),
         Routes.post("/form"),
         Routes.get("/redirect").andRedirectTo("/"),
-        Routes.get("/parameters").with((Request request) -> {
-            try {
-                ArrayList<String> lines = new ArrayList<>();
-
-                for (String line: request.getQuery().split("&")) {
-                    ArrayList<String> items = new ArrayList<>();
-                    String decoded = URLDecoder.decode(line, "utf-8");
-
-                    Collections.addAll(items, decoded.split("=", 2));
-
-                    lines.add(items.stream().collect(Collectors.joining(" = ")));
-                }
-
-                return lines.stream().collect(Collectors.joining(Server.CRLF));
-            } catch (UnsupportedEncodingException exception) {
-                return "Unable to parse request URL query params.";
-            }
-        }),
+        Routes.get("/parameters").with(new ParamConverter()),
         Routes.get("/coffee").with((request) -> "I'm a teapot").andRejectWith(418),
         Routes.get("/tea").with((request) -> "Tea indeed")
     );
@@ -67,13 +46,13 @@ public class Configuration {
         try {
             this.port = getPort(arguments);
             this.root = getRoot(arguments);
-            this.routes = getRoutes(arguments);
+            this.routes = getRoutes();
         } catch (Exception exception) {
             throw new BadArgumentsError();
         }
     }
 
-    private RouteDefinitions getRoutes(String[] arguments) throws Exception {
+    private RouteDefinitions getRoutes() throws Exception {
         return DEFAULT_ROUTES;
     }
 
