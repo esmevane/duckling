@@ -23,18 +23,6 @@ public class ResponseHeaders {
 
     public ResponseHeaders(
         ResponseCode responseCode,
-        String contentType
-    ) {
-        this(
-            responseCode,
-            contentType,
-            null,
-            new ArrayList<>()
-        );
-    }
-
-    public ResponseHeaders(
-        ResponseCode responseCode,
         String contentType,
         String location
     ) {

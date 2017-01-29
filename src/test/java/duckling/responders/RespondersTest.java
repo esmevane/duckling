@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class RespondersTest {
-    private OutputStream outputStream;
     private Request request;
 
     @Before
@@ -24,12 +23,6 @@ public class RespondersTest {
         String requestContent = "GET / HTTP/1.1" + Server.CRLF + Server.CRLF;
         byte[] getRequest = requestContent.getBytes();
         InputStream inputStream = new ByteArrayInputStream(getRequest);
-
-        this.outputStream = new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-            }
-        };
 
         RequestStream requestStream = new RequestStream(inputStream);
         Request request = new Request();

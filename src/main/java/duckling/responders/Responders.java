@@ -18,10 +18,6 @@ public class Responders {
     private Request request;
     private ArrayList<Responder> responders;
 
-    public Responders(Request request) {
-        this(request, new Configuration());
-    }
-
     public Responders(Request request, Configuration config) {
         this(
             request,

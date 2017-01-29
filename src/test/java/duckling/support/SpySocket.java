@@ -7,7 +7,6 @@ import java.net.Socket;
 
 public class SpySocket extends Socket {
     private boolean inputStreamCalled = false;
-    private boolean outputStreamCalled = false;
     private boolean closed = false;
 
     public boolean wasClosed() {
@@ -18,10 +17,6 @@ public class SpySocket extends Socket {
         return this.inputStreamCalled;
     }
 
-    public boolean wasOutputStreamCalled() {
-        return this.outputStreamCalled;
-    }
-
     @Override
     public void close() {
         this.closed = true;
@@ -29,8 +24,6 @@ public class SpySocket extends Socket {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        this.outputStreamCalled = true;
-
         return new OutputStream() {
             @Override
             public void write(int b) throws IOException {
