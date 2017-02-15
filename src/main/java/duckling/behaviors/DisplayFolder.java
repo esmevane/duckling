@@ -1,25 +1,27 @@
-package duckling.pages;
+package duckling.behaviors;
 
 import duckling.requests.Request;
+import duckling.responses.Response;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DisplayFolder implements Page {
+public class DisplayFolder implements Behavior {
     String titleTemplate = "<title>%s</title>";
     String pageTemplate = "<html><head>%s</head><body>%s</body></html>";
     String linkTemplate = "<a href=\"%s\">%s</a><br />";
 
     @Override
-    public String apply(Request request) {
+    public Response apply(Request request) {
+        Response response = Response.wrap(request);
         File directory = request.getFile();
         String title = String.format(titleTemplate, directory.getName());
         String[] list = directory.list();
 
         if (list == null) {
-            return String.format(pageTemplate, title, "");
+            return response.withBody(String.format(pageTemplate, title, ""));
         }
 
         Stream<String> links = Stream.of(list).map((item) -> {
@@ -31,8 +33,9 @@ public class DisplayFolder implements Page {
         });
 
         String contents = links.collect(Collectors.joining());
+        String body = String.format(pageTemplate, title, contents);
 
-        return String.format(pageTemplate, title, contents);
+        return response.withBody(body);
     }
 
 }

@@ -1,6 +1,5 @@
 package duckling.behaviors;
 
-import duckling.pages.StaticBody;
 import duckling.requests.Request;
 import duckling.routing.RouteDefinitions;
 import duckling.routing.Routes;

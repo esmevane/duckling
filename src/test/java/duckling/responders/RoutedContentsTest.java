@@ -1,6 +1,7 @@
 package duckling.responders;
 
 import duckling.*;
+import duckling.behaviors.StaticBody;
 import duckling.requests.Request;
 import duckling.responses.CommonHeaders;
 import duckling.responses.Response;
@@ -25,7 +26,7 @@ public class RoutedContentsTest {
 
     @Before
     public void setup() throws Exception {
-        Route routes = Routes.get("/tea").with((request) -> "Tea indeed");
+        Route routes = Routes.get("/tea").with(new StaticBody("Tea indeed"));
 
         request = new Request();
         request.add("GET /tea HTTP/1.1");
@@ -79,7 +80,7 @@ public class RoutedContentsTest {
         config = new Configuration(
             new RouteDefinitions(
                 Routes.get("/coffee").
-                    with((request) -> "I'm a teapot").
+                    with(new StaticBody("I'm a teapot")).
                     andRejectWith(ResponseCodes.TEAPOT)
             )
         );

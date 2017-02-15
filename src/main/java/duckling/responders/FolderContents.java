@@ -3,7 +3,7 @@ package duckling.responders;
 import duckling.behaviors.HasOptions;
 import duckling.behaviors.EitherBody;
 import duckling.behaviors.RestrictToMethods;
-import duckling.pages.DisplayFolder;
+import duckling.behaviors.DisplayFolder;
 import duckling.requests.Request;
 
 public class FolderContents extends Responder {

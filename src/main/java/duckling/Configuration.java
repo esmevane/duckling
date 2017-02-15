@@ -1,6 +1,6 @@
 package duckling;
 
-import duckling.pages.*;
+import duckling.behaviors.*;
 import duckling.errors.BadArgumentsError;
 import duckling.responses.ResponseCodes;
 import duckling.routing.RouteDefinitions;

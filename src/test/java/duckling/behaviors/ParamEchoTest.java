@@ -1,6 +1,7 @@
-package duckling.pages;
+package duckling.behaviors;
 
 import duckling.Server;
+import duckling.behaviors.ParamEcho;
 import duckling.requests.Request;
 import org.junit.Test;
 
@@ -24,6 +25,6 @@ public class ParamEchoTest {
             " &, @, #, $, [, ]: \"is that all\"?" + Server.CRLF +
             "variable_2 = stuff" + Server.CRLF;
 
-        assertThat(converter.apply(request), is(expectation));
+        assertThat(converter.apply(request).getStringBody(), is(expectation));
     }
 }

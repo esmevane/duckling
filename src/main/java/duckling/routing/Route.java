@@ -1,7 +1,7 @@
 package duckling.routing;
 
-import duckling.pages.Page;
-import duckling.pages.StaticBody;
+import duckling.behaviors.Behavior;
+import duckling.behaviors.StaticBody;
 import duckling.requests.Request;
 import duckling.responses.ResponseCodes;
 
@@ -13,7 +13,7 @@ public class Route {
     protected String routeName;
     protected String method;
 
-    private ArrayList<Page> pages;
+    private ArrayList<Behavior> behaviors;
     private ResponseCodes responseCode;
 
     public Route() {
@@ -24,47 +24,50 @@ public class Route {
         this(method, routeName, new StaticBody("not-found"));
     }
 
-    public Route(String method, String routeName, Page... pages) {
-        this(method, routeName, ResponseCodes.OK, pages);
+    public Route(String method, String routeName, Behavior... behaviors) {
+        this(method, routeName, ResponseCodes.OK, behaviors);
     }
 
     public Route(
         String method,
         String routeName,
         ResponseCodes responseCode,
-        Page... pages
+        Behavior... behaviors
     ) {
         this(method, routeName, responseCode, new ArrayList<>());
 
-        Collections.addAll(this.pages, pages);
+        Collections.addAll(this.behaviors, behaviors);
     }
 
     public Route(
         String method,
         String routeName,
         ResponseCodes responseCode,
-        ArrayList<Page> pages
+        ArrayList<Behavior> behaviors
     ) {
         this.method = method;
         this.routeName = routeName.startsWith("/") ? routeName : "/" + routeName;
         this.responseCode = responseCode;
-        this.pages = pages;
+        this.behaviors = behaviors;
     }
 
     public Route andRejectWith(ResponseCodes code) {
-        return new Route(method, routeName, code, pages);
+        return new Route(method, routeName, code, behaviors);
     }
 
     public Route andRedirectTo(String uri) {
         return new Route(method, routeName, ResponseCodes.FOUND, new StaticBody(uri));
     }
 
-    public Route with(Page... pages) {
+    public Route with(Behavior... pages) {
         return new Route(method, routeName, pages);
     }
 
     public String getContent(Request request) {
-        return this.pages.stream().map((page) -> page.apply(request)).collect(Collectors.joining());
+        return behaviors
+            .stream()
+            .map((page) -> page.apply(request).getStringBody())
+            .collect(Collectors.joining());
     }
 
     public String getContent() {
@@ -76,9 +79,9 @@ public class Route {
     }
 
     public boolean hasResponder(String routeContents) {
-        return pages
+        return behaviors
             .stream()
-            .map((page) -> page.apply(new Request()))
+            .map((page) -> page.apply(new Request()).getStringBody())
             .anyMatch((string) -> string.equals(routeContents));
     }
 

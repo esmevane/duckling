@@ -1,5 +1,6 @@
 package duckling.routing;
 
+import duckling.behaviors.StaticBody;
 import duckling.requests.Request;
 import duckling.responses.ResponseCodes;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class RouteTest {
 
     @Test
     public void assignsResponderUsingWith() throws Exception {
-        Route route = new Route().with((request) -> "supercool");
+        Route route = new Route().with(new StaticBody("supercool"));
         assertThat(route.hasResponder("supercool"), is(true));
     }
 

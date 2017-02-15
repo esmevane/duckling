@@ -1,16 +1,15 @@
 package duckling.behaviors;
 
-import duckling.pages.Page;
 import duckling.requests.Request;
 import duckling.responses.Response;
 
 public class EitherBody implements Behavior {
-    Page page;
+    Behavior behavior;
     boolean shouldHaveBody = true;
 
-    public EitherBody(boolean shouldHaveBody, Page page) {
+    public EitherBody(boolean shouldHaveBody, Behavior behavior) {
         this.shouldHaveBody = shouldHaveBody;
-        this.page = page;
+        this.behavior = behavior;
     }
 
     @Override
@@ -18,7 +17,7 @@ public class EitherBody implements Behavior {
         Response response = Response.wrap(request);
 
         return shouldHaveBody ?
-            response.withBody(page.apply(request)) :
+            response.merge(behavior.apply(request)) :
             response.withoutBody();
     }
 }

@@ -1,12 +1,14 @@
-package duckling.pages;
+package duckling.behaviors;
 
 import duckling.Server;
 import duckling.requests.Request;
+import duckling.responses.Response;
 
-public class ParamEcho implements Page {
+public class ParamEcho implements Behavior {
 
     @Override
-    public String apply(Request request) {
+    public Response apply(Request request) {
+        Response response = Response.wrap(request);
         StringBuilder builder = new StringBuilder();
 
         request
@@ -20,6 +22,6 @@ public class ParamEcho implements Page {
                         .append(Server.CRLF)
             );
 
-        return builder.toString();
+        return response.withBody(builder.toString());
     }
 }

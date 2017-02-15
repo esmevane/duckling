@@ -1,6 +1,7 @@
-package duckling.pages;
+package duckling.behaviors;
 
 import duckling.MemoryCache;
+import duckling.behaviors.EraseMemory;
 import duckling.requests.Request;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,23 +9,23 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class StoreMemoryTest {
+public class EraseMemoryTest {
     @Before
     public void setup() throws Exception {
         MemoryCache.flush();
     }
 
     @Test
-    public void applySavesRequestBody() throws Exception {
+    public void applyReturnsRetrievedMemory() throws Exception {
         Request request = new Request();
         String expectation = "Stuff=Things";
-        StoreMemory behavior = new StoreMemory();
+        String key = "/";
+        EraseMemory behavior = new EraseMemory();
 
-        request.add("GET / HTTP/1.1", "", expectation);
+        MemoryCache.put(key, expectation);
+
+        request.add("GET / HTTP/1.1");
         behavior.apply(request);
-
-        assertThat(MemoryCache.get("/"), is(expectation));
+        assertThat(MemoryCache.get("/"), is(""));
     }
-
 }
-

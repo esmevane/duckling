@@ -1,18 +1,19 @@
-package duckling.pages;
+package duckling.behaviors;
 
 import duckling.MemoryCache;
 import duckling.requests.Request;
+import duckling.responses.Response;
 
 import java.util.stream.Collectors;
 
-public class StoreMemory implements Page {
+public class StoreMemory implements Behavior {
     @Override
-    public String apply(Request request) {
+    public Response apply(Request request) {
         MemoryCache.put(
             request.getPath(),
             request.getBody().stream().collect(Collectors.joining(""))
         );
 
-        return "";
+        return Response.wrap(request);
     }
 }
