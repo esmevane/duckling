@@ -11,9 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ServerTest {
-    private int port = 5123;
-    private String root = "./";
-    private Configuration config;
 
     private Server server;
     private SpyServerSocket connection;
@@ -22,7 +19,9 @@ public class ServerTest {
 
     @Before
     public void setup() throws Exception {
-        config = new Configuration(port, root);
+        String root = "./";
+        int port = 5123;
+        Configuration config = new Configuration(port, root);
         connection = new SpyServerSocket();
         pool = new SpyThreadPool();
         logger = new SpyLogger();

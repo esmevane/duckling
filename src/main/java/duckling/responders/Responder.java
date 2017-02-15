@@ -22,7 +22,7 @@ public abstract class Responder {
 
     public InputStream body() {
         return response.getBody();
-    };
+    }
 
     public ArrayList<String> headers() {
         return response.getResponseHeaders();

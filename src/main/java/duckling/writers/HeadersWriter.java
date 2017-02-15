@@ -15,7 +15,7 @@ public class HeadersWriter extends Writer {
     }
 
     public void write() {
-        List<String> headers = null;
+        List<String> headers;
         headers = responder.headers();
         Consumer<String> writeLine = line -> {
             try {

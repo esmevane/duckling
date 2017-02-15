@@ -54,7 +54,7 @@ public class Responders {
     ) {
         Responder responder = new Responders(request, config).getResponder();
         Predicate<Writer> respondsTo = writer -> writer.respondsTo(request);
-        Consumer<Writer> write = writer -> writer.write();
+        Consumer<Writer> write = Writer::write;
 
         Stream.of(
             new HeadersWriter(responder, output),

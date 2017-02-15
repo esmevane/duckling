@@ -11,7 +11,14 @@ public class ParamEcho implements Page {
 
         request
             .getParams()
-            .forEach((key, value) -> builder.append(key + " = " + value + Server.CRLF));
+            .forEach(
+                (key, value) ->
+                    builder
+                        .append(key)
+                        .append(" = ")
+                        .append(value)
+                        .append(Server.CRLF)
+            );
 
         return builder.toString();
     }

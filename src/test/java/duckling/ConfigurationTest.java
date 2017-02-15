@@ -5,13 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import duckling.errors.BadArgumentsError;
-import duckling.routing.RouteDefinitions;
-import duckling.routing.Routes;
 import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 public class ConfigurationTest {
 

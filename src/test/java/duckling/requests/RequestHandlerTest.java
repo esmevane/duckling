@@ -20,7 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RequestHandlerTest {
     private SpySocket client;
-    private String root;
     private Configuration config;
     private RequestHandler handler;
     private SpyLogger logger;
@@ -28,7 +27,7 @@ public class RequestHandlerTest {
     @Before
     public void setup() throws Exception {
         client = new SpySocket();
-        root = "/path/to/root";
+        String root = "/path/to/root";
         config = new Configuration(5151, root);
         logger = new SpyLogger();
         handler = new RequestHandler(client, config, logger);

@@ -14,7 +14,7 @@ public class BodyWriter extends Writer {
 
     public void write() {
         int input;
-        InputStream body = null;
+        InputStream body;
 
         try {
             body = responder.body();

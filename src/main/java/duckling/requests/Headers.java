@@ -24,7 +24,7 @@ public class Headers {
             stream().
             filter(pair -> pair.matches(key)).
             findFirst().
-            map(pair -> pair.getValue()).
+            map(HeaderPair::getValue).
             orElse("");
     }
 
@@ -52,7 +52,7 @@ public class Headers {
         return this.
             contents.
             stream().
-            map(pair -> pair.toString()).
+            map(HeaderPair::toString).
             collect(Collectors.joining(Server.CRLF));
     }
 

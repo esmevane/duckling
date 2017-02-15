@@ -43,9 +43,7 @@ public class Response {
     public ArrayList<String> getHeaderList() {
         ArrayList<String> list = new ArrayList<>();
 
-        getHeaders().forEach((key, value) -> {
-            list.add(key + ": " + value + Server.CRLF);
-        });
+        getHeaders().forEach((key, value) -> list.add(key + ": " + value + Server.CRLF));
 
         list.sort(String::compareTo);
 
