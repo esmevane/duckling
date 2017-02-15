@@ -1,14 +1,19 @@
 package duckling.routing;
 
 import duckling.pages.Page;
+import duckling.pages.StaticBody;
 import duckling.requests.Request;
 import duckling.responses.ResponseCodes;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class Route {
     protected String routeName;
     protected String method;
 
-    private RouteContents routeContents;
+    private ArrayList<Page> pages;
     private ResponseCodes responseCode;
 
     public Route() {
@@ -16,63 +21,54 @@ public class Route {
     }
 
     public Route(String method, String routeName) {
-        this(method, routeName, "not-found");
+        this(method, routeName, new StaticBody("not-found"));
     }
 
-    public Route(String method, String routeName, String routeContents) {
-        this(
-            method,
-            routeName,
-            new RouteContents(routeContents),
-            ResponseCodes.OK
-        );
+    public Route(String method, String routeName, Page... pages) {
+        this(method, routeName, ResponseCodes.OK, pages);
     }
 
     public Route(
         String method,
         String routeName,
-        Page routeContents
+        ResponseCodes responseCode,
+        Page... pages
     ) {
-        this(
-            method,
-            routeName,
-            new RouteContents(routeContents),
-            ResponseCodes.OK
-        );
-    }
+        this(method, routeName, responseCode, new ArrayList<>());
 
+        Collections.addAll(this.pages, pages);
+    }
 
     public Route(
         String method,
         String routeName,
-        RouteContents routeContents,
-        ResponseCodes responseCode
+        ResponseCodes responseCode,
+        ArrayList<Page> pages
     ) {
         this.method = method;
         this.routeName = routeName.startsWith("/") ? routeName : "/" + routeName;
-        this.routeContents = routeContents;
         this.responseCode = responseCode;
+        this.pages = pages;
     }
 
     public Route andRejectWith(ResponseCodes code) {
-        return new Route(method, routeName, routeContents, code);
+        return new Route(method, routeName, code, pages);
     }
 
     public Route andRedirectTo(String uri) {
-        RouteContents contents = new RouteContents(uri);
-        return new Route(method, routeName, contents, ResponseCodes.FOUND);
+        return new Route(method, routeName, ResponseCodes.FOUND, new StaticBody(uri));
     }
 
-    public Route with(Page page) {
-        return new Route(method, routeName, page);
+    public Route with(Page... pages) {
+        return new Route(method, routeName, pages);
     }
 
     public String getContent(Request request) {
-        return this.routeContents.get(request);
+        return this.pages.stream().map((page) -> page.apply(request)).collect(Collectors.joining());
     }
 
     public String getContent() {
-        return this.routeContents.get();
+        return getContent(new Request());
     }
 
     public boolean hasMethod(String method) {
@@ -80,7 +76,10 @@ public class Route {
     }
 
     public boolean hasResponder(String routeContents) {
-        return this.routeContents.equals(routeContents);
+        return pages
+            .stream()
+            .map((page) -> page.apply(new Request()))
+            .anyMatch((string) -> string.equals(routeContents));
     }
 
     public boolean hasRoute(String route) {
@@ -114,7 +113,7 @@ public class Route {
 
     @Override
     public String toString() {
-        return method + " " + routeName + " - " + routeContents + " " + responseCode;
+        return method + " " + routeName + " - " + getContent() + " " + responseCode;
     }
 
     public boolean isRedirect() {
