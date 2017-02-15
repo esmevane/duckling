@@ -1,7 +1,6 @@
-package duckling.behaviors;
+package duckling.pages;
 
 import duckling.Server;
-import duckling.behaviors.ParamEcho;
 import duckling.requests.Request;
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 package duckling.routing;
 
 import duckling.requests.Request;
-import duckling.responses.ResponseCode;
+import duckling.responses.ResponseCodes;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -93,13 +93,15 @@ public class RouteTest {
 
     @Test
     public void hasDefaultResponseCode() {
-        assertThat(Routes.get().getResponseCode(), is(ResponseCode.ok()));
+        assertThat(Routes.get().getResponseCode(), is(ResponseCodes.OK));
     }
 
     @Test
     public void acceptsRejectionCodes() {
-        Route route = Routes.get("/coffee").andRejectWith(ResponseCode.TEAPOT);
-        assertThat(route.getResponseCode(), is(ResponseCode.teapot()));
+        Route route = Routes.get("/coffee")
+            .andRejectWith(ResponseCodes.TEAPOT);
+
+        assertThat(route.getResponseCode(), is(ResponseCodes.TEAPOT));
     }
 
 }

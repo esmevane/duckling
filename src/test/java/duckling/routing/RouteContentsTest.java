@@ -1,6 +1,6 @@
 package duckling.routing;
 
-import duckling.behaviors.Behavior;
+import duckling.pages.Page;
 import duckling.requests.Request;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ public class RouteContentsTest {
     @Test
     public void getReturnsContentsOfGivenLambda() throws Exception {
         String body = "Heyyyy youuu guyyyysss";
-        Behavior lambda = (Request request) -> body;
+        Page lambda = (Request request) -> body;
         RouteContents contents = new RouteContents(lambda);
 
         assertThat(
@@ -24,7 +24,7 @@ public class RouteContentsTest {
     @Test
     public void twoMatchingBodiesAreEquivalentContents() throws Exception {
         String body = "Heyyyy youuu guyyyysss";
-        Behavior lambda = (Request request) -> body;
+        Page lambda = (Request request) -> body;
         RouteContents closureContents = new RouteContents(lambda);
         RouteContents stringContents = new RouteContents(body);
 
@@ -37,7 +37,7 @@ public class RouteContentsTest {
     @Test
     public void twoMismatchedContentsAreNotEquivalent() throws Exception {
         String body = "Heyyyy youuu guyyyysss";
-        Behavior lambda = (Request request) -> "Baby ruth!";
+        Page lambda = (Request request) -> "Baby ruth!";
         RouteContents closureContents = new RouteContents(lambda);
         RouteContents stringContents = new RouteContents(body);
 

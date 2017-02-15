@@ -61,6 +61,14 @@ public class Request {
         return this.baseRequest.getQuery();
     }
 
+    public HashMap<String, String> getParams() {
+        return new QueryParams().apply(this);
+    }
+
+    public ArrayList<String> getBody() {
+        return this.body;
+    }
+
     public boolean isOptions() {
         return this.baseRequest.isOptions();
     }
@@ -96,11 +104,4 @@ public class Request {
             body.toString();
     }
 
-    public HashMap<String, String> getParams() {
-        return new QueryParams().apply(this);
-    }
-
-    public ArrayList<String> getBody() {
-        return this.body;
-    }
 }

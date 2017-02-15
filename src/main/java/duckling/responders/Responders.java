@@ -23,8 +23,7 @@ public class Responders {
             request,
             new RoutedContents(request, config),
             new FileContents(request),
-            new FolderContents(request),
-            new NotFound(request)
+            new FolderContents(request)
         );
     }
 

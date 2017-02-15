@@ -1,31 +1,28 @@
 package duckling.responders;
 
+import duckling.behaviors.HasOptions;
 import duckling.requests.Request;
-import duckling.responses.ResponseHeaders;
+import duckling.responses.Response;
+import duckling.responses.ResponseCodes;
 import duckling.Server;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 public class NotFound extends Responder {
     public NotFound(Request request) {
         super(request);
-    }
 
-    @Override
-    public InputStream body() {
-        return new ByteArrayInputStream(rawResponse().getBytes());
-    }
+        String responseBody =
+            "<html><head><title>Not found</title></head>" +
+                "<body>404 not found</body></head>" +
+                Server.CRLF;
 
-    @Override
-    public ArrayList<String> headers() {
-        if (request.isOptions()) {
-            return new ResponseHeaders().allowedMethods(this.allowedMethods).toList();
-        }
+        response.bind((givenRequest) ->
+            Response
+                .wrap(givenRequest)
+                .withBody(responseBody)
+                .respondWith(ResponseCodes.NOT_FOUND)
+        );
 
-        return new ResponseHeaders().notFound().withContentType("text/html").toList();
+        response.bind(new HasOptions(allowedMethodsString()));
     }
 
     @Override
@@ -36,12 +33,6 @@ public class NotFound extends Responder {
     @Override
     public boolean matches() {
         return true;
-    }
-
-    private String rawResponse() {
-        return "<html><head><title>Not found</title></head>" +
-            "<body>404 not found</body></head>" +
-            Server.CRLF;
     }
 
 }

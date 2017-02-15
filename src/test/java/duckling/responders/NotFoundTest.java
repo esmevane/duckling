@@ -1,6 +1,8 @@
 package duckling.responders;
 
-import duckling.responses.ResponseHeaders;
+import duckling.responses.CommonHeaders;
+import duckling.responses.Response;
+import duckling.responses.ResponseCodes;
 import duckling.Server;
 import duckling.requests.Request;
 import duckling.support.SpyOutputStream;
@@ -34,9 +36,11 @@ public class NotFoundTest {
         responder = new NotFound(request);
 
         ArrayList<String> headers =
-            new ResponseHeaders().
-                allowedMethods(responder.allowedMethods).
-                toList();
+            Response
+                .wrap(request)
+                .respondWith(ResponseCodes.NOT_FOUND)
+                .withHeader(CommonHeaders.ALLOW, responder.allowedMethodsString())
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -44,7 +48,11 @@ public class NotFoundTest {
     @Test
     public void providesHeadersWithHtmlContentType() throws Exception {
         ArrayList<String> headers =
-            new ResponseHeaders().notFound().withContentType("text/html").toList();
+            Response
+                .wrap(new Request())
+                .respondWith(ResponseCodes.NOT_FOUND)
+                .contentType("text/html")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }

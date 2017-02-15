@@ -1,6 +1,8 @@
 package duckling.responders;
 
-import duckling.responses.ResponseHeaders;
+import duckling.responses.CommonHeaders;
+import duckling.responses.Response;
+import duckling.responses.ResponseCodes;
 import duckling.requests.Request;
 import duckling.support.SpyOutputStream;
 import org.junit.Before;
@@ -23,63 +25,82 @@ public class FileContentsTest {
 
     @Test
     public void matchesWhenExistsAndNotDirectory() throws Exception {
-        File file = new File(".") {
+        request = new Request() {
             @Override
-            public boolean exists() {
-                return true;
-            }
+            public File getFile() {
+                return new File(".") {
+                    @Override
+                    public boolean exists() { return true; }
 
-            @Override
-            public boolean isDirectory() {
-                return false;
+                    @Override
+                    public boolean isDirectory() { return false; }
+                };
             }
         };
 
-        FileContents responder = new FileContents(file);
+        FileContents responder = new FileContents(request);
 
         assertThat(responder.matches(), is(true));
     }
 
     @Test
     public void doesNotMatchWhenDoesNotExist() throws Exception {
-        File file = new File(".") {
+        request = new Request() {
             @Override
-            public boolean exists() {
-                return false;
+            public File getFile() {
+                return new File(".") {
+                    @Override
+                    public boolean exists() { return false; }
+                };
             }
         };
 
-        FileContents responder = new FileContents(file);
+        FileContents responder = new FileContents(request);
 
         assertThat(responder.matches(), is(false));
     }
 
     @Test
     public void doesNotMatchWhenIsDirectory() throws Exception {
-        File file = new File(".") {
+        request = new Request() {
             @Override
-            public boolean exists() {
-                return true;
-            }
+            public File getFile() {
+                return new File(".") {
+                    @Override
+                    public boolean exists() {
+                        return false;
+                    }
 
-            @Override
-            public boolean isDirectory() {
-                return true;
+                    @Override
+                    public boolean isDirectory() {
+                        return true;
+                    }
+                };
             }
         };
 
-        FileContents responder = new FileContents(file);
+        FileContents responder = new FileContents(request);
 
         assertThat(responder.matches(), is(false));
     }
 
     @Test
     public void providesHeadersWithContentType() throws Exception {
-        request.add("GET /file.txt HTTP/1.1");
         File file = new File("file.txt");
-        FileContents responder = new FileContents(request, file);
+
+        request = new Request() {
+            @Override
+            public File getFile() { return file; }
+        };
+
+        request.add("GET /file.txt HTTP/1.1");
+
+        FileContents responder = new FileContents(request);
         ArrayList<String> headers =
-            new ResponseHeaders().withContentType("text/plain").toList();
+            Response
+                .wrap(request)
+                .contentType("text/plain")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -106,7 +127,11 @@ public class FileContentsTest {
 
         FileContents responder = new FileContents(request);
         ArrayList<String> headers =
-            new ResponseHeaders().notAllowed().toList();
+            Response
+                .wrap(request)
+                .respondWith(ResponseCodes.METHOD_NOT_ALLOWED)
+                .contentType("null")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -118,9 +143,10 @@ public class FileContentsTest {
         FileContents responder = new FileContents(request);
 
         ArrayList<String> headers =
-            new ResponseHeaders().
-                allowedMethods(responder.allowedMethods).
-                toList();
+            Response
+                .wrap(request)
+                .withHeader(CommonHeaders.ALLOW, responder.allowedMethodsString())
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }

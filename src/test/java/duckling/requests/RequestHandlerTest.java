@@ -1,8 +1,8 @@
 package duckling.requests;
 
 import duckling.Configuration;
-import duckling.Server;
-import duckling.responses.ResponseHeaders;
+import duckling.responses.Response;
+import duckling.responses.ResponseCodes;
 import duckling.support.SpyLogger;
 import duckling.support.SpyOutputStream;
 import duckling.support.SpySocket;
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -121,13 +122,20 @@ public class RequestHandlerTest {
             }
         };
 
-        ResponseHeaders headers =
-            new ResponseHeaders().
-                notFound().
-                withContentType("text/html");
+        String response =
+            Response
+                .wrap(new Request())
+                .respondWith(ResponseCodes.NOT_FOUND)
+                .contentType("text/html")
+                .getResponseHeaders()
+                .stream()
+                .collect(Collectors.joining());
 
         handler.run();
 
-        assertThat(output.getWrittenOutput(), is(headers.toString()));
+        assertThat(
+            output.getWrittenOutput(),
+            is(response)
+        );
     }
 }

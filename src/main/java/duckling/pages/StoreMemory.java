@@ -1,11 +1,11 @@
-package duckling.behaviors;
+package duckling.pages;
 
 import duckling.MemoryCache;
 import duckling.requests.Request;
 
 import java.util.stream.Collectors;
 
-public class StoreMemory implements Behavior {
+public class StoreMemory implements Page {
     @Override
     public String apply(Request request) {
         MemoryCache cache = new MemoryCache();

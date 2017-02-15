@@ -35,24 +35,20 @@ public class RequestHandler implements Runnable {
     @Override
     public void run() {
         try {
-            handleRequest();
+            RequestStream requestStream = buildRequestStream();
+            List<String> requestLines = requestStream.toList();
+
+            this.loggables.addAll(requestLines);
+            this.request.add(requestLines);
+
+            Responders.respondTo(request, this.client.getOutputStream(), this.config);
+
             this.client.close();
         } catch (IOException exception) {
             exception.printStackTrace();
         } finally {
             this.loggables.forEach(this.logger::info);
         }
-    }
-
-    private void handleRequest() throws IOException {
-        RequestStream requestStream = buildRequestStream();
-        List<String> requestLines = requestStream.toList();
-
-        this.loggables.addAll(requestLines);
-        this.request.add(requestLines);
-
-        Responders.respondTo(request, this.client.getOutputStream(), this.config);
-
     }
 
     public RequestStream buildRequestStream() throws IOException {

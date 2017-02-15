@@ -1,8 +1,8 @@
-package duckling.behaviors;
+package duckling.pages;
 
 import duckling.requests.Request;
 
-public class StaticBody implements Behavior {
+public class StaticBody implements Page {
     private String content;
 
     public StaticBody(String content) {

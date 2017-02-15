@@ -1,7 +1,8 @@
 package duckling.behaviors;
 
 import duckling.requests.Request;
+import duckling.responses.Response;
 
 public interface Behavior {
-    String apply(Request request);
+    Response apply(Request request);
 }

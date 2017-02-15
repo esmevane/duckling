@@ -1,4 +1,4 @@
-package duckling.behaviors;
+package duckling.pages;
 
 import duckling.MemoryCache;
 import duckling.requests.Request;

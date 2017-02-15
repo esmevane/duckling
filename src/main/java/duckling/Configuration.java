@@ -1,7 +1,8 @@
 package duckling;
 
-import duckling.behaviors.*;
+import duckling.pages.*;
 import duckling.errors.BadArgumentsError;
+import duckling.responses.ResponseCodes;
 import duckling.routing.RouteDefinitions;
 import duckling.routing.Routes;
 
@@ -17,7 +18,8 @@ public class Configuration {
         Routes.delete("/form").with(new EraseMemory()),
         Routes.get("/redirect").andRedirectTo("/"),
         Routes.get("/parameters").with(new ParamEcho()),
-        Routes.get("/coffee").with(new StaticBody("I'm a teapot")).andRejectWith(418),
+        Routes.get("/coffee").with(new StaticBody("I'm a teapot"))
+            .andRejectWith(ResponseCodes.TEAPOT),
         Routes.get("/tea").with(new StaticBody("Tea indeed"))
     );
 

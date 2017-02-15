@@ -1,6 +1,8 @@
 package duckling.responders;
 
-import duckling.responses.ResponseHeaders;
+import duckling.responses.CommonHeaders;
+import duckling.responses.Response;
+import duckling.responses.ResponseCodes;
 import duckling.requests.Request;
 import duckling.support.SpyOutputStream;
 import org.junit.Test;
@@ -15,52 +17,57 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class FolderContentsTest {
     @Test
     public void matchesWhenExistsAndIsDirectory() throws Exception {
-        File file = new File(".") {
+        Request request = new Request() {
             @Override
-            public boolean exists() {
-                return true;
-            }
+            public File getFile() {
+                return new File(".") {
+                    @Override
+                    public boolean exists() { return true; }
 
-            @Override
-            public boolean isDirectory() {
-                return true;
+                    @Override
+                    public boolean isDirectory() { return true; }
+                };
             }
         };
 
-        FolderContents responder = new FolderContents(file);
+        FolderContents responder = new FolderContents(request);
 
         assertThat(responder.matches(), is(true));
     }
 
     @Test
     public void doesNotMatchWhenDoesNotExist() throws Exception {
-        File file = new File(".") {
+        Request request = new Request() {
             @Override
-            public boolean exists() {
-                return false;
+            public File getFile() {
+                return new File(".") {
+                    @Override
+                    public boolean exists() { return false; }
+                };
             }
         };
 
-        FolderContents responder = new FolderContents(file);
+        FolderContents responder = new FolderContents(request);
 
         assertThat(responder.matches(), is(false));
     }
 
     @Test
     public void doesNotMatchWhenIsNotDirectory() throws Exception {
-        File file = new File(".") {
+        Request request = new Request() {
             @Override
-            public boolean exists() {
-                return true;
-            }
+            public File getFile() {
+                return new File(".") {
+                    @Override
+                    public boolean exists() { return true; }
 
-            @Override
-            public boolean isDirectory() {
-                return false;
+                    @Override
+                    public boolean isDirectory() { return false; }
+                };
             }
         };
 
-        FolderContents responder = new FolderContents(file);
+        FolderContents responder = new FolderContents(request);
 
         assertThat(responder.matches(), is(false));
     }
@@ -71,7 +78,10 @@ public class FolderContentsTest {
         request.add("GET / HTTP/1.1");
         FolderContents responder = new FolderContents(request);
         ArrayList<String> headers =
-            new ResponseHeaders().withContentType("text/html").toList();
+            Response
+                .wrap(request)
+                .contentType("text/html")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -84,9 +94,10 @@ public class FolderContentsTest {
         FolderContents responder = new FolderContents(request);
 
         ArrayList<String> headers =
-            new ResponseHeaders().
-                allowedMethods(responder.allowedMethods).
-                toList();
+            Response
+                .wrap(request)
+                .withHeader(CommonHeaders.ALLOW, responder.allowedMethodsString())
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -98,7 +109,11 @@ public class FolderContentsTest {
 
         FolderContents responder = new FolderContents(request);
         ArrayList<String> headers =
-            new ResponseHeaders().notAllowed().toList();
+            Response
+                .wrap(request)
+                .respondWith(ResponseCodes.METHOD_NOT_ALLOWED)
+                .contentType("null")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -123,28 +138,4 @@ public class FolderContentsTest {
         assertThat(outputStream.getWrittenOutput(), is(expectation));
     }
 
-    @Test
-    public void providesStreamOfEmptyPageAsBody() throws Exception {
-        Request request = new Request();
-        request.add("GET / HTTP/1.1");
-        FolderContents responder = new FolderContents(request) {
-            @Override
-            public String contents() {
-                return "";
-            }
-        };
-
-        SpyOutputStream outputStream = new SpyOutputStream();
-        InputStream inputStream = responder.body();
-        String expectation =
-            "<html><head><title>.</title></head><body></body></html>";
-
-        int input;
-
-        while ((input = inputStream.read()) != -1) {
-            outputStream.write(input);
-        }
-
-        assertThat(outputStream.getWrittenOutput(), is(expectation));
-    }
 }

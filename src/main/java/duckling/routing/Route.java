@@ -1,15 +1,15 @@
 package duckling.routing;
 
-import duckling.behaviors.Behavior;
+import duckling.pages.Page;
 import duckling.requests.Request;
-import duckling.responses.ResponseCode;
+import duckling.responses.ResponseCodes;
 
 public class Route {
     protected String routeName;
     protected String method;
 
     private RouteContents routeContents;
-    private ResponseCode responseCode;
+    private ResponseCodes responseCode;
 
     public Route() {
         this("GET", "/");
@@ -24,20 +24,20 @@ public class Route {
             method,
             routeName,
             new RouteContents(routeContents),
-            ResponseCode.ok()
+            ResponseCodes.OK
         );
     }
 
     public Route(
         String method,
         String routeName,
-        Behavior routeContents
+        Page routeContents
     ) {
         this(
             method,
             routeName,
             new RouteContents(routeContents),
-            ResponseCode.ok()
+            ResponseCodes.OK
         );
     }
 
@@ -46,7 +46,7 @@ public class Route {
         String method,
         String routeName,
         RouteContents routeContents,
-        ResponseCode responseCode
+        ResponseCodes responseCode
     ) {
         this.method = method;
         this.routeName = routeName.startsWith("/") ? routeName : "/" + routeName;
@@ -54,17 +54,17 @@ public class Route {
         this.responseCode = responseCode;
     }
 
-    public Route andRejectWith(int code) {
-        return new Route(method, routeName, routeContents, new ResponseCode(code));
+    public Route andRejectWith(ResponseCodes code) {
+        return new Route(method, routeName, routeContents, code);
     }
 
     public Route andRedirectTo(String uri) {
         RouteContents contents = new RouteContents(uri);
-        return new Route(method, routeName, contents, ResponseCode.found());
+        return new Route(method, routeName, contents, ResponseCodes.FOUND);
     }
 
-    public Route with(Behavior behavior) {
-        return new Route(method, routeName, behavior);
+    public Route with(Page page) {
+        return new Route(method, routeName, page);
     }
 
     public String getContent(Request request) {
@@ -87,7 +87,7 @@ public class Route {
         return this.routeName.equals(route);
     }
 
-    public ResponseCode getResponseCode() {
+    public ResponseCodes getResponseCode() {
         return responseCode;
     }
 
@@ -118,7 +118,7 @@ public class Route {
     }
 
     public boolean isRedirect() {
-        return responseCode.equals(ResponseCode.found());
+        return responseCode.equals(ResponseCodes.FOUND);
     }
 
 }

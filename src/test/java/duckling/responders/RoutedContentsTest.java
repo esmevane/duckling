@@ -2,8 +2,9 @@ package duckling.responders;
 
 import duckling.*;
 import duckling.requests.Request;
-import duckling.responses.ResponseCode;
-import duckling.responses.ResponseHeaders;
+import duckling.responses.CommonHeaders;
+import duckling.responses.Response;
+import duckling.responses.ResponseCodes;
 import duckling.routing.Route;
 import duckling.routing.RouteDefinitions;
 import duckling.routing.Routes;
@@ -41,9 +42,10 @@ public class RoutedContentsTest {
     @Test
     public void suppliesDefaultRouteHeaders() throws Exception {
         ArrayList<String> headers =
-            new ResponseHeaders().
-                withContentType("text/html").
-                toList();
+            Response
+                .wrap(new Request())
+                .contentType("text/html")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -59,10 +61,12 @@ public class RoutedContentsTest {
         Responder responder = new RoutedContents(request, config);
 
         ArrayList<String> headers =
-            new ResponseHeaders().
-                found("/howdy").
-                withContentType("text/html").
-                toList();
+            Response
+                .wrap(new Request())
+                .respondWith(ResponseCodes.FOUND)
+                .withHeader(CommonHeaders.LOCATION, "/howdy")
+                .contentType("text/html")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -76,16 +80,18 @@ public class RoutedContentsTest {
             new RouteDefinitions(
                 Routes.get("/coffee").
                     with((request) -> "I'm a teapot").
-                    andRejectWith(ResponseCode.TEAPOT)
+                    andRejectWith(ResponseCodes.TEAPOT)
             )
         );
 
         responder = new RoutedContents(request, config);
 
         ArrayList<String> headers =
-            new ResponseHeaders(ResponseCode.teapot()).
-                withContentType("text/html").
-                toList();
+            Response
+                .wrap(new Request())
+                .respondWith(ResponseCodes.TEAPOT)
+                .contentType("text/html")
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }
@@ -98,9 +104,11 @@ public class RoutedContentsTest {
         responder = new RoutedContents(request, config);
 
         ArrayList<String> headers =
-            new ResponseHeaders().
-                allowedMethods(responder.allowedMethods).
-                toList();
+            Response
+                .wrap(request)
+                .respondWith(ResponseCodes.NOT_FOUND)
+                .withHeader(CommonHeaders.ALLOW, responder.allowedMethodsString())
+                .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
     }

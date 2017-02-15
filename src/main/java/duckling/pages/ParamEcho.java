@@ -1,9 +1,9 @@
-package duckling.behaviors;
+package duckling.pages;
 
 import duckling.Server;
 import duckling.requests.Request;
 
-public class ParamEcho implements Behavior {
+public class ParamEcho implements Page {
 
     @Override
     public String apply(Request request) {
