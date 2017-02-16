@@ -3,13 +3,13 @@ package duckling.requests;
 import java.util.Arrays;
 import java.util.List;
 
-public class HeaderPair {
+class HeaderPair {
     private static final String KEY_VALUE_SEPARATOR = ": ";
     private static final int KEY_INDEX = 0;
     private static final int VALUE_INDEX = 1;
 
-    public String key = "";
-    public String value = "";
+    private String key = "";
+    private String value = "";
 
     public HeaderPair(String line) {
         List<String> headers = Arrays.asList(line.split(KEY_VALUE_SEPARATOR));

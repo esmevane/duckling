@@ -5,7 +5,7 @@ import duckling.responses.CommonHeaders;
 import duckling.responses.Response;
 
 public class HasOptions implements Behavior {
-    String allowedMethodsString;
+    private String allowedMethodsString;
 
     public HasOptions(String allowedMethodsString) {
         this.allowedMethodsString = allowedMethodsString;
@@ -16,7 +16,7 @@ public class HasOptions implements Behavior {
         Response newResponse = Response.wrap(request);
 
         return request.isOptions() ?
-            newResponse.withHeader(CommonHeaders.ALLOW, allowedMethodsString).withoutBody() :
-            newResponse.contentType("text/html");
+            newResponse.withHeader(CommonHeaders.ALLOW, allowedMethodsString) :
+            newResponse.withContentType("text/html");
     }
 }

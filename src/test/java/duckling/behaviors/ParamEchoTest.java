@@ -25,6 +25,6 @@ public class ParamEchoTest {
             " &, @, #, $, [, ]: \"is that all\"?" + Server.CRLF +
             "variable_2 = stuff" + Server.CRLF;
 
-        assertThat(converter.apply(request).getStringBody(), is(expectation));
+        assertThat(converter.apply(request).compose().getStringBody(), is(expectation));
     }
 }

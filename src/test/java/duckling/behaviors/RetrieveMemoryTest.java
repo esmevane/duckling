@@ -24,7 +24,7 @@ public class RetrieveMemoryTest {
 
         request.add("GET / HTTP/1.1");
 
-        assertThat(behavior.apply(request).getStringBody(), is(expectation));
+        assertThat(behavior.apply(request).compose().getStringBody(), is(expectation));
     }
 
     @Test
@@ -37,6 +37,6 @@ public class RetrieveMemoryTest {
 
         request.add("GET /form HTTP/1.1");
 
-        assertThat(behavior.apply(request).getStringBody(), is(""));
+        assertThat(behavior.apply(request).compose().getStringBody(), is(""));
     }
 }

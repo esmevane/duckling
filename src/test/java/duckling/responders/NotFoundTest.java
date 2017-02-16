@@ -38,7 +38,7 @@ public class NotFoundTest {
         ArrayList<String> headers =
             Response
                 .wrap(request)
-                .respondWith(ResponseCodes.NOT_FOUND)
+                .withResponseCode(ResponseCodes.NOT_FOUND)
                 .withHeader(CommonHeaders.ALLOW, responder.allowedMethodsString())
                 .getResponseHeaders();
 
@@ -50,8 +50,8 @@ public class NotFoundTest {
         ArrayList<String> headers =
             Response
                 .wrap(new Request())
-                .respondWith(ResponseCodes.NOT_FOUND)
-                .contentType("text/html")
+                .withResponseCode(ResponseCodes.NOT_FOUND)
+                .withContentType("text/html")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
@@ -68,9 +68,7 @@ public class NotFoundTest {
 
         int input;
 
-        while ((input = inputStream.read()) != -1) {
-            outputStream.write(input);
-        }
+        while ((input = inputStream.read()) != -1) outputStream.write(input);
 
         assertThat(outputStream.getWrittenOutput(), is(expectation));
     }

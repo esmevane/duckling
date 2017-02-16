@@ -26,7 +26,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void isInequalWithDifferentHeaders() {
+    public void isUnequalWithDifferentHeaders() {
         Request request = new Request();
 
         request.add("GET /path HTTP/1.1");
@@ -38,7 +38,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void isInequalWithDifferentRequests() {
+    public void isUnequalWithDifferentRequests() {
         Request request = new Request();
 
         request.add("GET /path HTTP/1.1");
@@ -50,19 +50,19 @@ public class ResponseTest {
     }
 
     @Test
-    public void isInequalWithDifferentResponseCodes() {
+    public void isUnequalWithDifferentResponseCodes() {
         Request request = new Request();
 
         request.add("GET /path HTTP/1.1");
 
         Response response = Response.wrap(request);
-        Response subject = Response.wrap(response).respondWith(ResponseCodes.NOT_FOUND);
+        Response subject = Response.wrap(response).withResponseCode(ResponseCodes.NOT_FOUND);
 
         assertThat(subject, is(not(response)));
     }
 
     @Test
-    public void isInequalWithDifferentBodies() {
+    public void isUnequalWithDifferentBodies() {
         Request request = new Request();
 
         request.add("GET /path HTTP/1.1");
@@ -82,23 +82,26 @@ public class ResponseTest {
         Response subject = Response.wrap(request);
         Response expectation = Response.wrap(request);
 
-        subject.bind((Request givenRequest) ->
-            Response.wrap(givenRequest).respondWith(ResponseCodes.NOT_FOUND)
+        subject.bind(
+            (givenRequest) ->
+                Response
+                    .wrap(givenRequest)
+                    .withResponseCode(ResponseCodes.NOT_FOUND)
         );
 
         expectation.setResponseCode(ResponseCodes.NOT_FOUND);
 
-        assertThat(subject.getResponseCode(), is(expectation.getResponseCode()));
+        assertThat(subject.compose().responseCode, is(expectation.compose().responseCode));
     }
 
     @Test
     public void remembersResponseCodes() {
-        Response response = Response.wrap(new Request()).respondWith(ResponseCodes.NOT_FOUND);
+        Response response = Response.wrap(new Request()).withResponseCode(ResponseCodes.NOT_FOUND);
 
         response.bind(Response::wrap);
         response.bind(Response::wrap);
 
-        assertThat(response.getResponseCode(), is(ResponseCodes.NOT_FOUND));
+        assertThat(response.compose().responseCode, is(ResponseCodes.NOT_FOUND));
     }
 
     @Test
@@ -108,7 +111,7 @@ public class ResponseTest {
         HashMap<CommonHeaders, String> subject =
             Response
                 .wrap(new Request())
-                .contentType(contentType)
+                .withContentType(contentType)
                 .getHeaders();
 
         expectation.put(CommonHeaders.CONTENT_TYPE, contentType);
@@ -117,33 +120,13 @@ public class ResponseTest {
     }
 
     @Test
-    public void mergesBodies() {
-        Response subject = Response.wrap(new Request()).withBody("Hey,");
-        Response other = Response.wrap(new Request()).withBody(" you!");
-
-        assertThat(subject.merge(other).getStringBody(), is("Hey, you!"));
-    }
-
-    @Test
-    public void canBuildABodyGradually() {
-        Response response = Response.wrap(new Request());
-
-        response.bind((request) -> Response.wrap(request).withBody("Hey,"));
-        response.bind((request) -> Response.wrap(request).withBody(" you!"));
-        response.bind(Response::wrap);
-
-        assertThat(response.getStringBody(), is("Hey, you!"));
-    }
-
-    @Test
     public void canAbandonABodyInProgress() {
         Response response = Response.wrap(new Request());
 
-        response.bind((request) -> Response.wrap(request).withBody("Hey,"));
-        response.bind((request) -> Response.wrap(request).withBody(" you!"));
+        response.bind((request) -> Response.wrap(request).withBody("Hey, you!"));
         response.bind((request) -> Response.wrap(request).withoutBody());
 
-        assertThat(response.getStringBody(), is(""));
+        assertThat(response.compose().getStringBody(), is(""));
     }
 
     @Test

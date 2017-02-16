@@ -80,7 +80,7 @@ public class FolderContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(request)
-                .contentType("text/html")
+                .withContentType("text/html")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
@@ -111,8 +111,8 @@ public class FolderContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(request)
-                .respondWith(ResponseCodes.METHOD_NOT_ALLOWED)
-                .contentType("null")
+                .withResponseCode(ResponseCodes.METHOD_NOT_ALLOWED)
+                .withContentType("null")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));

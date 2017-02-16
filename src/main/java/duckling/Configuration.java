@@ -9,17 +9,21 @@ import duckling.routing.Routes;
 import java.util.Arrays;
 
 public class Configuration {
-    public static final int DEFAULT_PORT = 5000;
-    public static final String DEFAULT_ROOT = ".";
+    private static final int DEFAULT_PORT = 5000;
+    private static final String DEFAULT_ROOT = ".";
     public static final RouteDefinitions DEFAULT_ROUTES = new RouteDefinitions(
         Routes.put("/form").with(new StoreMemory()),
         Routes.post("/form").with(new StoreMemory()),
         Routes.get("/form").with(new RetrieveMemory()),
         Routes.delete("/form").with(new EraseMemory()),
-        Routes.get("/redirect").andRedirectTo("/"),
+        Routes.get("/redirect").with(new RedirectTo("/")),
         Routes.get("/parameters").with(new ParamEcho()),
-        Routes.get("/coffee").with(new StaticBody("I'm a teapot"))
-            .andRejectWith(ResponseCodes.TEAPOT),
+        Routes
+            .get("/coffee")
+            .with(
+                new StaticBody("I'm a teapot"),
+                new RespondWith(ResponseCodes.TEAPOT)
+            ),
         Routes.get("/tea").with(new StaticBody("Tea indeed"))
     );
 
@@ -39,7 +43,7 @@ public class Configuration {
         this(port, root, DEFAULT_ROUTES);
     }
 
-    public Configuration(int port, String root, RouteDefinitions routes) {
+    private Configuration(int port, String root, RouteDefinitions routes) {
         this.root = root;
         this.port = port;
         this.routes = routes;

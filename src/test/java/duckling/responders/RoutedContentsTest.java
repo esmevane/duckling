@@ -1,6 +1,8 @@
 package duckling.responders;
 
 import duckling.*;
+import duckling.behaviors.RedirectTo;
+import duckling.behaviors.RespondWith;
 import duckling.behaviors.StaticBody;
 import duckling.requests.Request;
 import duckling.responses.CommonHeaders;
@@ -45,7 +47,7 @@ public class RoutedContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(new Request())
-                .contentType("text/html")
+                .withContentType("text/html")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
@@ -53,10 +55,13 @@ public class RoutedContentsTest {
 
     @Test
     public void includesLocationDetailForRedirects() throws Exception {
-        Route routes = Routes.get("/redirect").andRedirectTo("/howdy");
-        Request request = new Request();
-        Configuration config = new Configuration(new RouteDefinitions(routes));
+        RouteDefinitions definitions = new RouteDefinitions(
+            Routes.get("/redirect").with(new RedirectTo("/howdy"))
+        );
 
+        Configuration config = new Configuration(definitions);
+
+        Request request = new Request();
         request.add("GET /redirect HTTP/1.1");
 
         Responder responder = new RoutedContents(request, config);
@@ -64,9 +69,9 @@ public class RoutedContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(new Request())
-                .respondWith(ResponseCodes.FOUND)
+                .withResponseCode(ResponseCodes.FOUND)
                 .withHeader(CommonHeaders.LOCATION, "/howdy")
-                .contentType("text/html")
+                .withContentType("text/html")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
@@ -80,8 +85,10 @@ public class RoutedContentsTest {
         config = new Configuration(
             new RouteDefinitions(
                 Routes.get("/coffee").
-                    with(new StaticBody("I'm a teapot")).
-                    andRejectWith(ResponseCodes.TEAPOT)
+                    with(
+                        new RespondWith(ResponseCodes.TEAPOT),
+                        new StaticBody("I'm a teapot")
+                    )
             )
         );
 
@@ -90,8 +97,8 @@ public class RoutedContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(new Request())
-                .respondWith(ResponseCodes.TEAPOT)
-                .contentType("text/html")
+                .withResponseCode(ResponseCodes.TEAPOT)
+                .withContentType("text/html")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
@@ -107,7 +114,7 @@ public class RoutedContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(request)
-                .respondWith(ResponseCodes.NOT_FOUND)
+                .withResponseCode(ResponseCodes.NOT_FOUND)
                 .withHeader(CommonHeaders.ALLOW, responder.allowedMethodsString())
                 .getResponseHeaders();
 

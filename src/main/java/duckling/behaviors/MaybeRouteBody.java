@@ -21,9 +21,17 @@ public class MaybeRouteBody implements Behavior {
     public Response apply(Request request) {
         Response response = Response.wrap(request);
         Optional<Route> maybeRoute = routes.getMatch(request);
-        String routeContent = maybeRoute.
-            map(route -> String.format(template, request.getPath(), route.getContent(request))).
-            orElseGet(() -> String.format(template, "", ""));
+        String routeContent =
+            maybeRoute
+                .map(
+                    (route) ->
+                        String.format(
+                            template,
+                            request.getPath(),
+                            response.withBehaviors(route.getBehaviors()).compose().getStringBody()
+                        )
+                )
+                .orElseGet(() -> String.format(template, "", ""));
 
         return response.withBody(routeContent);
     }

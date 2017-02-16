@@ -99,7 +99,7 @@ public class FileContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(request)
-                .contentType("text/plain")
+                .withContentType("text/plain")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));
@@ -129,8 +129,8 @@ public class FileContentsTest {
         ArrayList<String> headers =
             Response
                 .wrap(request)
-                .respondWith(ResponseCodes.METHOD_NOT_ALLOWED)
-                .contentType("null")
+                .withResponseCode(ResponseCodes.METHOD_NOT_ALLOWED)
+                .withContentType("null")
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));

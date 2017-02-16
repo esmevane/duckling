@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Request {
-    protected boolean acceptingBody = false;
+    private boolean acceptingBody = false;
 
-    protected Headers headers = new Headers();
-    protected BaseRequest baseRequest = new BaseRequest();
-    protected ArrayList<String> body = new ArrayList<>();
+    Headers headers = new Headers();
+    private BaseRequest baseRequest = new BaseRequest();
+    private ArrayList<String> body = new ArrayList<>();
 
     private Configuration config;
 

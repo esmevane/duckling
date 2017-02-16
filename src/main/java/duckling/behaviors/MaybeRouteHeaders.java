@@ -1,7 +1,6 @@
 package duckling.behaviors;
 
 import duckling.requests.Request;
-import duckling.responses.CommonHeaders;
 import duckling.responses.Response;
 import duckling.responses.ResponseCodes;
 import duckling.routing.Route;
@@ -20,13 +19,18 @@ public class MaybeRouteHeaders implements Behavior {
         Optional<Route> maybeRoute = routes.getMatch(request);
 
         return maybeRoute.
-            map((route) -> route.isRedirect() ?
-                Response.wrap(request)
-                    .respondWith(ResponseCodes.FOUND)
-                    .withHeader(CommonHeaders.LOCATION, route.getContent()) :
-                Response.wrap(request)
-                    .respondWith(route.getResponseCode())
-                    .contentType("text/html")).
-            orElseGet(() -> Response.wrap(request).respondWith(ResponseCodes.NOT_FOUND));
+            map(
+                (route) ->
+                    Response
+                        .wrap(request)
+                        .withBehaviors(route.getBehaviors())
+                        .withContentType("text/html")
+            )
+            .orElseGet(
+                () ->
+                    Response
+                        .wrap(request)
+                        .withResponseCode(ResponseCodes.NOT_FOUND)
+            );
     }
 }

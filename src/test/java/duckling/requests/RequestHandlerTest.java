@@ -124,8 +124,8 @@ public class RequestHandlerTest {
         String response =
             Response
                 .wrap(new Request())
-                .respondWith(ResponseCodes.NOT_FOUND)
-                .contentType("text/html")
+                .withResponseCode(ResponseCodes.NOT_FOUND)
+                .withContentType("text/html")
                 .getResponseHeaders()
                 .stream()
                 .collect(Collectors.joining());

@@ -18,7 +18,7 @@ public class Responders {
     private Request request;
     private ArrayList<Responder> responders;
 
-    public Responders(Request request, Configuration config) {
+    private Responders(Request request, Configuration config) {
         this(
             request,
             new RoutedContents(request, config),

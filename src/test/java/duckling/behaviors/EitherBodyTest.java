@@ -14,7 +14,7 @@ public class EitherBodyTest {
         EitherBody behavior = new EitherBody(true, new StaticBody("Hey"));
         Response subject = behavior.apply(new Request());
 
-        assertThat(subject.getStringBody(), is("Hey"));
+        assertThat(subject.compose().getStringBody(), is("Hey"));
     }
 
     @Test
@@ -22,7 +22,7 @@ public class EitherBodyTest {
         EitherBody behavior = new EitherBody(false, new StaticBody("Hey"));
         Response subject = behavior.apply(new Request());
 
-        assertThat(subject.getStringBody(), is(equalTo(null)));
+        assertThat(subject.compose().getStringBody(), is(equalTo("")));
     }
 
 }

@@ -23,7 +23,7 @@ public class SpyResponder extends Responder {
         this(new Request());
     }
 
-    public SpyResponder(Request request) {
+    private SpyResponder(Request request) {
         super(request);
     }
 

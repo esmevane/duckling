@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DisplayFolder implements Behavior {
-    String titleTemplate = "<title>%s</title>";
-    String pageTemplate = "<html><head>%s</head><body>%s</body></html>";
-    String linkTemplate = "<a href=\"%s\">%s</a><br />";
+    private String titleTemplate = "<title>%s</title>";
+    private String pageTemplate = "<html><head>%s</head><body>%s</body></html>";
+    private String linkTemplate = "<a href=\"%s\">%s</a><br />";
 
     @Override
     public Response apply(Request request) {

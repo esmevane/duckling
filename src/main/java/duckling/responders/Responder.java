@@ -21,11 +21,11 @@ public abstract class Responder {
     }
 
     public InputStream body() {
-        return response.getBody();
+        return response.compose().getBody();
     }
 
     public ArrayList<String> headers() {
-        return response.getResponseHeaders();
+        return response.compose().getResponseHeaders();
     }
 
     public String allowedMethodsString() {
@@ -33,7 +33,7 @@ public abstract class Responder {
     }
 
     public boolean isAllowed() {
-        return this.allowedMethods.contains(this.request.getMethod());
+        return allowedMethods.contains(request.getMethod());
     }
 
     abstract public boolean matches();

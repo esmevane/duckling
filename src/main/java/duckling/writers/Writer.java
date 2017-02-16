@@ -6,10 +6,10 @@ import duckling.responders.Responder;
 import java.io.OutputStream;
 
 public abstract class Writer {
-    protected Responder responder;
-    protected OutputStream output;
+    Responder responder;
+    OutputStream output;
 
-    public Writer(Responder responder, OutputStream output) {
+    Writer(Responder responder, OutputStream output) {
         this.responder = responder;
         this.output = output;
     }

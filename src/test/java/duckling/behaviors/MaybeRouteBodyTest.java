@@ -21,7 +21,7 @@ public class MaybeRouteBodyTest {
         request.add("GET /hello HTTP/1.1");
 
         assertThat(
-            behavior.apply(request).getStringBody(),
+            behavior.apply(request).compose().getStringBody(),
             is("<html><head><title>/hello</title></head><body>Hey</body></html>")
         );
     }
@@ -35,7 +35,7 @@ public class MaybeRouteBodyTest {
         Behavior behavior = new MaybeRouteBody(definitions);
 
         assertThat(
-            behavior.apply(new Request()).getStringBody(),
+            behavior.apply(new Request()).compose().getStringBody(),
             is("<html><head><title></title></head><body></body></html>")
         );
     }

@@ -12,9 +12,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class Response {
-    String body = "";
-    Request request;
     public ResponseCodes responseCode;
+
+    Request request = new Request();
+    ResponseBody responseBody = new ResponseBody("");
     HashMap<CommonHeaders, String> headers = new HashMap<>();
     ArrayList<Behavior> behaviors = new ArrayList<>();
 
@@ -50,122 +51,120 @@ public class Response {
         return list;
     }
 
-    public String getStringBody() {
-        return compose().body;
+    public InputStream getBody() {
+        return new ByteArrayInputStream(responseBody.getBytes());
     }
 
-    public InputStream getBody() {
-        return new ByteArrayInputStream(getStringBody().getBytes());
+    public String getStringBody() {
+        return responseBody.wasEmptied() ? "" : responseBody.body;
     }
 
     public ArrayList<String> getResponseHeaders() {
         ArrayList<String> lines = new ArrayList<>();
 
-        lines.add("HTTP/1.0 " + getResponseCodeWithDefault() + Server.CRLF);
+        lines.add("HTTP/1.0 " + compose().getResponseCodeWithDefault() + Server.CRLF);
         lines.addAll(getHeaderList());
         lines.add(Server.CRLF);
 
         return lines;
     }
 
-    public ResponseCodes getResponseCode() {
-        return compose().responseCode;
+    public ResponseCodes getResponseCodeWithDefault() {
+        return Optional
+            .ofNullable(responseCode)
+            .map(Function.identity())
+            .orElseGet(() -> ResponseCodes.OK);
     }
 
-    public Request getRequest() {
-        return request;
+    private Response setBody(String body) {
+        if (body == null) {
+            this.responseBody = new ResponseBody(null, true);
+        } else {
+            this.responseBody = new ResponseBody(body);
+        }
+
+        return this;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public void setHeader(CommonHeaders key, String content) {
+    private Response setHeader(CommonHeaders key, String content) {
         if (content == null) {
             headers.remove(key);
         } else {
             headers.put(key, content);
         }
+
+        return this;
     }
 
-    public void setHeaders(HashMap<CommonHeaders,String> headers) {
+    private Response setHeaders(HashMap<CommonHeaders, String> headers) {
         this.headers = headers;
+
+        return this;
     }
 
-    public void setResponseCode(ResponseCodes responseCode) {
+    public Response setResponseCode(ResponseCodes responseCode) {
         this.responseCode = responseCode;
+
+        return this;
+    }
+
+    public Response setRequest(Request request) {
+        this.request = request;
+
+        return this;
     }
 
     private Response toCopy() {
-        Response response = Response.wrap(getRequest());
+        Response response = Response.wrap(request);
 
-        response.setResponseCode(getResponseCode());
-        response.setBody(getStringBody());
-        response.setHeaders(getHeaders());
+        response.setResponseCode(responseCode);
+        response.setBody(responseBody.body);
+        response.setHeaders(headers);
+
+        behaviors.forEach(response::bind);
 
         return response;
     }
 
-    public Response contentType(String type) {
+    public Response withBehaviors(ArrayList<Behavior> behaviors) {
+        Response response = toCopy();
+        behaviors.forEach(response::bind);
+        return response;
+    }
+
+    public Response withContentType(String type) {
         return withHeader(CommonHeaders.CONTENT_TYPE, type);
     }
 
-    public Response respondWith(ResponseCodes code) {
-        Response response = toCopy();
-        response.setResponseCode(code);
-        return response;
+    public Response withResponseCode(ResponseCodes code) {
+        return toCopy().setResponseCode(code);
     }
 
     public Response withHeader(CommonHeaders header, String content) {
-        Response response = toCopy();
-        response.setHeader(header, content);
-        return response;
+        return toCopy().setHeader(header, content);
     }
 
     public Response withHeaders(HashMap<CommonHeaders, String> headers) {
-        Response response = toCopy();
-        response.setHeaders(headers);
-        return response;
+        return toCopy().setHeaders(headers);
     }
 
     public Response withBody(String body) {
-        Response response = toCopy();
-        response.setBody(body);
-        return response;
+        return toCopy().setBody(body);
     }
 
     public Response withoutBody() {
-        Response response = toCopy();
-        response.setBody(null);
-        return response;
+        return toCopy().setBody(null);
     }
 
     public Response merge(Response other) {
-        String newBody = other.getStringBody() == null ? "" : body + other.getStringBody();
-        ResponseCodes code = other.responseCode == null ? responseCode : other.getResponseCode();
-        HashMap<CommonHeaders, String> newHeaders = new HashMap<>(headers);
-
-        other.getHeaders().forEach(newHeaders::put);
-
-        return Response
-            .wrap(other.getRequest())
-            .respondWith(code)
-            .withBody(newBody)
-            .withHeaders(newHeaders);
+        return new MergeResponse(this).apply(other);
     }
 
-    private Response compose() {
+    public Response compose() {
         return behaviors
             .stream()
             .map((behavior) -> behavior.apply(request))
             .reduce(this, Response::merge);
-    }
-
-    public ResponseCodes getResponseCodeWithDefault() {
-        return Optional
-            .ofNullable(getResponseCode())
-            .map(Function.identity())
-            .orElseGet(() -> ResponseCodes.OK);
     }
 
     @Override
@@ -173,7 +172,7 @@ public class Response {
         return this.request.hashCode() +
             this.headers.hashCode() +
             this.responseCode.hashCode() +
-            this.body.hashCode();
+            this.responseBody.body.hashCode();
     }
 
     @Override
@@ -181,9 +180,9 @@ public class Response {
         if (object instanceof Response) {
             Response other = (Response) object;
 
-            boolean sameRequest = this.request.equals(other.getRequest());
-            boolean sameHeaders = this.headers.equals(other.getHeaders());
-            boolean sameBody = this.body.equals(other.getStringBody());
+            boolean sameRequest = this.request.equals(other.request);
+            boolean sameHeaders = this.headers.equals(other.headers);
+            boolean sameBody = this.responseBody.body.equals(other.responseBody.body);
 
             boolean sameCode =
                 this.getResponseCodeWithDefault().equals(
@@ -202,7 +201,7 @@ public class Response {
 
         getResponseHeaders().forEach(builder::append);
 
-        builder.append(Server.CRLF).append(getStringBody()).append(Server.CRLF);
+        builder.append(Server.CRLF).append(responseBody.body).append(Server.CRLF);
 
         return builder.toString();
     }

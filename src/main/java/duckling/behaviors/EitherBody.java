@@ -4,8 +4,8 @@ import duckling.requests.Request;
 import duckling.responses.Response;
 
 public class EitherBody implements Behavior {
-    Behavior behavior;
-    boolean shouldHaveBody = true;
+    private Behavior behavior;
+    private boolean shouldHaveBody = true;
 
     public EitherBody(boolean shouldHaveBody, Behavior behavior) {
         this.shouldHaveBody = shouldHaveBody;

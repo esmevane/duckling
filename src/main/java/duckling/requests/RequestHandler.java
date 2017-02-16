@@ -15,7 +15,7 @@ public class RequestHandler implements Runnable {
     private final Logger logger;
     private ArrayList<String> loggables = new ArrayList<>();
 
-    public Request request;
+    private Request request;
 
     public RequestHandler(Socket client, Configuration config) {
         this(client, config, new Logger());

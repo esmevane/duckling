@@ -19,7 +19,7 @@ public class NotFound extends Responder {
             Response
                 .wrap(givenRequest)
                 .withBody(responseBody)
-                .respondWith(ResponseCodes.NOT_FOUND)
+                .withResponseCode(ResponseCodes.NOT_FOUND)
         );
 
         response.bind(new HasOptions(allowedMethodsString()));

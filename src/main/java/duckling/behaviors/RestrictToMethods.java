@@ -7,7 +7,7 @@ import duckling.responses.ResponseCodes;
 import java.util.ArrayList;
 
 public class RestrictToMethods implements Behavior {
-    ArrayList<String> allowedMethods;
+    private ArrayList<String> allowedMethods;
 
     public RestrictToMethods(ArrayList<String> allowedMethods) {
         this.allowedMethods = allowedMethods;
@@ -19,6 +19,6 @@ public class RestrictToMethods implements Behavior {
 
         return allowedMethods.contains(request.getMethod()) ?
             newResponse :
-            newResponse.respondWith(ResponseCodes.METHOD_NOT_ALLOWED).contentType("null");
+            newResponse.withResponseCode(ResponseCodes.METHOD_NOT_ALLOWED).withContentType("null");
     }
 }

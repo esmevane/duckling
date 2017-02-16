@@ -8,18 +8,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BaseRequest {
-    public static final String METHOD = "Method";
-    public static final String PATH = "Path";
-    public static final String PROTOCOL = "Protocol";
-    public static final String QUERY = "Query";
-    public static final String EMPTY_PATH = "";
-    public static final String OPTIONS = "OPTIONS";
-    public static final String HEAD = "HEAD";
-    public static final String GET = "GET";
+    private static final String METHOD = "Method";
+    private static final String PATH = "Path";
+    private static final String PROTOCOL = "Protocol";
+    private static final String QUERY = "Query";
+    private static final String EMPTY_PATH = "";
+    private static final String OPTIONS = "OPTIONS";
+    private static final String HEAD = "HEAD";
+    private static final String GET = "GET";
 
-    public static final int METHOD_INDEX = 0;
-    public static final int PATH_INDEX = 1;
-    public static final int PROTOCOL_INDEX = 2;
+    private static final int METHOD_INDEX = 0;
+    private static final int PATH_INDEX = 1;
+    private static final int PROTOCOL_INDEX = 2;
     private static final String DEFAULT_PROTOCOL = "HTTP/1.0";
 
     private Hashtable<String,String> contents = new Hashtable<>();

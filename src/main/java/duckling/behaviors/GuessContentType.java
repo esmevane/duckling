@@ -11,7 +11,7 @@ import static java.net.URLConnection.guessContentTypeFromStream;
 public class GuessContentType implements Behavior {
     @Override
     public Response apply(Request request) {
-        return Response.wrap(request).contentType(guessContentType(request.getFile()));
+        return Response.wrap(request).withContentType(guessContentType(request.getFile()));
     }
 
     private String guessContentType(File file) {

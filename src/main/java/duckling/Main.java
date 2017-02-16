@@ -4,20 +4,20 @@ import duckling.errors.BadArgumentsError;
 
 import java.io.IOException;
 
-public class Main {
-    public static Logger LOGGER = new Logger();
+class Main {
+    private static Logger LOGGER = new Logger();
 
     private Configuration config;
     private Server server;
     private Logger logger;
 
-    public Main(Configuration config) throws IOException {
+    private Main(Configuration config) throws IOException {
         this.config = config;
         this.server = new Server(config);
         this.logger = LOGGER;
     }
 
-    public void start() throws IOException {
+    private void start() throws IOException {
         logger.info(
             String.format("Port: %s", this.config.port),
             String.format("Root: %s", this.config.root)

@@ -19,7 +19,7 @@ public class RestrictToMethodsTest {
         Behavior behavior = new RestrictToMethods(methods);
         Response subject = behavior.apply(new Request());
 
-        assertThat(subject.getResponseCode(), is(ResponseCodes.METHOD_NOT_ALLOWED));
+        assertThat(subject.compose().responseCode, is(ResponseCodes.METHOD_NOT_ALLOWED));
     }
 
     @Test

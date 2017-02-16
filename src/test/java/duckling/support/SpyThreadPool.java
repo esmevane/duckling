@@ -11,17 +11,13 @@ public class SpyThreadPool extends ThreadPoolExecutor {
     private List<Runnable> threads = new ArrayList<>();
 
     public SpyThreadPool() {
-        this(1, 1, 1, TimeUnit.SECONDS, new SynchronousQueue<>());
+        this(new SynchronousQueue<>());
     }
 
-    public SpyThreadPool(
-        int corePoolSize,
-        int maximumPoolSize,
-        long keepAliveTime,
-        TimeUnit unit,
+    private SpyThreadPool(
         BlockingQueue<Runnable> workQueue
     ) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        super(1, 1, (long) 1, TimeUnit.SECONDS, workQueue);
     }
 
     @Override
