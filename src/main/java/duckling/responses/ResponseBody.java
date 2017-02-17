@@ -1,10 +1,15 @@
 package duckling.responses;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ResponseBody {
-    private boolean emptied;
+    boolean emptied;
     String body;
+    InputStream inputStream;
 
     public ResponseBody(String body) {
         this(body, false);
@@ -13,6 +18,12 @@ public class ResponseBody {
     public ResponseBody(String body, boolean emptied) {
         this.body = body;
         this.emptied = emptied;
+    }
+
+    public ResponseBody(String body, InputStream inputStream) {
+        this(body);
+
+        this.inputStream = inputStream;
     }
 
     public ResponseBody merge(ResponseBody other) {
@@ -25,11 +36,19 @@ public class ResponseBody {
         }
     }
 
+    public boolean isStream() {
+        return inputStream != null;
+    }
+
     public boolean wasEmptied() {
         return emptied;
     }
 
     public byte[] getBytes() {
+        if (isStream()) {
+            return getStreamBytes();
+        }
+
         return body.getBytes();
     }
 
@@ -46,6 +65,17 @@ public class ResponseBody {
     @Override
     public String toString() {
         return body;
+    }
+
+    private byte[] getStreamBytes() {
+        try {
+            int input;
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            while ((input = inputStream.read()) != -1) output.write(input);
+            return output.toByteArray();
+        } catch (IOException exception) {
+            return new byte[0];
+        }
     }
 
 }

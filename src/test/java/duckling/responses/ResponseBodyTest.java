@@ -2,6 +2,9 @@ package duckling.responses;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -15,6 +18,16 @@ public class ResponseBodyTest {
     @Test
     public void wasEmptiedIsFalseByDefault() throws Exception {
         assertThat(new ResponseBody("").wasEmptied(), is(false));
+    }
+
+    @Test
+    public void isStreamIsFalseByDefault() throws Exception {
+        assertThat(new ResponseBody("").isStream(), is(false));
+    }
+
+    @Test
+    public void isStreamIsTrueIfHandedStream() throws Exception {
+        assertThat(new ResponseBody(null, new ByteArrayInputStream("".getBytes())).isStream(), is(true));
     }
 
     @Test
@@ -64,6 +77,15 @@ public class ResponseBodyTest {
     @Test
     public void requestingBytesWithStartAndEndReturnsClippedBytes() throws Exception {
         assertThat(new ResponseBody("Heyo").getBytes(1, 2), is("ey".getBytes()));
+    }
+
+    @Test
+    public void getBytesReturnsStreamBytesIfIsStream() throws Exception {
+        byte[] content = "Hello".getBytes();
+        InputStream stream = new ByteArrayInputStream(content);
+        ResponseBody responseBody = new ResponseBody(null, stream);
+
+        assertThat(responseBody.getBytes(), is(content));
     }
 
 }
