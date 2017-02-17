@@ -5,7 +5,8 @@ public enum ResponseCodes {
     NOT_FOUND          (404, "NOT FOUND"),
     TEAPOT             (418, "TEAPOT"),
     METHOD_NOT_ALLOWED (405, "METHOD NOT ALLOWED"),
-    FOUND              (302, "FOUND");
+    FOUND              (302, "FOUND"),
+    ACCESS_DENIED      (401, "ACCESS DENIED");
 
     final int status;
     final String message;

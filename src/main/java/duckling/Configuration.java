@@ -22,6 +22,9 @@ public class Configuration {
             new SetCookieFromParam("type"),
             new StaticBody("Eat")
         ),
+        Routes
+            .get("/logs")
+            .with(new HasBasicAuth("admin", "hunter2")),
         Routes.get("/eat_cookie").with(new YummyTastyCookie("type")),
         Routes
             .get("/coffee")

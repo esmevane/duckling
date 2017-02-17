@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class YummyTastyCookieTest {
+
     @Test
     public void whatDoesThisTasteLikeToYou() throws Exception {
         Response response = new YummyTastyCookie("type").apply(new Request());
