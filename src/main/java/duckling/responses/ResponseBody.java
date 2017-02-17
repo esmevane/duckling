@@ -1,5 +1,7 @@
 package duckling.responses;
 
+import java.util.Arrays;
+
 public class ResponseBody {
     private boolean emptied;
     String body;
@@ -15,7 +17,7 @@ public class ResponseBody {
 
     public ResponseBody merge(ResponseBody other) {
         if (other.wasEmptied()) {
-            return new ResponseBody("");
+            return new ResponseBody("", true);
         } else if (other.body == null || other.body.isEmpty()) {
             return new ResponseBody(body);
         } else {
@@ -30,4 +32,20 @@ public class ResponseBody {
     public byte[] getBytes() {
         return body.getBytes();
     }
+
+    public byte[] getBytes(int start) {
+        byte[] fullContent = getBytes();
+        return Arrays.copyOfRange(fullContent, start, fullContent.length);
+    }
+
+    public byte[] getBytes(int start, int finish) {
+        byte[] fullContent = getBytes();
+        return Arrays.copyOfRange(fullContent, start, finish + 1);
+    }
+
+    @Override
+    public String toString() {
+        return body;
+    }
+
 }
