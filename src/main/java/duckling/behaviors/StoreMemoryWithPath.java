@@ -4,10 +4,15 @@ import duckling.MemoryCache;
 import duckling.requests.Request;
 import duckling.responses.Response;
 
-public class EraseMemory implements Behavior {
+import java.util.stream.Collectors;
+
+public class StoreMemoryWithPath implements Behavior {
     @Override
     public Response apply(Request request) {
-        MemoryCache.remove(request.getPath());
+        MemoryCache.put(
+            request.getPath(),
+            request.getBody().stream().collect(Collectors.joining(""))
+        );
 
         return Response.wrap(request);
     }

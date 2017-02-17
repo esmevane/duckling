@@ -12,10 +12,10 @@ public class Configuration {
     private static final int DEFAULT_PORT = 5000;
     private static final String DEFAULT_ROOT = ".";
     public static final RouteDefinitions DEFAULT_ROUTES = new RouteDefinitions(
-        Routes.put("/form").with(new StoreMemory()),
-        Routes.post("/form").with(new StoreMemory()),
-        Routes.get("/form").with(new RetrieveMemory()),
-        Routes.delete("/form").with(new EraseMemory()),
+        Routes.put("/form").with(new StoreMemoryWithPath()),
+        Routes.post("/form").with(new StoreMemoryWithPath()),
+        Routes.get("/form").with(new RetrieveMemoryWithPath()),
+        Routes.delete("/form").with(new EraseMemoryWithPath()),
         Routes.get("/redirect").with(new RedirectTo("/")),
         Routes.get("/parameters").with(new ParamEcho()),
         Routes.get("/cookie").with(
@@ -24,7 +24,10 @@ public class Configuration {
         ),
         Routes
             .get("/logs")
-            .with(new HasBasicAuth("admin", "hunter2")),
+            .with(
+                new HasBasicAuth("admin", "hunter2"),
+                new RetrieveMemoryWithPath()
+            ),
         Routes.get("/eat_cookie").with(new YummyTastyCookie("type")),
         Routes
             .get("/coffee")

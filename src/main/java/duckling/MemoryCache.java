@@ -21,4 +21,9 @@ public class MemoryCache {
         STORE = new HashMap<>();
     }
 
+    public static void append(String key, String nextString) {
+        String currentString = get(key);
+        put(key, currentString + nextString);
+    }
+
 }

@@ -2,6 +2,8 @@ package duckling.requests;
 
 import duckling.Configuration;
 import duckling.Logger;
+import duckling.MemoryCache;
+import duckling.Server;
 import duckling.responders.Responders;
 
 import java.io.IOException;
@@ -47,7 +49,10 @@ public class RequestHandler implements Runnable {
         } catch (IOException exception) {
             exception.printStackTrace();
         } finally {
-            this.loggables.forEach(this.logger::info);
+            this.loggables.forEach((message) -> {
+                MemoryCache.append("/logs", message + Server.CRLF);
+                this.logger.info(message);
+            });
         }
     }
 

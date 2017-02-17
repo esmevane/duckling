@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class RetrieveMemoryTest {
+public class RetrieveMemoryWithPathTest {
     @Before
     public void setup() throws Exception {
         MemoryCache.flush();
@@ -18,7 +18,7 @@ public class RetrieveMemoryTest {
     public void applyReturnsRetrievedMemory() throws Exception {
         Request request = new Request();
         String expectation = "Stuff=Things";
-        RetrieveMemory behavior = new RetrieveMemory();
+        RetrieveMemoryWithPath behavior = new RetrieveMemoryWithPath();
 
         MemoryCache.put("/", expectation);
 
@@ -31,7 +31,7 @@ public class RetrieveMemoryTest {
     public void applyMissReturnsEmptyString() throws Exception {
         Request request = new Request();
         String expectation = "Stuff=Things";
-        RetrieveMemory behavior = new RetrieveMemory();
+        RetrieveMemoryWithPath behavior = new RetrieveMemoryWithPath();
 
         MemoryCache.put("/", expectation);
 

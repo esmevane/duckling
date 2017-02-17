@@ -4,11 +4,11 @@ import duckling.MemoryCache;
 import duckling.requests.Request;
 import duckling.responses.Response;
 
-public class RetrieveMemory implements Behavior {
+public class EraseMemoryWithPath implements Behavior {
     @Override
     public Response apply(Request request) {
-        String body = MemoryCache.get(request.getPath());
+        MemoryCache.remove(request.getPath());
 
-        return Response.wrap(request).withBody(body);
+        return Response.wrap(request);
     }
 }

@@ -43,54 +43,34 @@ public class RespondersTest {
     }
 
     private class MatchResponder extends Responder {
-        MatchResponder(Request request) {
-            super(request);
-        }
+        MatchResponder(Request request) { super(request); }
 
         @Override
-        public boolean matches() {
-            return true;
-        }
+        public boolean matches() { return true; }
 
         @Override
-        public ArrayList<String> headers() {
-            return null;
-        }
+        public ArrayList<String> headers() { return null; }
 
         @Override
-        public InputStream body() {
-            return null;
-        }
+        public InputStream body() { return null; }
 
         @Override
-        public boolean isAllowed() {
-            return true;
-        }
+        public boolean isAllowed() { return true; }
     }
 
     private class NoMatchResponder extends Responder {
-        NoMatchResponder(Request request) {
-            super(request);
-        }
+        NoMatchResponder(Request request) { super(request); }
 
         @Override
-        public boolean matches() {
-            return false;
-        }
+        public boolean matches() { return false; }
 
         @Override
-        public ArrayList<String> headers() {
-            return null;
-        }
+        public ArrayList<String> headers() { return null; }
 
         @Override
-        public InputStream body() {
-            return null;
-        }
+        public InputStream body() { return null; }
 
         @Override
-        public boolean isAllowed() {
-            return true;
-        }
+        public boolean isAllowed() { return true; }
     }
 }
