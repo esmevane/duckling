@@ -18,6 +18,11 @@ public class Configuration {
         Routes.delete("/form").with(new EraseMemory()),
         Routes.get("/redirect").with(new RedirectTo("/")),
         Routes.get("/parameters").with(new ParamEcho()),
+        Routes.get("/cookie").with(
+            new SetCookieFromParam("type"),
+            new StaticBody("Eat")
+        ),
+        Routes.get("/eat_cookie").with(new YummyTastyCookie("type")),
         Routes
             .get("/coffee")
             .with(

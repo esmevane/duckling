@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Request {
-    private boolean acceptingBody = false;
+    public Headers headers = new Headers();
 
-    Headers headers = new Headers();
+    private boolean acceptingBody = false;
     private BaseRequest baseRequest = new BaseRequest();
     private ArrayList<String> body = new ArrayList<>();
 
