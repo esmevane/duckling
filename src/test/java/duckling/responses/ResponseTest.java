@@ -130,6 +130,27 @@ public class ResponseTest {
     }
 
     @Test
+    public void acceptsResponseBodyFilters() {
+        Response response =
+            Response
+                .wrap(new Request())
+                .withResponseBodyFilter(Response::wrap);
+
+        assertThat(response.responseBodyFilters.size(), is(1));
+    }
+
+    @Test
+    public void preservesResponseBodyFiltersWhenChained() {
+        Response response =
+            Response
+                .wrap(new Request())
+                .withResponseBodyFilter(Response::wrap)
+                .withBody("Hello!");
+
+        assertThat(response.responseBodyFilters.size(), is(1));
+    }
+
+    @Test
     public void canBuildHeaders() {
         HashMap<CommonHeaders, String> expectation = new HashMap<>();
         Response response =

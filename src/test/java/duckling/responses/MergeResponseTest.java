@@ -6,6 +6,7 @@ import duckling.requests.Request;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -73,6 +74,22 @@ public class MergeResponseTest {
 
         assertThat(
             merge.apply(other).behaviors.size(),
+            is(2)
+        );
+    }
+
+    @Test
+    public void combinesResponseBodyFilters() {
+        Response original = Response.wrap(new Request());
+        Response other = Response.wrap(new Request());
+
+        original.withResponseBodyFilter(Response::wrap);
+        other.withResponseBodyFilter(Response::wrap);
+
+        MergeResponse merge = new MergeResponse(original);
+
+        assertThat(
+            merge.apply(other).responseBodyFilters.size(),
             is(2)
         );
     }

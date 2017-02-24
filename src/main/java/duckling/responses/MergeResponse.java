@@ -12,7 +12,7 @@ class MergeResponse {
     }
 
     public Response apply(Response other) {
-        String body = response.responseBody.merge(other.responseBody).body;
+        ResponseBody responseBody = response.responseBody.merge(other.responseBody);
 
         ResponseCodes responseCode =
             other.responseCode == null ?
@@ -25,9 +25,11 @@ class MergeResponse {
 
         return Response
             .wrap(other.request)
-            .withBody(body)
+            .withResponseBody(responseBody)
             .withBehaviors(response.behaviors)
             .withBehaviors(other.behaviors)
+            .withResponseBodyFilters(response.responseBodyFilters)
+            .withResponseBodyFilters(other.responseBodyFilters)
             .withHeaders(headers)
             .withResponseCode(responseCode);
     }

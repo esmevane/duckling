@@ -1,5 +1,6 @@
 package duckling.responders;
 
+import duckling.Server;
 import duckling.requests.Request;
 import duckling.responses.Response;
 

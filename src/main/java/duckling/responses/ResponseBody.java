@@ -1,15 +1,16 @@
 package duckling.responses;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ResponseBody {
-    boolean emptied;
     String body;
-    InputStream inputStream;
+    byte[] inputContent = new byte[0];
+    boolean isStream;
+    boolean emptied;
 
     public ResponseBody(String body) {
         this(body, false);
@@ -23,11 +24,25 @@ public class ResponseBody {
     public ResponseBody(String body, InputStream inputStream) {
         this(body);
 
-        this.inputStream = inputStream;
+        this.isStream = true;
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try {
+            int input;
+            while ((input = inputStream.read()) != -1) output.write(input);
+            inputContent = output.toByteArray();
+        } catch (IOException exception) {
+            inputContent = new byte[0];
+        }
     }
 
     public ResponseBody merge(ResponseBody other) {
-        if (other.wasEmptied()) {
+        if (other.isStream()) {
+            return new ResponseBody("", other.getInputStream());
+        } else if (isStream()) {
+            return new ResponseBody("", getInputStream());
+        } else if (other.wasEmptied()) {
             return new ResponseBody("", true);
         } else if (other.body == null || other.body.isEmpty()) {
             return new ResponseBody(body);
@@ -36,8 +51,12 @@ public class ResponseBody {
         }
     }
 
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(inputContent);
+    }
+
     public boolean isStream() {
-        return inputStream != null;
+        return isStream;
     }
 
     public boolean wasEmptied() {
@@ -45,37 +64,26 @@ public class ResponseBody {
     }
 
     public byte[] getBytes() {
-        if (isStream()) {
-            return getStreamBytes();
-        }
-
-        return body.getBytes();
+        return isStream() ? inputContent : body.getBytes();
     }
 
     public byte[] getBytes(int start) {
         byte[] fullContent = getBytes();
-        return Arrays.copyOfRange(fullContent, start, fullContent.length);
+        return getBytes(start, fullContent.length - 1);
     }
 
     public byte[] getBytes(int start, int finish) {
         byte[] fullContent = getBytes();
-        return Arrays.copyOfRange(fullContent, start, finish + 1);
+        try {
+            return Arrays.copyOfRange(fullContent, start, finish + 1);
+        } catch (IllegalArgumentException exception) {
+            return fullContent;
+        }
     }
 
     @Override
     public String toString() {
         return body;
-    }
-
-    private byte[] getStreamBytes() {
-        try {
-            int input;
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            while ((input = inputStream.read()) != -1) output.write(input);
-            return output.toByteArray();
-        } catch (IOException exception) {
-            return new byte[0];
-        }
     }
 
 }

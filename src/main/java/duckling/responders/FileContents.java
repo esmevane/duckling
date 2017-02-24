@@ -1,8 +1,6 @@
 package duckling.responders;
 
-import duckling.behaviors.GuessContentType;
-import duckling.behaviors.HasOptions;
-import duckling.behaviors.RestrictToMethods;
+import duckling.behaviors.*;
 import duckling.requests.Request;
 
 import java.io.*;
@@ -18,17 +16,8 @@ public class FileContents extends Responder {
         response.bind(new HasOptions(allowedMethodsString()));
         response.bind(new RestrictToMethods(allowedMethods));
         response.bind(new GuessContentType());
-    }
-
-    @Override
-    public InputStream body() {
-        try {
-            return new BufferedInputStream(
-                new FileInputStream(this.file.getAbsoluteFile())
-            );
-        } catch (FileNotFoundException exception) {
-            return new ByteArrayInputStream("".getBytes());
-        }
+        response.bind(new DisplayFile());
+        response.bind(new PartialContent());
     }
 
     @Override

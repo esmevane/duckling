@@ -1,12 +1,14 @@
 package duckling.responses;
 
 public enum ResponseCodes {
-    OK                 (200, "OK"),
-    NOT_FOUND          (404, "NOT FOUND"),
-    TEAPOT             (418, "TEAPOT"),
-    METHOD_NOT_ALLOWED (405, "METHOD NOT ALLOWED"),
-    FOUND              (302, "FOUND"),
-    ACCESS_DENIED      (401, "ACCESS DENIED");
+    OK                    (200, "OK"),
+    PARTIAL_CONTENT       (206, "PARTIAL CONTENT"),
+    FOUND                 (302, "FOUND"),
+    BAD_REQUEST           (400, "BAD REQUEST"),
+    ACCESS_DENIED         (401, "ACCESS DENIED"),
+    NOT_FOUND             (404, "NOT FOUND"),
+    METHOD_NOT_ALLOWED    (405, "METHOD NOT ALLOWED"),
+    TEAPOT                (418, "TEAPOT");
 
     final int status;
     final String message;

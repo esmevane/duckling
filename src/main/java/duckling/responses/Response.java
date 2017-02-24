@@ -13,11 +13,12 @@ import java.util.function.Function;
 
 public class Response {
     public ResponseCodes responseCode;
+    public ResponseBody responseBody = new ResponseBody("");
 
     Request request = new Request();
-    ResponseBody responseBody = new ResponseBody("");
     HashMap<CommonHeaders, String> headers = new HashMap<>();
     ArrayList<Behavior> behaviors = new ArrayList<>();
+    ArrayList<ResponseBodyFilter> responseBodyFilters = new ArrayList<>();
 
     public Response(Request request) {
         this.request = request;
@@ -37,6 +38,22 @@ public class Response {
         return this;
     }
 
+    public InputStream getBody() {
+        Response nextResponse =
+            responseBodyFilters
+                .stream()
+                .map((responseBodyFilter) -> responseBodyFilter.apply(this))
+                .reduce(Response::merge)
+                .map(Function.identity())
+                .orElse(this);
+
+        return new ByteArrayInputStream(nextResponse.responseBody.getBytes());
+    }
+
+    public String getStringBody() {
+        return responseBody.wasEmptied() ? "" : responseBody.body;
+    }
+
     public HashMap<CommonHeaders, String> getHeaders() {
         return compose().headers;
     }
@@ -51,12 +68,11 @@ public class Response {
         return list;
     }
 
-    public InputStream getBody() {
-        return new ByteArrayInputStream(responseBody.getBytes());
-    }
-
-    public String getStringBody() {
-        return responseBody.wasEmptied() ? "" : responseBody.body;
+    public ResponseCodes getResponseCodeWithDefault() {
+        return Optional
+            .ofNullable(responseCode)
+            .map(Function.identity())
+            .orElseGet(() -> ResponseCodes.OK);
     }
 
     public ArrayList<String> getResponseHeaders() {
@@ -67,13 +83,6 @@ public class Response {
         lines.add(Server.CRLF);
 
         return lines;
-    }
-
-    public ResponseCodes getResponseCodeWithDefault() {
-        return Optional
-            .ofNullable(responseCode)
-            .map(Function.identity())
-            .orElseGet(() -> ResponseCodes.OK);
     }
 
     private Response setBody(String body) {
@@ -102,6 +111,18 @@ public class Response {
         return this;
     }
 
+    private Response setResponseBody(ResponseBody responseBody) {
+        this.responseBody = responseBody;
+
+        return this;
+    }
+
+    private Response setResponseBodyFilters(ArrayList<ResponseBodyFilter> responseBodyFilters) {
+        this.responseBodyFilters = responseBodyFilters;
+
+        return this;
+    }
+
     public Response setResponseCode(ResponseCodes responseCode) {
         this.responseCode = responseCode;
 
@@ -114,12 +135,19 @@ public class Response {
         return this;
     }
 
+    private Response setStreamBody(InputStream inputStream) {
+        this.responseBody = new ResponseBody("", inputStream);
+
+        return this;
+    }
+
     private Response toCopy() {
         Response response = Response.wrap(request);
 
         response.setResponseCode(responseCode);
-        response.setBody(responseBody.body);
+        response.setResponseBody(responseBody);
         response.setHeaders(headers);
+        response.setResponseBodyFilters(responseBodyFilters);
 
         behaviors.forEach(response::bind);
 
@@ -132,12 +160,16 @@ public class Response {
         return response;
     }
 
-    public Response withContentType(String type) {
-        return withHeader(CommonHeaders.CONTENT_TYPE, type);
+    public Response withBody(String body) {
+        return toCopy().setBody(body);
     }
 
-    public Response withResponseCode(ResponseCodes code) {
-        return toCopy().setResponseCode(code);
+    public Response withoutBody() {
+        return toCopy().setBody(null);
+    }
+
+    public Response withContentType(String type) {
+        return withHeader(CommonHeaders.CONTENT_TYPE, type);
     }
 
     public Response withHeader(CommonHeaders header, String content) {
@@ -148,12 +180,28 @@ public class Response {
         return toCopy().setHeaders(headers);
     }
 
-    public Response withBody(String body) {
-        return toCopy().setBody(body);
+    public Response withResponseBody(ResponseBody responseBody) {
+        return toCopy().setResponseBody(responseBody);
     }
 
-    public Response withoutBody() {
-        return toCopy().setBody(null);
+    public Response withResponseBodyFilters(ArrayList<ResponseBodyFilter> responseBodyFilters) {
+        Response response = toCopy();
+        responseBodyFilters.forEach(response::withResponseBodyFilter);
+        return response;
+    }
+
+    public Response withResponseBodyFilter(ResponseBodyFilter responseBodyFilter) {
+        Response response = toCopy();
+        response.responseBodyFilters.add(responseBodyFilter);
+        return response;
+    }
+
+    public Response withResponseCode(ResponseCodes code) {
+        return toCopy().setResponseCode(code);
+    }
+
+    public Response withStreamBody(InputStream inputStream) {
+        return toCopy().setStreamBody(inputStream);
     }
 
     public Response merge(Response other) {

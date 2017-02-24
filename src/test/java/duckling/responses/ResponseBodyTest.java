@@ -27,7 +27,9 @@ public class ResponseBodyTest {
 
     @Test
     public void isStreamIsTrueIfHandedStream() throws Exception {
-        assertThat(new ResponseBody(null, new ByteArrayInputStream("".getBytes())).isStream(), is(true));
+        InputStream stream = new ByteArrayInputStream("123".getBytes());
+
+        assertThat(new ResponseBody(null, stream).isStream(), is(true));
     }
 
     @Test
@@ -71,7 +73,7 @@ public class ResponseBodyTest {
 
     @Test
     public void requestingBytesWithStartReturnsClippedBytes() throws Exception {
-        assertThat(new ResponseBody("Hey").getBytes(1), is("ey".getBytes()));
+        assertThat(new ResponseBody("Heyo").getBytes(1), is("eyo".getBytes()));
     }
 
     @Test
@@ -84,6 +86,17 @@ public class ResponseBodyTest {
         byte[] content = "Hello".getBytes();
         InputStream stream = new ByteArrayInputStream(content);
         ResponseBody responseBody = new ResponseBody(null, stream);
+
+        assertThat(responseBody.getBytes(), is(content));
+    }
+
+    @Test
+    public void requestingBytesMultipleTimes() throws Exception {
+        byte[] content = "Hello".getBytes();
+        InputStream stream = new ByteArrayInputStream(content);
+        ResponseBody responseBody = new ResponseBody(null, stream);
+
+        responseBody.getBytes();
 
         assertThat(responseBody.getBytes(), is(content));
     }
