@@ -12,6 +12,10 @@ public class Configuration {
     private static final int DEFAULT_PORT = 5000;
     private static final String DEFAULT_ROOT = ".";
     public static final RouteDefinitions DEFAULT_ROUTES = new RouteDefinitions(
+        Routes.put("/method_options").with(new StaticBody("")),
+        Routes.post("/method_options").with(new StaticBody("")),
+        Routes.get("/method_options").with(new StaticBody("")),
+        Routes.get("/method_options2").with(new StaticBody("")),
         Routes.put("/form").with(new StoreMemoryWithPath()),
         Routes.post("/form").with(new StoreMemoryWithPath()),
         Routes.get("/form").with(new RetrieveMemoryWithPath()),

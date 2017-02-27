@@ -45,6 +45,10 @@ public class Route {
         return new Route(method, routeName, pages);
     }
 
+    public String getMethod() {
+        return this.method;
+    }
+
     public boolean hasMethod(String method) {
         return this.method.equals(method);
     }

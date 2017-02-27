@@ -39,6 +39,32 @@ public class RouteDefinitions {
 
     @Override
     public String toString() {
-        return contents.stream().map(Route::toString).collect(Collectors.joining(Server.CRLF));
+        return contents
+            .stream()
+            .map(Route::toString)
+            .collect(Collectors.joining(Server.CRLF));
+    }
+
+    public ArrayList<String> allMethodsForRoute(String route) {
+        ArrayList<String> methods = new ArrayList<>();
+
+        methods.add("HEAD");
+        methods.add("OPTIONS");
+
+        contents
+            .stream()
+            .filter(candidate -> candidate.hasRoute(route))
+            .forEach(candidate -> methods.add(candidate.getMethod()));
+
+        methods.sort(Comparator.comparing(String::toString));
+
+        return methods;
+    }
+
+    public boolean hasPath(String path) {
+        return contents
+            .stream()
+            .filter(candidate -> candidate.hasRoute(path))
+            .count() > 0;
     }
 }

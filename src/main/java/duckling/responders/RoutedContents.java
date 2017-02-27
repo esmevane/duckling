@@ -14,13 +14,16 @@ public class RoutedContents extends Responder {
 
         this.routes = config.routes;
 
-        response.bind(new HasOptions(allowedMethodsString()));
+        response.bind(new HasOptions(routes.allMethodsForRoute(request.getPath())));
         response.bind(new MaybeRoute(config.routes));
     }
 
     @Override
     public boolean matches() {
-        return routes.hasRoute(request);
+        boolean validOptionsRequest = (request.isOptions() && routes.hasPath(request.getPath()));
+        boolean validRouteRequest = routes.hasRoute(request);
+
+        return validOptionsRequest || validRouteRequest;
     }
 
 }

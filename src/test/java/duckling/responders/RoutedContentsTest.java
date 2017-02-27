@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -106,16 +107,21 @@ public class RoutedContentsTest {
 
     @Test
     public void presentsGetHeadOptionsAsOptions() throws Exception {
+        String methods = config
+            .routes
+            .allMethodsForRoute("/coffee")
+            .stream()
+            .collect(Collectors.joining(","));
+
         request = new Request();
         request.add("OPTIONS /coffee HTTP/1.1");
 
         responder = new RoutedContents(request, config);
-
         ArrayList<String> headers =
             Response
                 .wrap(request)
                 .withResponseCode(ResponseCodes.NOT_FOUND)
-                .withHeader(CommonHeaders.ALLOW, responder.allowedMethodsString())
+                .withHeader(CommonHeaders.ALLOW, methods)
                 .getResponseHeaders();
 
         assertThat(responder.headers(), is(headers));

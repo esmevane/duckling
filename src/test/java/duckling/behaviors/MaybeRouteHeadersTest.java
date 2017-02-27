@@ -1,6 +1,7 @@
 package duckling.behaviors;
 
 import duckling.requests.Request;
+import duckling.responses.CommonHeaders;
 import duckling.responses.Response;
 import duckling.responses.ResponseCodes;
 import duckling.routing.RouteDefinitions;
@@ -11,6 +12,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MaybeRouteHeadersTest {
+
     @Test
     public void suppliesDefinedContentIfGivenMatch() throws Exception {
         RouteDefinitions definitions = new RouteDefinitions(
@@ -29,6 +31,29 @@ public class MaybeRouteHeadersTest {
                     .wrap(new Request())
                     .withResponseCode(ResponseCodes.TEAPOT)
                     .withContentType("text/html")
+                    .getResponseHeaders()
+            )
+        );
+    }
+
+    @Test
+    public void suppliesDefinedContentIfGivenValidOptionsRequest() throws Exception {
+        RouteDefinitions definitions = new RouteDefinitions(
+            Routes.get("/hello").with(new RespondWith(ResponseCodes.TEAPOT), new StaticBody("Hey"))
+        );
+
+        Behavior behavior = new MaybeRouteHeaders(definitions);
+
+        Request request = new Request();
+        request.add("OPTIONS /hello HTTP/1.1");
+
+        assertThat(
+            behavior.apply(request).compose().getResponseHeaders(),
+            is(
+                Response
+                    .wrap(new Request())
+                    .withResponseCode(ResponseCodes.OK)
+                    .withHeader(CommonHeaders.ALLOW, "GET,HEAD,OPTIONS")
                     .getResponseHeaders()
             )
         );
