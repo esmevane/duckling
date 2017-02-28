@@ -131,11 +131,7 @@ public class RoutedContentsTest {
     public void suppliesTheRouteDefinedBody() throws Exception {
         SpyOutputStream outputStream = new SpyOutputStream();
         InputStream inputStream = responder.body();
-        String expectation =
-            "<html>" +
-                "<head><title>/tea</title></head>" +
-                "<body>Tea indeed</body>" +
-                "</html>";
+        String expectation = "Tea indeed";
 
         int input;
 

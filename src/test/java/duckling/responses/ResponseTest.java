@@ -189,7 +189,7 @@ public class ResponseTest {
         expectation.put(CommonHeaders.LOCATION, "/");
         expectation.put(CommonHeaders.CONTENT_TYPE, "application/json");
 
-        assertThat(response.getHeaders(), is(expectation));
+        assertThat(response.compose().getHeaders(), is(expectation));
     }
 
     @Test

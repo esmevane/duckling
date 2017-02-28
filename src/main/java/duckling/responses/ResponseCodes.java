@@ -2,6 +2,7 @@ package duckling.responses;
 
 public enum ResponseCodes {
     OK                    (200, "OK"),
+    NO_CONTENT            (204, "NO CONTENT"),
     PARTIAL_CONTENT       (206, "PARTIAL CONTENT"),
     FOUND                 (302, "FOUND"),
     BAD_REQUEST           (400, "BAD REQUEST"),

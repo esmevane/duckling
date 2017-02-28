@@ -16,6 +16,8 @@ public class RoutedContents extends Responder {
 
         response.bind(new HasOptions(routes.allMethodsForRoute(request.getPath())));
         response.bind(new MaybeRoute(config.routes));
+
+        this.response = response.compose();
     }
 
     @Override

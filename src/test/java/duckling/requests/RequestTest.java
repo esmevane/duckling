@@ -6,10 +6,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import duckling.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.security.MessageDigest;
+import static sun.security.pkcs11.wrapper.Functions.toHexString;
 
 public class RequestTest {
     private Request request;
@@ -107,6 +110,35 @@ public class RequestTest {
     public void isOptionsReturnsTrueIfMethodIsOptions() throws Exception {
         request.add("OPTIONS / HTTP/1.1");
         assertThat(request.isOptions(), is(true));
+    }
+
+    @Test
+    public void getFilePathReturnsAbsolutePath() throws Exception {
+        String path = "/some/path/string";
+        Configuration config = new Configuration(5000, path);
+        Request request = new Request(config);
+        request.add("OPTIONS /file.txt HTTP/1.1");
+        assertThat(request.getFilePath(), is(path + "/file.txt"));
+    }
+
+    @Test
+    public void fileHexDigestReturnsHexStringOfFile() throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        byte[] contents = "default contents".getBytes();
+
+        digest.update(contents);
+
+        Request request = new Request( ) {
+            @Override
+            public byte[] readFile() {
+                return contents;
+            }
+        };
+
+        assertThat(
+            request.getFileHexString(),
+            is(toHexString(digest.digest()))
+        );
     }
 
 }

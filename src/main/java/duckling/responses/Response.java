@@ -55,7 +55,7 @@ public class Response {
     }
 
     public HashMap<CommonHeaders, String> getHeaders() {
-        return compose().headers;
+        return headers;
     }
 
     public ArrayList<String> getHeaderList() {
@@ -78,7 +78,7 @@ public class Response {
     public ArrayList<String> getResponseHeaders() {
         ArrayList<String> lines = new ArrayList<>();
 
-        lines.add("HTTP/1.0 " + compose().getResponseCodeWithDefault() + Server.CRLF);
+        lines.add("HTTP/1.0 " + getResponseCodeWithDefault() + Server.CRLF);
         lines.addAll(getHeaderList());
         lines.add(Server.CRLF);
 

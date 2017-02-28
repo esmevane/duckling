@@ -1,6 +1,5 @@
 package duckling.responders;
 
-import duckling.Server;
 import duckling.requests.Request;
 import duckling.responses.Response;
 
@@ -11,7 +10,9 @@ import java.util.stream.Collectors;
 
 public abstract class Responder {
     Response response;
+    Response composedResponse;
     Request request;
+
     ArrayList<String> allowedMethods = new ArrayList<>(
         Arrays.asList("GET", "HEAD", "OPTIONS")
     );
@@ -21,12 +22,20 @@ public abstract class Responder {
         this.request = request;
     }
 
+    private Response getComposedResponse() {
+        if (composedResponse != null) return composedResponse;
+
+        this.composedResponse = response.compose();
+
+        return composedResponse;
+    }
+
     public InputStream body() {
-        return response.compose().getBody();
+        return getComposedResponse().getBody();
     }
 
     public ArrayList<String> headers() {
-        return response.compose().getResponseHeaders();
+        return getComposedResponse().getResponseHeaders();
     }
 
     public String allowedMethodsString() {

@@ -4,10 +4,18 @@ import duckling.Configuration;
 import duckling.Server;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import static sun.security.pkcs11.wrapper.Functions.toHexString;
 
 public class Request {
     public Headers headers = new Headers();
@@ -46,7 +54,35 @@ public class Request {
     }
 
     public File getFile() {
-        return new File(this.config.root + this.baseRequest.getPath());
+        return new File(getFilePath());
+    }
+
+    public boolean fileExists() {
+        return Files.exists(Paths.get(getFilePath()));
+    }
+
+    public String getFileHexString() throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        digest.update(readFile());
+        return toHexString(digest.digest());
+    }
+
+    public void writeFile(byte[] content) throws IOException {
+        Path path = Paths.get(getFilePath());
+        Files.write(path, content);
+    }
+
+    public byte[] readFile() {
+        Path path = Paths.get(getFilePath());
+        try {
+            return Files.readAllBytes(path);
+        } catch (IOException exception) {
+            return "".getBytes();
+        }
+    }
+
+    public String getFilePath() {
+        return this.config.root + this.baseRequest.getPath();
     }
 
     public String getMethod() {
@@ -104,4 +140,16 @@ public class Request {
             body.toString();
     }
 
+    public boolean maybeWrite(String ifMatch, String update) {
+        try {
+            if (ifMatch.equals(getFileHexString())) {
+                writeFile(update.getBytes());
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception exception) {
+            return false;
+        }
+    }
 }

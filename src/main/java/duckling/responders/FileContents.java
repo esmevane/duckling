@@ -18,6 +18,7 @@ public class FileContents extends Responder {
         response.bind(new GuessContentType());
         response.bind(new DisplayFile());
         response.bind(new PartialContent());
+        response.bind(new PatchTextContent());
     }
 
     @Override
