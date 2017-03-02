@@ -3,7 +3,6 @@ package duckling.requests;
 import duckling.Configuration;
 import duckling.responses.Response;
 import duckling.responses.ResponseCodes;
-import duckling.support.SpyLogger;
 import duckling.support.SpyOutputStream;
 import duckling.support.SpySocket;
 import org.junit.Before;
@@ -22,42 +21,19 @@ public class RequestHandlerTest {
     private SpySocket client;
     private Configuration config;
     private RequestHandler handler;
-    private SpyLogger logger;
 
     @Before
     public void setup() throws Exception {
         client = new SpySocket();
         String root = "/path/to/root";
         config = new Configuration(5151, root);
-        logger = new SpyLogger();
-        handler = new RequestHandler(client, config, logger);
+        handler = new RequestHandler(client, config);
     }
 
     @Test
     public void buildRequestStreamUsesClientInput() throws Exception {
         handler.buildRequestStream();
         assertThat(client.wasInputStreamCalled(), is(true));
-    }
-
-    @Test
-    public void runOutputsLogDetail() throws Exception {
-        String message = "GET / HTTP/1.1";
-
-        RequestHandler handler = new RequestHandler(client, config, logger) {
-            @Override
-            public RequestStream buildRequestStream() throws IOException {
-                return new RequestStream(client.getInputStream()) {
-                    @Override
-                    public ArrayList<String> toList() {
-                        return new ArrayList<>(Collections.singletonList(message));
-                    }
-                };
-            }
-        };
-
-        handler.run();
-
-        assertThat(logger.messages, hasItem(message));
     }
 
     @Test
@@ -77,7 +53,7 @@ public class RequestHandlerTest {
             }
         };
 
-        RequestHandler handler = new RequestHandler(client, config, logger, request) {
+        RequestHandler handler = new RequestHandler(client, config, request) {
             @Override
             public RequestStream buildRequestStream() throws IOException {
                 return new RequestStream(client.getInputStream()) {
@@ -109,7 +85,7 @@ public class RequestHandlerTest {
             }
         };
 
-        RequestHandler handler = new RequestHandler(client, config, logger) {
+        RequestHandler handler = new RequestHandler(client, config) {
             @Override
             public RequestStream buildRequestStream() throws IOException {
                 return new RequestStream(client.getInputStream()) {

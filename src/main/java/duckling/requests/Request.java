@@ -21,7 +21,7 @@ public class Request {
     public Headers headers = new Headers();
 
     private boolean acceptingBody = false;
-    private BaseRequest baseRequest = new BaseRequest();
+    public BaseRequest baseRequest = new BaseRequest();
     private ArrayList<String> body = new ArrayList<>();
 
     private Configuration config;

@@ -14,29 +14,25 @@ public class Server {
     private InetSocketAddress address;
     private ServerSocket connection;
     private ExecutorService pool;
-    private Logger logger;
 
     public Server(Configuration config) throws IOException {
         this(
             config,
             new ServerSocket(),
-            Executors.newCachedThreadPool(),
-            new Logger()
+            Executors.newCachedThreadPool()
         );
     }
 
     public Server(
         Configuration config,
         ServerSocket connection,
-        ExecutorService pool,
-        Logger logger
+        ExecutorService pool
     ) throws IOException {
         this.config = config;
 
         this.address = new InetSocketAddress(this.config.port);
         this.connection = connection;
         this.pool = pool;
-        this.logger = logger;
     }
 
     public boolean isPoolClosed() {
@@ -61,7 +57,6 @@ public class Server {
             this.shuttingDown = true;
             this.pool.shutdown();
             this.connection.close();
-            this.logger.info(CRLF + "Shutting down.");
         } catch (IOException exception) {
             exception.printStackTrace();
         }

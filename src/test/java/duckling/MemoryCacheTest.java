@@ -3,6 +3,9 @@ package duckling;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -36,5 +39,21 @@ public class MemoryCacheTest {
 
         MemoryCache.remove(key);
         assertThat(MemoryCache.get(key), is(""));
+    }
+
+    @Test
+    public void shortListTracksLastTwentyStrings() {
+        String key = "a string key";
+        ArrayList<String> numbers = new ArrayList<>();
+
+        for (int i = 0; i <= 25; i++) {
+            if (i > 5) numbers.add("" + i);
+
+            MemoryCache.shortList(key, "" + i);
+        }
+
+        String expectation = numbers.stream().collect(Collectors.joining(Server.CRLF));
+
+        assertThat(MemoryCache.get(key), is(expectation));
     }
 }

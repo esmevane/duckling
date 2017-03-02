@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertEquals;
 
-import duckling.support.SpyLogger;
 import duckling.support.SpyServerSocket;
 import duckling.support.SpyThreadPool;
 import org.junit.Before;
@@ -15,7 +14,6 @@ public class ServerTest {
     private Server server;
     private SpyServerSocket connection;
     private SpyThreadPool pool;
-    private SpyLogger logger;
 
     @Before
     public void setup() throws Exception {
@@ -24,8 +22,7 @@ public class ServerTest {
         Configuration config = new Configuration(port, root);
         connection = new SpyServerSocket();
         pool = new SpyThreadPool();
-        logger = new SpyLogger();
-        server = new Server(config, connection, pool, logger);
+        server = new Server(config, connection, pool);
     }
 
     @Test
@@ -45,12 +42,6 @@ public class ServerTest {
     public void onShutdownClosesPool() throws Exception {
         server.onShutdown();
         assertEquals(true, server.isPoolClosed());
-    }
-
-    @Test
-    public void onShutdownLogsOutput() throws Exception {
-        server.onShutdown();
-        assertThat(logger.messages, hasItem(Server.CRLF + "Shutting down."));
     }
 
     @Test

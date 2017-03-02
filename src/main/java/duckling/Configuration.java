@@ -2,6 +2,7 @@ package duckling;
 
 import duckling.behaviors.*;
 import duckling.errors.BadArgumentsError;
+import duckling.responses.Response;
 import duckling.responses.ResponseCodes;
 import duckling.routing.RouteDefinitions;
 import duckling.routing.Routes;
@@ -30,7 +31,8 @@ public class Configuration {
             .get("/logs")
             .with(
                 new HasBasicAuth("admin", "hunter2"),
-                new RetrieveMemoryWithPath()
+                new RetrieveMemoryWithPath(),
+                (request) -> Response.wrap(request).withContentType("text/plain")
             ),
         Routes.get("/eat_cookie").with(new YummyTastyCookie("type")),
         Routes
