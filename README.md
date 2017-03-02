@@ -11,7 +11,7 @@ Duckling is run with `duckling.jar` releases, found on our [releases page][relea
 If you like your command line, and you don't want the whole quacking project, here's a good one-liner (you might need to grab `wget` first):
 
 ```bash
-wget https://github.com/esmevane/duckling/releases/download/v0.0.2/duckling.jar
+wget https://github.com/esmevane/duckling/releases/download/v0.0.3/duckling.jar
 ```
 
 ## Building
@@ -111,4 +111,4 @@ To create a pull request:
 [build-status-link]: https://travis-ci.org/esmevane/duckling
 [releases]: https://github.com/esmevane/duckling/releases
 [issues]: https://github.com/esmevane/storyteller-sheet/issues
-[latest-jar]: https://github.com/esmevane/duckling/releases/download/v0.0.2/duckling.jar
+[latest-jar]: https://github.com/esmevane/duckling/releases/download/v0.0.3/duckling.jar
