@@ -91,7 +91,24 @@ Duckling has been built with a preconfigured set of routes, which are there pure
 
 You can send any of these routes `HEAD` or `OPTIONS` requests as well!
 
+## License
+
+Licensed 2017, MIT, Joseph McCormick.  [More details here](LICENSE.md)
+
+## Contributing
+
+Submit any issues [here][issues] - please take note of the [code of conduct][CODE_OF_CONDUCT.md] before submitting any issues or pull requests.
+
+To create a pull request:
+
+* Fork the repository
+* Create a local feature branch of your changes
+* Please provide tests
+* Submit your local feature branch vs. this repository as a pull request
+
+
 [build-status-img]: https://travis-ci.org/esmevane/duckling.svg?branch=master
 [build-status-link]: https://travis-ci.org/esmevane/duckling
 [releases]: https://github.com/esmevane/duckling/releases
+[issues]: https://github.com/esmevane/storyteller-sheet/issues
 [latest-jar]: https://github.com/esmevane/duckling/releases/download/v0.0.2/duckling.jar
