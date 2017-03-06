@@ -72,16 +72,6 @@ public class ResponseBodyTest {
     }
 
     @Test
-    public void requestingBytesWithStartReturnsClippedBytes() throws Exception {
-        assertThat(new ResponseBody("Heyo").getBytes(1), is("eyo".getBytes()));
-    }
-
-    @Test
-    public void requestingBytesWithStartAndEndReturnsClippedBytes() throws Exception {
-        assertThat(new ResponseBody("Heyo").getBytes(1, 2), is("ey".getBytes()));
-    }
-
-    @Test
     public void getBytesReturnsStreamBytesIfIsStream() throws Exception {
         byte[] content = "Hello".getBytes();
         InputStream stream = new ByteArrayInputStream(content);
@@ -96,7 +86,7 @@ public class ResponseBodyTest {
         InputStream stream = new ByteArrayInputStream(content);
         ResponseBody responseBody = new ResponseBody(null, stream);
 
-        responseBody.getBytes();
+        responseBody.getContent();
 
         assertThat(responseBody.getBytes(), is(content));
     }

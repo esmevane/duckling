@@ -4,13 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 public class ResponseBody {
     String body;
-    byte[] inputContent = new byte[0];
-    boolean isStream;
-    boolean emptied;
+    InputStream inputStream;
+    boolean isStream = false;
+    boolean emptied = false;
 
     public ResponseBody(String body) {
         this(body, false);
@@ -25,16 +24,7 @@ public class ResponseBody {
         this(body);
 
         this.isStream = true;
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        try {
-            int input;
-            while ((input = inputStream.read()) != -1) output.write(input);
-            inputContent = output.toByteArray();
-        } catch (IOException exception) {
-            inputContent = new byte[0];
-        }
+        this.inputStream = inputStream;
     }
 
     public ResponseBody merge(ResponseBody other) {
@@ -52,7 +42,7 @@ public class ResponseBody {
     }
 
     public InputStream getInputStream() {
-        return new ByteArrayInputStream(inputContent);
+        return inputStream;
     }
 
     public boolean isStream() {
@@ -63,27 +53,32 @@ public class ResponseBody {
         return emptied;
     }
 
+    public InputStream getContent() {
+        return isStream() ? inputStream : new ByteArrayInputStream(body.getBytes());
+    }
+
     public byte[] getBytes() {
-        return isStream() ? inputContent : body.getBytes();
-    }
-
-    public byte[] getBytes(int start) {
-        byte[] fullContent = getBytes();
-        return getBytes(start, fullContent.length - 1);
-    }
-
-    public byte[] getBytes(int start, int finish) {
-        byte[] fullContent = getBytes();
-        try {
-            return Arrays.copyOfRange(fullContent, start, finish + 1);
-        } catch (IllegalArgumentException exception) {
-            return fullContent;
-        }
+        return isStream() ? readBody() : body.getBytes();
     }
 
     @Override
     public String toString() {
         return body;
+    }
+
+    private byte[] readBody() {
+        byte[] inputContent;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try {
+            int input;
+            while ((input = this.inputStream.read()) != -1) output.write(input);
+            inputContent = output.toByteArray();
+        } catch (IOException exception) {
+            inputContent = new byte[0];
+        }
+
+        return inputContent;
     }
 
 }

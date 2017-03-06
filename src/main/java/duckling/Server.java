@@ -19,7 +19,7 @@ public class Server {
         this(
             config,
             new ServerSocket(),
-            Executors.newCachedThreadPool()
+            Executors.newFixedThreadPool(10)
         );
     }
 

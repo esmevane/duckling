@@ -5,6 +5,7 @@ import duckling.responses.ResponseBodyFilter;
 import duckling.responses.Response;
 import duckling.responses.ResponseCodes;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,20 +22,18 @@ public class PartialContent implements Behavior {
 
         ResponseBodyFilter responseBodyFilter = (givenResponse) -> {
             try {
-                byte[] content;
                 Range range = new Range(rawRange);
+                byte[] content = givenResponse.responseBody.getBytes();
 
                 if (range.noDefinedEnd()) {
-                    content = givenResponse.responseBody.getBytes(range.from());
+                    content = Arrays.copyOfRange(content, range.from(), content.length);
                 } else if (range.noDefinedStart()) {
-                    content = givenResponse.responseBody.getBytes(
-                        givenResponse.responseBody.getBytes().length - range.to()
-                    );
+                    content = Arrays.copyOfRange(content, content.length - range.to(), content.length);
                 } else {
-                    content = givenResponse.responseBody.getBytes(range.from(), range.to());
+                    content = Arrays.copyOfRange(content, range.from(), range.to() + 1);
                 }
 
-                InputStream stream = new ByteArrayInputStream(content);
+                InputStream stream = new BufferedInputStream(new ByteArrayInputStream(content));
 
                 return givenResponse.withStreamBody(stream);
             } catch (IndexOutOfBoundsException exception) {

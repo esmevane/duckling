@@ -4,7 +4,6 @@ import duckling.Server;
 import duckling.behaviors.Behavior;
 import duckling.requests.Request;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +23,22 @@ public class Response {
         this.request = request;
     }
 
+    public Response(
+        Request request,
+        ArrayList<Behavior> behaviors,
+        ArrayList<ResponseBodyFilter> responseBodyFilters,
+        HashMap<CommonHeaders, String> headers,
+        ResponseCodes responseCode,
+        ResponseBody responseBody
+    ) {
+        this.behaviors = behaviors;
+        this.headers = headers;
+        this.request = request;
+        this.responseBody = responseBody;
+        this.responseBodyFilters = responseBodyFilters;
+        this.responseCode = responseCode;
+    }
+
     public static Response wrap(Request request) {
         return new Response(request);
     }
@@ -39,15 +54,19 @@ public class Response {
     }
 
     public InputStream getBody() {
-        Response nextResponse =
-            responseBodyFilters
-                .stream()
-                .map((responseBodyFilter) -> responseBodyFilter.apply(this))
-                .reduce(Response::merge)
-                .map(Function.identity())
-                .orElse(this);
+        if (responseBodyFilters.size() > 0) {
+            Response nextResponse =
+                responseBodyFilters
+                    .stream()
+                    .map((responseBodyFilter) -> responseBodyFilter.apply(this))
+                    .reduce(Response::merge)
+                    .map(Function.identity())
+                    .orElse(this);
 
-        return new ByteArrayInputStream(nextResponse.responseBody.getBytes());
+            return nextResponse.responseBody.getContent();
+        }
+
+        return responseBody.getContent();
     }
 
     public String getStringBody() {
@@ -85,87 +104,20 @@ public class Response {
         return lines;
     }
 
-    private Response setBody(String body) {
-        if (body == null) {
-            this.responseBody = new ResponseBody(null, true);
-        } else {
-            this.responseBody = new ResponseBody(body);
-        }
-
-        return this;
-    }
-
-    private Response setHeader(CommonHeaders key, String content) {
-        if (content == null) {
-            headers.remove(key);
-        } else {
-            headers.put(key, content);
-        }
-
-        return this;
-    }
-
-    private Response setHeaders(HashMap<CommonHeaders, String> headers) {
-        this.headers = headers;
-
-        return this;
-    }
-
-    private Response setResponseBody(ResponseBody responseBody) {
-        this.responseBody = responseBody;
-
-        return this;
-    }
-
-    private Response setResponseBodyFilters(ArrayList<ResponseBodyFilter> responseBodyFilters) {
-        this.responseBodyFilters = responseBodyFilters;
-
-        return this;
-    }
-
-    public Response setResponseCode(ResponseCodes responseCode) {
-        this.responseCode = responseCode;
-
-        return this;
-    }
-
-    public Response setRequest(Request request) {
-        this.request = request;
-
-        return this;
-    }
-
-    private Response setStreamBody(InputStream inputStream) {
-        this.responseBody = new ResponseBody("", inputStream);
-
-        return this;
-    }
-
-    private Response toCopy() {
-        Response response = Response.wrap(request);
-
-        response.setResponseCode(responseCode);
-        response.setResponseBody(responseBody);
-        response.setHeaders(headers);
-        response.setResponseBodyFilters(responseBodyFilters);
-
-        behaviors.forEach(response::bind);
-
-        return response;
-    }
-
     public Response withBehaviors(ArrayList<Behavior> behaviors) {
-        Response response = toCopy();
-        behaviors.forEach(response::bind);
-        return response;
+        ResponseBuilder builder = getBuilder();
+
+        behaviors.forEach(builder::addBehavior);
+
+        return builder.toResponse();
     }
 
     public Response withBody(String body) {
-        return toCopy().setBody(body);
+        return getBuilder().setBody(body).toResponse();
     }
 
     public Response withoutBody() {
-        return toCopy().setBody(null);
+        return getBuilder().setBody(null).toResponse();
     }
 
     public Response withContentType(String type) {
@@ -173,35 +125,19 @@ public class Response {
     }
 
     public Response withHeader(CommonHeaders header, String content) {
-        return toCopy().setHeader(header, content);
-    }
-
-    public Response withHeaders(HashMap<CommonHeaders, String> headers) {
-        return toCopy().setHeaders(headers);
-    }
-
-    public Response withResponseBody(ResponseBody responseBody) {
-        return toCopy().setResponseBody(responseBody);
-    }
-
-    public Response withResponseBodyFilters(ArrayList<ResponseBodyFilter> responseBodyFilters) {
-        Response response = toCopy();
-        responseBodyFilters.forEach(response::withResponseBodyFilter);
-        return response;
+        return getBuilder().setHeader(header, content).toResponse();
     }
 
     public Response withResponseBodyFilter(ResponseBodyFilter responseBodyFilter) {
-        Response response = toCopy();
-        response.responseBodyFilters.add(responseBodyFilter);
-        return response;
+        return getBuilder().addResponseBodyFilter(responseBodyFilter).toResponse();
     }
 
     public Response withResponseCode(ResponseCodes code) {
-        return toCopy().setResponseCode(code);
+        return getBuilder().setResponseCode(code).toResponse();
     }
 
     public Response withStreamBody(InputStream inputStream) {
-        return toCopy().setStreamBody(inputStream);
+        return getBuilder().setStreamBody(inputStream).toResponse();
     }
 
     public Response merge(Response other) {
@@ -213,6 +149,16 @@ public class Response {
             .stream()
             .map((behavior) -> behavior.apply(request))
             .reduce(this, Response::merge);
+    }
+
+    private ResponseBuilder getBuilder() {
+        return new ResponseBuilder()
+            .setRequest(request)
+            .setResponseCode(responseCode)
+            .setResponseBody(responseBody)
+            .setHeaders(headers)
+            .setResponseBodyFilters(responseBodyFilters)
+            .setBehaviors(behaviors);
     }
 
     @Override

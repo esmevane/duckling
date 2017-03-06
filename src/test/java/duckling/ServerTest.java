@@ -1,7 +1,5 @@
 package duckling;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertEquals;
 
 import duckling.support.SpyServerSocket;

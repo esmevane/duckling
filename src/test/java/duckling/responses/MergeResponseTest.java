@@ -6,7 +6,6 @@ import duckling.requests.Request;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

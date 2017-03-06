@@ -1,7 +1,6 @@
 package duckling.behaviors;
 
 import duckling.requests.Request;
-import duckling.responses.CommonHeaders;
 import duckling.responses.Response;
 import duckling.responses.ResponseCodes;
 import duckling.support.SpyOutputStream;
@@ -110,6 +109,7 @@ public class PartialContentTest {
 
         assertThat(outputStream.getWrittenOutput(), is("llo"));
     }
+
     @Test
     public void returnsTailEndWhenOnlyGivenSecondValue() throws Exception {
         Request request = new Request();

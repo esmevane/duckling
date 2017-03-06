@@ -3,24 +3,22 @@ package duckling.behaviors;
 import duckling.requests.Request;
 import duckling.responses.Response;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 public class DisplayFile implements Behavior {
     @Override
     public Response apply(Request request) {
-        Response response = Response.wrap(request);
+        return Response
+            .wrap(request)
+            .withStreamBody(new BufferedInputStream(getStream(request)));
+    }
 
+    private InputStream getStream(Request request) {
         try {
-            return response.withStreamBody(
-                new BufferedInputStream(
-                    new FileInputStream(request.getFile().getAbsoluteFile())
-                )
-            );
+            return new FileInputStream(request.getFilePath());
         } catch (FileNotFoundException exception) {
-            return response.withStreamBody(new ByteArrayInputStream("".getBytes()));
+            return new ByteArrayInputStream("".getBytes());
         }
+
     }
 }

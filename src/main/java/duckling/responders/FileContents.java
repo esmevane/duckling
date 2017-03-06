@@ -17,8 +17,20 @@ public class FileContents extends Responder {
         response.bind(new RestrictToMethods(allowedMethods));
         response.bind(new GuessContentType());
         response.bind(new DisplayFile());
-        response.bind(new PartialContent());
-        response.bind(new PatchTextContent());
+
+        response.bind(
+            new MaybeBehavior(
+                (givenRequest) -> !givenRequest.headers.get("Range").isEmpty(),
+                new PartialContent()
+            )
+        );
+
+        response.bind(
+            new MaybeBehavior(
+                (givenRequest) -> !givenRequest.headers.get("If-Match").isEmpty(),
+                new PatchTextContent()
+            )
+        );
     }
 
     @Override

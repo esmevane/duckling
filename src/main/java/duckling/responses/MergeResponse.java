@@ -14,23 +14,19 @@ class MergeResponse {
     public Response apply(Response other) {
         ResponseBody responseBody = response.responseBody.merge(other.responseBody);
 
-        ResponseCodes responseCode =
-            other.responseCode == null ?
-                response.responseCode :
-                other.responseCode;
-
         HashMap<CommonHeaders, String> headers = new HashMap<>(response.headers);
 
         other.headers.forEach(headers::put);
 
-        return Response
-            .wrap(other.request)
-            .withResponseBody(responseBody)
-            .withBehaviors(response.behaviors)
-            .withBehaviors(other.behaviors)
-            .withResponseBodyFilters(response.responseBodyFilters)
-            .withResponseBodyFilters(other.responseBodyFilters)
-            .withHeaders(headers)
-            .withResponseCode(responseCode);
+        return new ResponseBuilder()
+            .setRequest(other.request)
+            .setResponseBody(responseBody)
+            .setResponseCode(other.responseCode == null ? response.responseCode : other.responseCode)
+            .addBehaviors(response.behaviors)
+            .addBehaviors(other.behaviors)
+            .addResponseBodyFilters(response.responseBodyFilters)
+            .addResponseBodyFilters(other.responseBodyFilters)
+            .setHeaders(headers)
+            .toResponse();
     }
 }

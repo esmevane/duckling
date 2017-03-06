@@ -80,7 +80,10 @@ public class ResponseTest {
         request.add("GET /path HTTP/1.1");
 
         Response subject = Response.wrap(request);
-        Response expectation = Response.wrap(request);
+        Response expectation =
+            Response
+                .wrap(request)
+                .withResponseCode(ResponseCodes.NOT_FOUND);
 
         subject.bind(
             (givenRequest) ->
@@ -88,8 +91,6 @@ public class ResponseTest {
                     .wrap(givenRequest)
                     .withResponseCode(ResponseCodes.NOT_FOUND)
         );
-
-        expectation.setResponseCode(ResponseCodes.NOT_FOUND);
 
         assertThat(subject.compose().responseCode, is(expectation.compose().responseCode));
     }
